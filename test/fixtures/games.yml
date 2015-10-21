@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  gamehash: 1
+  trainerhash: 1
+  sethash: 1
+  gametempid: 1
+  description: MyString
+
+two:
+  gamehash: 1
+  trainerhash: 1
+  sethash: 1
+  gametempid: 1
+  description: MyString
