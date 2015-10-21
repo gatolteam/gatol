@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151020055936) do
+ActiveRecord::Schema.define(version: 20151021211722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "gametemplates", force: true do |t|
+  create_table "game_templates", force: true do |t|
     t.integer  "hash",                    null: false
     t.string   "name",                    null: false
     t.string   "description", limit: 256, null: false
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20151020055936) do
     t.datetime "updated_at",              null: false
   end
 
-  create_table "questionsets", force: true do |t|
+  create_table "question_sets", force: true do |t|
     t.integer  "qid",                       null: false
     t.integer  "qhash",                     null: false
     t.integer  "setid",                     null: false
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20151020055936) do
     t.datetime "updated_at",                null: false
   end
 
-  create_table "traininghistory", force: true do |t|
+  create_table "training_history", force: true do |t|
     t.integer  "gamehash",    null: false
     t.integer  "studenthash", null: false
     t.integer  "score",       null: false
