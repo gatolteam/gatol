@@ -53,15 +53,4 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
-
-  
-
-  ### Api definition goes here ###
-
-  namespace :api, defaults: { format: :json } do
-
-    ### list our resources here ###
-
-
-  end
 end
