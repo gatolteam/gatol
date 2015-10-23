@@ -20,5 +20,9 @@ class Question
             end
         end
     end
+
+   	def getWrongAnswerByIndex(i)
+    	return @answerWrong[i]
+	end
     
 end
