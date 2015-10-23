@@ -1,28 +1,12 @@
-== README
+== Game-a-Thon of Learning
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Game-a-Thon of Learning (GATOL) will supply an inexpensive and interactive method of learning through engaging and rewarding gameplay. Although there exist similar programs, they are often expensive and time consuming to integrate into a specific field of learning. By simply inputting a csv file of questions and their respective answers, trainers can quickly develop games to improve student’s interest in learning. 
 
-Things you may want to cover:
+=== Links
+{Proposal}[https://docs.google.com/document/d/1IiahMK5TQYPZWBQT8WDCv2QKuEInlEROecR-jghnP6k/edit]
 
-* Ruby version
+{PivotalTracker}[https://www.pivotaltracker.com/n/projects/1432368]
 
-* System dependencies
+{Requirements & Specifications}[https://docs.google.com/document/d/1Rifs7lijnXNqxjsTo_nKeNxA7xacHJZQzt0qCQa8k3Q/edit?usp=sharing]
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+{Design & Planning}[https://docs.google.com/document/d/1M3xdcl9eaw-hcqku86zVwc1X89GQxr7jejodEvsBl1Q/edit?usp=sharing]
