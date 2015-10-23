@@ -14,7 +14,7 @@ class QuestionSet < ActiveRecord::Base
     def createSet
     end
     
-    # turns the array d of array of strings into a Question object
+    # turns the array d of array of strings into an array of Question objects
     def createQuestions(q)
     end
 
