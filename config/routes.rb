@@ -61,12 +61,9 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     ### Add API here
 
+    resources :trainers, :only => [:show]
     
   end
-
-
-
-
 
 
 end
