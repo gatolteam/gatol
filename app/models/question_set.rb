@@ -1,9 +1,9 @@
 class QuestionSet < ActiveRecord::Base 
     require 'csv'
-
+    attr_accessor :questions
 
     #initializes 
-    def initialize(params)
+    def initialize(params=nil)
         #@setid = self.setid
         #@setname = self.setname
         @questions = []
@@ -15,7 +15,11 @@ class QuestionSet < ActiveRecord::Base
     end
     
     # turns the array d of array of strings into an array of Question objects
-    def createQuestions(q)
+    def createQuestions(arr)
+        arr.each do |a| 
+            q = Question.new(a)
+            @questions.push(q)
+        end
     end
 
     # parses CSV

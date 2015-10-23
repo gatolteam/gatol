@@ -38,12 +38,12 @@ class QuestionSetTest < ActiveSupport::TestCase
 
 		set.createQuestions(arr)
 		sarr = set.questions
-		assert_equals(3, sarr.length, "Generated question array of wrong size")
+		assert_equal(3, sarr.length, "Generated question array of wrong size")
 		for i in 0..2
-			assert_equals(qarr[i].question, sarr[i].question, "Q"+i+" question does not match")
-			assert_equals(qarr[i].answerCorrect, sarr[i].answerCorrect, "Q"+i+" correct ans does not match")
+			assert_equal(qarr[i].question, sarr[i].question, "Q#{i} question does not match")
+			assert_equal(qarr[i].answerCorrect, sarr[i].answerCorrect, "Q#{i} correct ans does not match")
 			for j in 0..6
-				assert_equals(qarr[i].answerWrong[j], sarr[i].answerWrong[j], "Q"+i+" wrong ans "+j+" does not match")
+				assert_equal(qarr[i].answerWrong[j], sarr[i].answerWrong[j], "Q#{i} wrong ans #{j} does not match")
 			end
 		end
 
