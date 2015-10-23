@@ -53,4 +53,19 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+
+
+  ### API definition
+  namespace :api, defaults: { format: :json } do
+    ### Add API here
+
+    
+  end
+
+
+
+
+
+
 end
