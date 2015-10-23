@@ -40,6 +40,8 @@ var Game = function(questions) {
 Game.prototype = {
 	// Build scene and start animating 
 	build: function() {
+		// set up question
+		this.setupQuestion();
 		// set up the boundaries
 		this.setupBoundaries();
 		// create foods
@@ -48,6 +50,58 @@ Game.prototype = {
 		this.createBlob();
 		// start first frame
 		requestAnimationFrame(this.tick.bind(this));
+	},
+
+	setupQuestion: function() {
+		this.currentCorrectQuestion = Math.round(Math.random()*(questions[0].incorrectAnswers.length ));
+		var questionString = this.questions[this.questionNum].questionText + "\n";
+		var i = 0;
+		for (; i < this.currentCorrectQuestion; i++) {
+			questionString = questionString + String.fromCharCode(65 + i) + ") " + this.questions[this.questionNum].incorrectAnswers[i] + "\n";
+		}
+		questionString = questionString + String.fromCharCode(65 + i) + ") " + this.questions[this.questionNum].answerText + "\n";
+		for (j = i; j< this.questions[this.questionNum].incorrectAnswers.length; j++) {
+			questionString = questionString + String.fromCharCode(65 + j + 1) + ") " + this.questions[this.questionNum].incorrectAnswers[j] + "\n";
+		}
+		this.questionText = new PIXI.Text(questionString, {font: "24px Verdana", fill: "white"});
+		this.stage.addChild(this.questionText);
+		this.questionText.x = 14;
+		this.questionText.y = 13;
+		console.log(this.currentCorrectQuestion);
+		console.log(questionString);
+	},
+
+	recordAnswer: function(num) {
+		this.blob.position[0] = Math.round(this._width/2);
+		this.blob.position[1] = Math.round(this._height/2);
+		this.blob.velocity[0] = 0;
+		this.blob.velocity[1] = 0;
+
+		for (i=0; i < this.foodGraphics.length; i++) {
+			this.stage.removeChild(this.foodGraphics[i]);
+			this.world.removeBody(this.foodBodies[i]);
+		}
+		for (i=0; i < this.answerChoices.length; i++) {
+			this.stage.removeChild(this.answerChoices[i]);
+		}
+		this.stage.removeChild(this.questionText);
+
+		this.foodBodies = [];
+		this.foodGraphics = [];
+		this.answerChoices = [];
+
+		this.createFoods();
+		this.setupQuestion();
+		if (num == this.currentCorrectQuestion) {
+			console.log("DINGDINGDING");
+		} else {
+			console.log("holy crap you suck");
+		}
+		
+		this.questionNum++;
+		if (this.questionNum > this.questions.length) {
+			return;
+		}
 	},
 
 
@@ -177,7 +231,7 @@ Game.prototype = {
 
 		for (i=0; i < this.foodBodies.length; i++) {
 			if (this.getDistance(this.foodBodies[i], this.blob) < 50) {
-				console.log("yolo");
+				this.recordAnswer(i);
 			}
 		}
 
