@@ -66,10 +66,35 @@ RSpec.describe Api::TrainersController, type: :controller do
 	end
 
 
+	describe "PUT#update" do
+		context "successful update" do
+			before(:each) do
+				@user = FactoryGirl.create :trainer
+				request.headers['Authorization'] =  @user.auth_token
+				put :update, { id: @user.id, trainer: { password: "password2", password_confirmation: "password2" }}, format: :json
+			end
+
+			it "status = 200" do
+				expect(response.status).to eql 200
+			end
+		end
+	end
+
+
+
+
+
+
+
+
+
+
+
 
 	describe "DELETE #destroy" do
 		before(:each) do
 			@user = FactoryGirl.create :trainer
+			request.headers['Authorization'] =  @user.auth_token
 			delete :destroy, { id: @user.id }, format: :json
 		end
 
