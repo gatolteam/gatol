@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151023084603) do
+ActiveRecord::Schema.define(version: 20151024005149) do
 
   create_table "trainers", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -29,8 +29,10 @@ ActiveRecord::Schema.define(version: 20151023084603) do
     t.datetime "confirmation_sent_at"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.string   "auth_token",             default: ""
   end
 
+  add_index "trainers", ["auth_token"], name: "index_trainers_on_auth_token", unique: true
   add_index "trainers", ["confirmation_token"], name: "index_trainers_on_confirmation_token", unique: true
   add_index "trainers", ["email"], name: "index_trainers_on_email", unique: true
   add_index "trainers", ["reset_password_token"], name: "index_trainers_on_reset_password_token", unique: true
