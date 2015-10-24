@@ -62,7 +62,9 @@ Rails.application.routes.draw do
     ### Add API here
 
     resources :trainers, :only => [:show, :create, :destroy]
-    
+    resources :sessions, :only => [:create, :destroy]
+
+
   end
 
 
