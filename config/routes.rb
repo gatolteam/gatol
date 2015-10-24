@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  devise_for :students
+  devise_for :trainers
   resources :games
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -55,4 +56,19 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+
+
+  ### API definition
+  namespace :api, defaults: { format: :json } do
+    ### Add API here
+
+    resources :trainers, :only => [:show, :create, :destroy, :update]
+    resources :students, :only => [:show, :create, :destroy, :update]
+    resources :sessions, :only => [:create, :destroy]
+
+
+  end
+
+
 end

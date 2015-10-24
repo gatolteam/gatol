@@ -11,6 +11,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20151024030312) do
+
+  create_table "students", force: :cascade do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "auth_token",             default: ""
+  end
+
+  add_index "students", ["auth_token"], name: "index_students_on_auth_token", unique: true
+  add_index "students", ["email"], name: "index_students_on_email", unique: true
+  add_index "students", ["reset_password_token"], name: "index_students_on_reset_password_token", unique: true
+
+  create_table "trainers", force: :cascade do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "auth_token",             default: ""
+  end
+
+  add_index "trainers", ["auth_token"], name: "index_trainers_on_auth_token", unique: true
+  add_index "trainers", ["confirmation_token"], name: "index_trainers_on_confirmation_token", unique: true
+  add_index "trainers", ["email"], name: "index_trainers_on_email", unique: true
+  add_index "trainers", ["reset_password_token"], name: "index_trainers_on_reset_password_token", unique: true
+=======
 ActiveRecord::Schema.define(version: 20151024001801) do
 
   # These are extensions that must be enabled in order to support this database
@@ -58,5 +105,6 @@ ActiveRecord::Schema.define(version: 20151024001801) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+>>>>>>> 363cca06f496995eca459807b6c55ac84ee83567
 
 end
