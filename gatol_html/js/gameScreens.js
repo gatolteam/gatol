@@ -132,7 +132,8 @@ var Screens = (function() {
 		$(".btnPlay").click(function() {
 			// Goes to start a level of the bubble game. Depends on how we 
 			// implement and merge the beginning of the game. Also depends on 
-			// which game template was chosed for this game. 
+			// which game template was chosed for this game.
+			// window.location.href="../public/scripts.testing.html"; 
 		});
 
 		$(".btnQuitGame").click(function() {
