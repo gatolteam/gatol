@@ -1,6 +1,28 @@
 var Screens = (function() {
 
 
+	var getRequest = function(data, suceeded, failed) {
+		$.ajax({
+			data: JSON.stringify(data),
+			dataType: "json",
+			url: "https://gatol.herokuapp.com/" + "get_game",
+			type: "GET",
+			success: suceeded,
+			error: failed
+		});
+	};
+
+	var postRequest = function(data, suceeded, failed) {
+		$.ajax({
+			data: JSON.stringify(data),
+			dataType: "json",
+			url: "https://gatol.herokuapp.com/" + "get_game",
+			type: "GET",
+			success: suceeded,
+			error: failed
+		});
+	};
+
 	var setMainTitleScreen = function() {
 		$(".all").hide();
 		
@@ -40,7 +62,7 @@ var Screens = (function() {
 
 		$(".title").show();
 		$(".currQuestion").show();
-		$(".answerForm").show();
+		$(".answer").show();
 		$(".btnGame").show();
 		
 
@@ -118,10 +140,27 @@ var Screens = (function() {
 		});
 	};
 
+	/**
+	 * This will be called when the game is over and it will determine whether
+	 * the question was answered correctly or incorrectly.
+	 */
+	var levelOver = function() {
+		// until we figure out how we are going to merge the game level in, this 
+		// will not be very robust
 
+		isCorrect = false;
 
+		if (isCorrect) {
 
-var start = function(){
+			setIncorrectScreen();
+		} else {
+			setCorrectScreen();
+		}
+		//postRequest(...) here to update the score of the current player
+	};
+
+	var start = function() {
+		game = //getRequest(...)
         attachHandlers();
         setMainTitleScreen();
         // setHowToScreen();
