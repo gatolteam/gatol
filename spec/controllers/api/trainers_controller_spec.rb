@@ -65,4 +65,20 @@ RSpec.describe Api::TrainersController, type: :controller do
 		end
 	end
 
+
+
+	describe "DELETE #destroy" do
+		before(:each) do
+			@user = FactoryGirl.create :trainer
+			delete :destroy, { id: @user.id }, format: :json
+		end
+
+		it "status = 204" do
+			expect(response.status).to eql 204
+		end 
+
+	end
+
+
+
 end

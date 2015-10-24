@@ -15,6 +15,15 @@ class Api::TrainersController < ApplicationController
     	end
   	end
 
+
+  	def destroy
+  		user = Trainer.find(params[:id])
+  		user.destroy
+  		head 204
+	end
+
+
+
   	private
    		def user_params
     		params.require(:trainer).permit(:email, :password, :password_confirmation)
