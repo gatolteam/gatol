@@ -4,7 +4,7 @@ RSpec.describe Api::SessionsController, type: :controller do
 
 	describe "POST#create" do
 		before(:each) do
-			@user = FactoryGirl.create :trainer
+			@user = FactoryGirl.create :student
 		end
 
 		context "correct email and password" do
@@ -48,7 +48,7 @@ RSpec.describe Api::SessionsController, type: :controller do
 
 	describe "DELETE#destroy" do
 		before(:each) do
-			@user = FactoryGirl.create :trainer
+			@user = FactoryGirl.create :student
 			sign_in @user
 			delete :destroy, id: @user.auth_token
 		end
