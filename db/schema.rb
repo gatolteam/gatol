@@ -11,13 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151021213012) do
+ActiveRecord::Schema.define(version: 20151024001801) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "game_templates", force: true do |t|
-    t.integer  "hash",                    null: false
     t.string   "name",                    null: false
     t.string   "description", limit: 256, null: false
     t.datetime "created_at",              null: false
@@ -25,9 +24,8 @@ ActiveRecord::Schema.define(version: 20151021213012) do
   end
 
   create_table "games", force: true do |t|
-    t.integer  "gamehash",                null: false
-    t.integer  "trainerhash",             null: false
-    t.integer  "sethash",                 null: false
+    t.integer  "trainerid",               null: false
+    t.integer  "setid",                   null: false
     t.integer  "gametempid",              null: false
     t.string   "description", limit: 256, null: false
     t.datetime "created_at"
@@ -36,9 +34,7 @@ ActiveRecord::Schema.define(version: 20151021213012) do
 
   create_table "question_sets", force: true do |t|
     t.integer  "qid",                       null: false
-    t.integer  "qhash",                     null: false
     t.integer  "setid",                     null: false
-    t.integer  "sethash",                   null: false
     t.string   "setname",       limit: 128, null: false
     t.integer  "questionindex",             null: false
     t.string   "question",      limit: 256, null: false
@@ -55,12 +51,12 @@ ActiveRecord::Schema.define(version: 20151021213012) do
   end
 
   create_table "training_history", force: true do |t|
-    t.integer  "gamehash",    null: false
-    t.integer  "studenthash", null: false
-    t.integer  "score",       null: false
-    t.integer  "lastq",       null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "gameid",     null: false
+    t.integer  "studentid",  null: false
+    t.integer  "score",      null: false
+    t.integer  "lastq",      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
