@@ -11,6 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20151024030312) do
 
   create_table "students", force: :cascade do |t|
@@ -56,5 +57,54 @@ ActiveRecord::Schema.define(version: 20151024030312) do
   add_index "trainers", ["confirmation_token"], name: "index_trainers_on_confirmation_token", unique: true
   add_index "trainers", ["email"], name: "index_trainers_on_email", unique: true
   add_index "trainers", ["reset_password_token"], name: "index_trainers_on_reset_password_token", unique: true
+=======
+ActiveRecord::Schema.define(version: 20151024001801) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "game_templates", force: true do |t|
+    t.string   "name",                    null: false
+    t.string   "description", limit: 256, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "games", force: true do |t|
+    t.integer  "trainerid",               null: false
+    t.integer  "setid",                   null: false
+    t.integer  "gametempid",              null: false
+    t.string   "description", limit: 256, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "question_sets", force: true do |t|
+    t.integer  "qid",                       null: false
+    t.integer  "setid",                     null: false
+    t.string   "setname",       limit: 128, null: false
+    t.integer  "questionindex",             null: false
+    t.string   "question",      limit: 256, null: false
+    t.string   "answerCorrect", limit: 256, null: false
+    t.string   "answerWrong1",  limit: 256
+    t.string   "answerWrong2",  limit: 256
+    t.string   "answerWrong3",  limit: 256
+    t.string   "answerWrong4",  limit: 256
+    t.string   "answerWrong5",  limit: 256
+    t.string   "answerWrong6",  limit: 256
+    t.string   "answerWrong7",  limit: 256
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "training_history", force: true do |t|
+    t.integer  "gameid",     null: false
+    t.integer  "studentid",  null: false
+    t.integer  "score",      null: false
+    t.integer  "lastq",      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+>>>>>>> 363cca06f496995eca459807b6c55ac84ee83567
 
 end

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Gamehash:</strong>
+  <%= @game.gamehash %>
+</p>
+
+<p>
+  <strong>Trainerhash:</strong>
+  <%= @game.trainerhash %>
+</p>
+
+<p>
+  <strong>Sethash:</strong>
+  <%= @game.sethash %>
+</p>
+
+<p>
+  <strong>Gametempid:</strong>
+  <%= @game.gametempid %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @game.description %>
+</p>
+
+<%= link_to 'Edit', edit_game_path(@game) %> |
+<%= link_to 'Back', games_path %>
