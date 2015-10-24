@@ -53,7 +53,10 @@ Game.prototype = {
 	},
 
 	setupQuestion: function() {
-		this.currentCorrectQuestion = Math.round(Math.random()*(questions[0].incorrectAnswers.length ));
+		if (this.questionNum >= this.questions.length) {
+			return;
+		}
+		this.currentCorrectQuestion = Math.round(Math.random()*(questions[this.questionNum].incorrectAnswers.length ));
 		var questionString = this.questions[this.questionNum].questionText + "\n";
 		var i = 0;
 		for (; i < this.currentCorrectQuestion; i++) {
@@ -72,6 +75,7 @@ Game.prototype = {
 	},
 
 	recordAnswer: function(num) {
+
 		this.blob.position[0] = Math.round(this._width/2);
 		this.blob.position[1] = Math.round(this._height/2);
 		this.blob.velocity[0] = 0;
@@ -89,7 +93,10 @@ Game.prototype = {
 		this.foodBodies = [];
 		this.foodGraphics = [];
 		this.answerChoices = [];
-
+		this.questionNum++;
+		if (this.questionNum >= this.questions.length) {
+			return;
+		}
 		this.createFoods();
 		this.setupQuestion();
 		if (num == this.currentCorrectQuestion) {
@@ -97,11 +104,7 @@ Game.prototype = {
 		} else {
 			console.log("holy crap you suck");
 		}
-		
-		this.questionNum++;
-		if (this.questionNum > this.questions.length) {
-			return;
-		}
+
 	},
 
 
@@ -135,7 +138,7 @@ Game.prototype = {
 		this.blobGraphics = new PIXI.Graphics();
 
 		// draw the blob's body
-		this.blobGraphics.beginFill(0xF3801E);
+		this.blobGraphics.beginFill(0x20B2F3);
 		this.blobGraphics.moveTo(0,0);
 		this.blobGraphics.drawCircle(0,-3,40);
 		// this.blobGraphics.drawCircle(-2,7,35);
@@ -151,7 +154,11 @@ Game.prototype = {
 	createFoods: function() {
 		for (i = 0; i < questions[this.questionNum].incorrectAnswers.length + 1; i++) {
 			var x = Math.round(Math.random() * this._width);
-			var y = Math.round(Math.random() * this._height);
+			var y = Math.round(Math.random() * this._height);	
+			while (Math.sqrt(Math.pow(x - this._width/2, 2) + Math.pow(y - this._height/2, 2)) < 50) {
+				x = Math.round(Math.random() * this._width);
+				y = Math.round(Math.random() * this._height);	
+			}
 			var vx = (Math.random() - 0.5) * this.speed/20;
 			var vy = (Math.random() - 0.5) * this.speed/20;
 			var va = 0;//(Math.random() - 0.5) * this.speed/100;
@@ -170,7 +177,7 @@ Game.prototype = {
 
 			// Create the graphics
 			var foodGraphics = new PIXI.Graphics();
-			foodGraphics.beginFill(0x20c41a);
+			foodGraphics.beginFill(0xF3801E);
 			foodGraphics.drawCircle(0,0,20);
 			foodGraphics.endFill();
 
