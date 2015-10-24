@@ -5,6 +5,7 @@ Game-a-Thon of Learning (GATOL) will supply an inexpensive and interactive metho
 === Testing
 10/23/15:
 * in the project directory, run 'rake test'
+  to run rspec unit tests, run 'bundle exec rspec'
 
 
 === Links
