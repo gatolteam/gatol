@@ -70,11 +70,27 @@ Game.prototype = {
 		this.stage.addChild(this.questionText);
 		this.questionText.x = 14;
 		this.questionText.y = 13;
-		console.log(this.currentCorrectQuestion);
-		console.log(questionString);
+		// console.log(this.currentCorrectQuestion);
+		// console.log(questionString);
 	},
 
 	recordAnswer: function(num) {
+		var answerText;
+		if (num == this.currentCorrectQuestion) {
+			// console.log("DINGDINGDING");
+			var answerText = new PIXI.Text("CORRECT!", {font: "48px Verdana", fill: "green"});
+
+		} else {
+			// console.log("holy crap you suck");
+			var answerText = new PIXI.Text("INCORRECT", {font: "48px Verdana", fill: "red"});
+		}
+		this.stage.addChild(answerText);
+		answerText.x = Math.round(this._width/2) - 110;
+		answerText.y = 40;
+		setTimeout(function(stage) {
+			stage.removeChild(answerText);
+		}, 800, this.stage);
+
 
 		this.blob.position[0] = Math.round(this._width/2);
 		this.blob.position[1] = Math.round(this._height/2);
@@ -99,11 +115,12 @@ Game.prototype = {
 		}
 		this.createFoods();
 		this.setupQuestion();
-		if (num == this.currentCorrectQuestion) {
-			console.log("DINGDINGDING");
-		} else {
-			console.log("holy crap you suck");
-		}
+
+		// For some reason, it very rarely glitches without this repeated
+		this.blob.position[0] = Math.round(this._width/2);
+		this.blob.position[1] = Math.round(this._height/2);
+		this.blob.velocity[0] = 0;
+		this.blob.velocity[1] = 0;
 
 	},
 
