@@ -38,8 +38,7 @@ class QuestionSet < ActiveRecord::Base
             return @questions[i]
         else
         #Raise Exception here?
+        end
     end
-    
-    
     
 end

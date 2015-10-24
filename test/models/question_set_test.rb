@@ -12,8 +12,8 @@ class QuestionSetTest < ActiveSupport::TestCase
 	def teardown
 	end
 
-	test "createQuestions" do
-		arr = [ ['1+1?','2','1','3','4','5','6','7','8'],
+	def setUp1
+		@arr = [ ['1+1?','2','1','3','4','5','6','7','8'],
 				['Can pigs fly?','No','Of course!','Meep','','','','',''],
 				['T/F: Banana is a fruit','T','F','','','','','','']  ]
 
@@ -32,7 +32,13 @@ class QuestionSetTest < ActiveSupport::TestCase
 		q2.answerCorrect = 'T'
 		q2.answerWrong = ['F',nil,nil,nil,nil,nil, nil]
 
-		qarr = [q0, q1, q2]
+		@qarr = [q0, q1, q2]
+	end
+
+	test "createQuestions" do
+		setUp1
+		arr = @arr
+		qarr = @qarr
 
 		set = QuestionSet.new
 
@@ -46,6 +52,17 @@ class QuestionSetTest < ActiveSupport::TestCase
 				assert_equal(qarr[i].answerWrong[j], sarr[i].answerWrong[j], "Q#{i} wrong ans #{j} does not match")
 			end
 		end
+
+	end
+
+	test "saveRecord" do
+		setUp1
+		@set = QuestionSet.new
+		@set.createQuestions(@arr)
+		#now insert other required data
+		@set.setname = 'testset'
+		@set.setid = 1
+		assert_equal(1, set.save, "save failed")
 
 	end
 
