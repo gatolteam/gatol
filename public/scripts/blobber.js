@@ -1,7 +1,7 @@
 var Game = function(questions) {
 	// set up scene width and height
-	this._width = window.innerWidth - 10;
-	this._height = window.innerHeight - 10;
+	this._width = window.innerWidth - 4;
+	this._height = window.innerHeight - 4;
 
 	// set up rendering surface
 	this.renderer = new PIXI.CanvasRenderer(this._width, this._height);
@@ -32,6 +32,8 @@ var Game = function(questions) {
 
 	this.questions = questions;
 	this.questionNum = 0;
+
+	this.blobRadius = 40;
 
 	// Start running the game.
 	this.build();
@@ -79,11 +81,16 @@ Game.prototype = {
 		if (num == this.currentCorrectQuestion) {
 			// console.log("DINGDINGDING");
 			var answerText = new PIXI.Text("CORRECT!", {font: "48px Verdana", fill: "green"});
-
+			this.blobRadius += 10;
 		} else {
 			// console.log("holy crap you suck");
 			var answerText = new PIXI.Text("INCORRECT", {font: "48px Verdana", fill: "red"});
+			this.blobRadius -= 10;
 		}
+		this.stage.removeChild(this.blobGraphics);
+		this.world.removeBody(this.blob);
+		this.createBlob();
+
 		this.stage.addChild(answerText);
 		answerText.x = Math.round(this._width/2) - 110;
 		answerText.y = 40;
@@ -148,7 +155,7 @@ Game.prototype = {
 			angularDamping: .5,
 			position:[Math.round(this._width/2),Math.round(this._height/2)]
 		});
-		this.blobShape = new p2.Circle({radius:40});
+		this.blobShape = new p2.Circle({radius:this.blobRadius});
 		this.blob.addShape(this.blobShape);
 		this.world.addBody(this.blob);
 
@@ -157,7 +164,7 @@ Game.prototype = {
 		// draw the blob's body
 		this.blobGraphics.beginFill(0x20B2F3);
 		this.blobGraphics.moveTo(0,0);
-		this.blobGraphics.drawCircle(0,-3,40);
+		this.blobGraphics.drawCircle(0,-3,this.blobRadius);
 		// this.blobGraphics.drawCircle(-2,7,35);
 		// this.blobGraphics.drawCircle(10,3,45);
 		// this.blobGraphics.drawCircle(-18,-2,20);
@@ -254,7 +261,7 @@ Game.prototype = {
 		this.blobGraphics.y = this.blob.position[1];
 
 		for (i=0; i < this.foodBodies.length; i++) {
-			if (this.getDistance(this.foodBodies[i], this.blob) < 50) {
+			if (this.getDistance(this.foodBodies[i], this.blob) < this.blobRadius*1.25) {
 				this.recordAnswer(i);
 			}
 		}
