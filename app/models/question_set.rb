@@ -1,13 +1,9 @@
-class QuestionSet < ActiveRecord::Base 
+class QuestionSet
     require 'csv'
     attr_accessor :questions
 
-    #initializes 
-    def initialize(params=nil)
-        #@setid = self.setid
-        #@setname = self.setname
+    def buildQuestionSet(params=nil)
         @questions = []
-        
     end
     
     #sets up new QuestionSet
@@ -21,6 +17,10 @@ class QuestionSet < ActiveRecord::Base
             q = Question.new(a)
             @questions.push(q)
         end
+    end
+
+    def saveSet
+        
     end
 
     # parses CSV
