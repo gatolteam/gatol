@@ -177,11 +177,20 @@ var Screens = (function() {
 		} else {
 			setCorrectScreen();
 		}
-		//postRequest(...) here to update the score of the current player
+
+
+		postRequest(...) //here to update the score of the current player
 	};
 
 	var start = function() {
-		// new game = //getRequest(...)
+		var setGame = function(data){
+
+		};
+		var gameNotReached = function(){
+			console.error("failure");
+		}
+
+		getRequest(data, setGame, gameNotReached)
         attachHandlers();
         setMainTitleScreen();
 
