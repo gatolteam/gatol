@@ -1,5 +1,20 @@
 var Screens = (function() {
 
+	//Prototypes
+
+	function question(questionText, answer, incorrectAnswers) {
+		this.questionText = questionText;
+		this.answerText = answer;
+		this.incorrectAnswerTexts = incorrectAnswers;
+	}
+
+	function game(questionList, width, height) {
+		this.questionList = questionList
+		this.width = width
+		this.height = height
+	}
+
+	//Ajax methods to communicate with backend
 
 	var getRequest = function(data, suceeded, failed) {
 		$.ajax({
@@ -15,13 +30,18 @@ var Screens = (function() {
 	var postRequest = function(data, suceeded, failed) {
 		$.ajax({
 			data: JSON.stringify(data),
-			dataType: "json",
+			contentType: "application/json",
+            dataType: "json",
 			url: "https://gatol.herokuapp.com/" + "get_game",
-			type: "GET",
+			type: "POST",
 			success: suceeded,
 			error: failed
 		});
 	};
+
+
+
+	//Mehtods to transition screens
 
 	var setMainTitleScreen = function() {
 		$(".all").hide();
@@ -157,19 +177,23 @@ var Screens = (function() {
 		} else {
 			setCorrectScreen();
 		}
-		//postRequest(...) here to update the score of the current player
+
+
+		postRequest(...) //here to update the score of the current player
 	};
 
 	var start = function() {
-		game = //getRequest(...)
+		var setGame = function(data){
+
+		};
+		var gameNotReached = function(){
+			console.error("failure");
+		}
+
+		getRequest(data, setGame, gameNotReached)
         attachHandlers();
         setMainTitleScreen();
-        // setHowToScreen();
-        // setSynopsisScreen();
-        // setQuestionScreen();
-        // setCorrectScreen();
-        // setIncorrectScreen();
-        // setDoneScreen();
+
     };
 
     return {
