@@ -179,7 +179,7 @@ var Screens = (function() {
 		}
 
 
-		postRequest(...) //here to update the score of the current player
+		// postRequest(...) //here to update the score of the current player
 	};
 
 	var start = function() {
@@ -187,10 +187,10 @@ var Screens = (function() {
 
 		};
 		var gameNotReached = function(){
-			console.error("failure");
+			console.error("game load failure");
 		}
 
-		getRequest(data, setGame, gameNotReached)
+		// getRequest(data, setGame, gameNotReached);
         attachHandlers();
         setMainTitleScreen();
 
