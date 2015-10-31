@@ -2,13 +2,25 @@ class QuestionSet
     require 'csv'
     attr_accessor :questions, :setname
 
-    def buildQuestionSet(params=nil)
+    def initialize(params)
+        super()
+        @setname = params[:setname]
+        @setid = getSetID()
         @questions = []
     end
     
     #sets up new QuestionSet
     def createSet
         createQuestions(parseCSV)
+    end
+
+    def getSetID
+        last = Question.maximum(:setid)
+        if last.nil?
+            return last.to_i
+        else
+            last.to_i + 1
+        end
     end
     
     # turns the array d of array of strings into an array of Question objects

@@ -2,17 +2,22 @@ require 'rails_helper'
 
 RSpec.describe QuestionSet do
 
-  it "cannot save an empty question set" do
-  end
+  context "create trivial QuestionSet"
+  	before(:context) do
+  		@qs = QuestionSet.new(setname: 'simpleset')
+  	end
 
-  it "gets correct setid for new set" do
+	  it "initializes correct setid for new set" do
+	  	expect(@qs.setid).to eq(0)
+	  end
 
-  end
+	  it "initializes setname" do
+	  	expect(@qs.setname).to eq('simpleset')
+	  end
 
-  it "initializes new QuestionSet" do
-  	qs = QuestionSet.new(setname: 'simpleset')
-
-  end
+	  it "initializes question array" do
+	  	expect(@qs.questions).to eq([])
+	  end
 
   it "parses CSV file correctly" do
   end
