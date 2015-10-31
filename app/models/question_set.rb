@@ -1,6 +1,6 @@
 class QuestionSet
     require 'csv'
-    attr_accessor :questions
+    attr_accessor :questions, :setname
 
     def buildQuestionSet(params=nil)
         @questions = []
@@ -14,13 +14,15 @@ class QuestionSet
     # turns the array d of array of strings into an array of Question objects
     def createQuestions(arr)
         arr.each do |a| 
-            q = Question.new(a)
+            q = Question.new
             @questions.push(q)
         end
     end
 
     def saveSet
-        
+        @questions.each do |q|
+            q.save!
+        end
     end
 
     # parses CSV
