@@ -14,9 +14,6 @@ RSpec.describe QuestionSet do
 
   end
 
-  it "saves all Questions in QuestionSet" do
-  end
-
   it "parses CSV file correctly" do
   end
 
@@ -62,5 +59,10 @@ RSpec.describe QuestionSet do
 			end
 		end
     end
+
+    it "saves all Questions in QuestionSet" do
+    	expect { out = @set.saveSet }.not_to raise_error
+    	expect(out).to be_truthy
+  	end
 
 end

@@ -20,9 +20,11 @@ class QuestionSet
     end
 
     def saveSet
+        all = false
         @questions.each do |q|
-            q.save!
+            all = all && q.save!
         end
+        all
     end
 
     # parses CSV
