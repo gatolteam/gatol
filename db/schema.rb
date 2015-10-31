@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151024063027) do
+ActiveRecord::Schema.define(version: 20151031042346) do
 
   create_table "game_templates", force: :cascade do |t|
     t.string   "name",        limit: 255, null: false
@@ -21,7 +21,6 @@ ActiveRecord::Schema.define(version: 20151024063027) do
   end
 
   create_table "games", force: :cascade do |t|
-    t.integer  "gameid",                  null: false
     t.integer  "trainerid",               null: false
     t.integer  "setid",                   null: false
     t.integer  "gametempid",              null: false
@@ -92,15 +91,6 @@ ActiveRecord::Schema.define(version: 20151024063027) do
     t.integer  "studentid",    null: false
     t.integer  "score",        null: false
     t.integer  "lastQuestion", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "traininghistory", force: :cascade do |t|
-    t.integer  "gamehash",    null: false
-    t.integer  "studenthash", null: false
-    t.integer  "score",       null: false
-    t.integer  "lastq",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
