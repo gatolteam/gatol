@@ -1,6 +1,6 @@
 class QuestionSet
     require 'csv'
-    attr_accessor :questions, :setname
+    attr_accessor :questions, :setname, :setid
 
     def initialize(params)
         super()
@@ -27,6 +27,9 @@ class QuestionSet
     def createQuestions(arr)
         arr.each do |a| 
             q = Question.new
+            q.buildQuestion(a)
+            q.setid = @setid
+            q.setname = @setname
             @questions.push(q)
         end
     end

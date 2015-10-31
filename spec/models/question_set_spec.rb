@@ -28,7 +28,7 @@ RSpec.describe QuestionSet do
 				['Can pigs fly?','No','Of course!','Meep','','','','',''],
 				['T/F: Banana is a fruit','T','F','','','','','','']  ]
 
-		@set = QuestionSet.new('3set')
+		@set = QuestionSet.new(setname: '3set')
 		@set.createQuestions(@arr)
 		@sarr = @set.questions
 
@@ -58,16 +58,15 @@ RSpec.describe QuestionSet do
   	it "creates correct Question objects for each csv question" do
   		for i in 0..2
 			expect(@qarr[i].question).to eq(@sarr[i].question)
-			expect(qarr[i].answerCorrect).to eq(@sarr[i].answerCorrect)
+			expect(@qarr[i].answerCorrect).to eq(@sarr[i].answerCorrect)
 			for j in 0..6
-				expect(qarr[i].answerWrong[j]).to eq(sarr[i].answerWrong[j])
+				expect(@qarr[i].answerWrong[j]).to eq(@sarr[i].answerWrong[j])
 			end
 		end
     end
 
     it "saves all Questions in QuestionSet" do
-    	expect { out = @set.saveSet }.not_to raise_error
-    	expect(out).to be_truthy
+    	expect { @set.saveSet }.not_to raise_error
   	end
 
 end
