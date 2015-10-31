@@ -10,8 +10,8 @@ class QuestionSet
     end
     
     #sets up new QuestionSet
-    def createSet
-        createQuestions(parseCSV)
+    def createSet(file)
+        createQuestions(parseCSV(file))
     end
 
     def getSetID
@@ -48,8 +48,8 @@ class QuestionSet
     # will be parsed into
     #                  ['1+1?','2','1','3','4','5','6','7','8']
     # and encapsualted in another array containing all the lines of CSV
-    def parseCSV
-        return []
+    def self.parseCSV(file)
+        arr = CSV.read(file)
     end
     
     def getQuestionByIndex(i)

@@ -19,8 +19,27 @@ RSpec.describe QuestionSet do
 	  	expect(@qs.questions).to eq([])
 	  end
 
-  it "parses CSV file correctly" do
-  end
+  context "parse CSV"
+  	before(:context) do
+  		@qsa = QuestionSet.parseCSV("#{Rails.root}/spec/demo1.csv")
+  	end
+	  it "parses all rows of CSV file " do
+	  	expect(@qsa.length).to eq(3)
+	  end
+
+	  it "parses all columns of CSV file " do
+	  	expect(@qsa[0].length).to eq(9)
+	  	expect(@qsa[1].length).to eq(9)
+	  	expect(@qsa[2].length).to eq(9)
+	  end
+
+	  it "parses data of CSV file correctly" do
+	  	arr = [ ['T/F: Apples are always red','F','T',nil,nil,nil,nil,nil,nil], 
+	  			['1+1?','2','1','3','4','5','6','7','8'],
+				['Can sheep fly?','No','Of course!','Meep',nil,nil,nil,nil,nil]  ]
+		expect(@qsa).to eq(arr)
+	  end
+
 
   context "create QuestionSet from array"
   	before(:context) do
