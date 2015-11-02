@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151031042346) do
+ActiveRecord::Schema.define(version: 20151102063612) do
 
   create_table "game_templates", force: :cascade do |t|
     t.string   "name",        limit: 255, null: false
@@ -30,8 +30,14 @@ ActiveRecord::Schema.define(version: 20151031042346) do
   end
 
   create_table "question_sets", force: :cascade do |t|
+    t.string   "setname",    limit: 128, null: false
+    t.integer  "trainerid",              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "questions", force: :cascade do |t|
     t.integer  "setid",                     null: false
-    t.string   "setname",       limit: 128, null: false
     t.integer  "questionIdx",               null: false
     t.string   "question",      limit: 256, null: false
     t.string   "answerCorrect", limit: 256, null: false
