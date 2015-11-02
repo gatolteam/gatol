@@ -1,5 +1,6 @@
 class QuestionSet < ActiveRecord::Base 
     require 'csv'
+    has_many :questions
     attr_accessor :questions
     after_initialize do |set|
         @questions = []
@@ -15,7 +16,7 @@ class QuestionSet < ActiveRecord::Base
         arr.each do |a| 
             q = Question.new
             q.buildQuestion(a)
-            q.setid = self.id
+            q.question_set = self
             @questions.push(q)
         end
     end

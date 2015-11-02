@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151102063612) do
+ActiveRecord::Schema.define(version: 20151102073130) do
 
   create_table "game_templates", force: :cascade do |t|
     t.string   "name",        limit: 255, null: false
@@ -21,7 +21,6 @@ ActiveRecord::Schema.define(version: 20151102063612) do
   end
 
   create_table "games", force: :cascade do |t|
-    t.integer  "gameid",                  null: false
     t.integer  "trainerid",               null: false
     t.integer  "setid",                   null: false
     t.integer  "gametempid",              null: false
@@ -32,26 +31,30 @@ ActiveRecord::Schema.define(version: 20151102063612) do
 
   create_table "question_sets", force: :cascade do |t|
     t.string   "setname",    limit: 128, null: false
-    t.integer  "trainerid",              null: false
+    t.integer  "trainer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "question_sets", ["trainer_id"], name: "index_question_sets_on_trainer_id"
+
   create_table "questions", force: :cascade do |t|
-    t.integer  "setid",                     null: false
-    t.integer  "questionIdx",               null: false
-    t.string   "question",      limit: 256, null: false
-    t.string   "answerCorrect", limit: 256, null: false
-    t.string   "answerWrong1",  limit: 256
-    t.string   "answerWrong2",  limit: 256
-    t.string   "answerWrong3",  limit: 256
-    t.string   "answerWrong4",  limit: 256
-    t.string   "answerWrong5",  limit: 256
-    t.string   "answerWrong6",  limit: 256
-    t.string   "answerWrong7",  limit: 256
+    t.integer  "question_set_id"
+    t.integer  "questionIdx",                 null: false
+    t.string   "question",        limit: 256, null: false
+    t.string   "answerCorrect",   limit: 256, null: false
+    t.string   "answerWrong1",    limit: 256
+    t.string   "answerWrong2",    limit: 256
+    t.string   "answerWrong3",    limit: 256
+    t.string   "answerWrong4",    limit: 256
+    t.string   "answerWrong5",    limit: 256
+    t.string   "answerWrong6",    limit: 256
+    t.string   "answerWrong7",    limit: 256
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "questions", ["question_set_id"], name: "index_questions_on_question_set_id"
 
   create_table "students", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -98,15 +101,6 @@ ActiveRecord::Schema.define(version: 20151102063612) do
     t.integer  "studentid",    null: false
     t.integer  "score",        null: false
     t.integer  "lastQuestion", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "traininghistory", force: :cascade do |t|
-    t.integer  "gamehash",    null: false
-    t.integer  "studenthash", null: false
-    t.integer  "score",       null: false
-    t.integer  "lastq",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

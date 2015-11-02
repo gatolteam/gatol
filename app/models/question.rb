@@ -1,4 +1,5 @@
 class Question < ActiveRecord::Base 
+    belongs_to :question_set
 	attr_accessor :answerWrong
 
     def buildQuestion(params)
