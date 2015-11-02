@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20151102063612) do
   end
 
   create_table "games", force: :cascade do |t|
+    t.integer  "gameid",                  null: false
     t.integer  "trainerid",               null: false
     t.integer  "setid",                   null: false
     t.integer  "gametempid",              null: false
@@ -97,6 +98,15 @@ ActiveRecord::Schema.define(version: 20151102063612) do
     t.integer  "studentid",    null: false
     t.integer  "score",        null: false
     t.integer  "lastQuestion", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "traininghistory", force: :cascade do |t|
+    t.integer  "gamehash",    null: false
+    t.integer  "studenthash", null: false
+    t.integer  "score",       null: false
+    t.integer  "lastq",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,11 +1,7 @@
-class QuestionSet
+class QuestionSet < ActiveRecord::Base 
     require 'csv'
-    attr_accessor :questions, :setname, :setid
-
-    def initialize(params)
-        super()
-        @setname = params[:setname]
-        @setid = getSetID()
+    attr_accessor :questions
+    after_initialize do |set|
         @questions = []
     end
     
@@ -28,8 +24,7 @@ class QuestionSet
         arr.each do |a| 
             q = Question.new
             q.buildQuestion(a)
-            q.setid = @setid
-            q.setname = @setname
+            q.setid = self.id
             @questions.push(q)
         end
     end
@@ -59,5 +54,5 @@ class QuestionSet
         #Raise Exception here?
         end
     end
-    
+
 end
