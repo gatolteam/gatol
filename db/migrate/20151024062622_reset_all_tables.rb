@@ -1,4 +1,4 @@
-class ResetSomeTables < ActiveRecord::Migration
+class ResetAllTables < ActiveRecord::Migration
   def change
 	 create_table "game_templates", force: true do |t|
 	    t.string   "name",                    null: false
@@ -8,7 +8,6 @@ class ResetSomeTables < ActiveRecord::Migration
 	  end
 
 	  create_table "games", force: true do |t|
-	    t.integer  "gameid",                  null: false
 	    t.integer  "trainerid",               null: false
 	    t.integer  "setid",                   null: false
 	    t.integer  "gametempid",              null: false
