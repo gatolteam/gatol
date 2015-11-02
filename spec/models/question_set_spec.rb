@@ -7,10 +7,6 @@ RSpec.describe QuestionSet do
   		@qs = QuestionSet.new(setname: 'simpleset')
   	end
 
-	  #it "initializes correct setid for new set" do
-	  #	expect(@qs.setid).to eq(0)
-	  #end
-
 	  it "initializes setname" do
 	  	expect(@qs.setname).to eq('simpleset')
 	  end

@@ -9,15 +9,6 @@ class QuestionSet < ActiveRecord::Base
     def createSet(file)
         createQuestions(parseCSV(file))
     end
-
-    def getSetID
-        last = Question.maximum(:setid)
-        if last.nil?
-            return last.to_i
-        else
-            last.to_i + 1
-        end
-    end
     
     # turns the array d of array of strings into an array of Question objects
     def createQuestions(arr)
