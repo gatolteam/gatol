@@ -1,6 +1,6 @@
 class QuestionSets < ActiveRecord::Migration
   def change
-      create_table :questionsets do |t|
+      create_table :question_sets do |t|
           t.integer :qid, null: false
           t.integer :qhash, null: false
           t.integer :setid, null: false

@@ -63,8 +63,18 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     ### Add API here
 
-    resources :trainers, :only => [:show, :create, :destroy, :update]
-    resources :students, :only => [:show, :create, :destroy, :update]
+    resources :trainers, :only => [:show, :create]
+    post "/trainers/confirm", to: "trainers#verify"
+    post "/trainers/reset", to: "trainers#reset"
+    post "/trainers/update", to: "trainers#update"
+    delete "/trainers", to: "trainers#destroy"
+
+    resources :students, :only => [:show, :create]
+    post "/students/confirm", to: "students#verify"
+    post "/students/reset", to: "students#reset"
+    post "/students/update", to: "students#update"
+    delete "/students", to: "students#destroy"
+
     resources :sessions, :only => [:create, :destroy]
 
 

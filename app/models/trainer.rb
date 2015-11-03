@@ -14,5 +14,4 @@ class Trainer < ActiveRecord::Base
     end while self.class.exists?(auth_token: auth_token)
   end
 
-
 end

@@ -21,7 +21,7 @@ class DeviseCreateStudents < ActiveRecord::Migration
 
       ## Confirmable
       # t.string   :confirmation_token
-      # t.datetime :confirmed_at
+      t.boolean  :confirmed, default: false
       # t.datetime :confirmation_sent_at
       # t.string   :unconfirmed_email # Only if using reconfirmable
 
@@ -31,11 +31,15 @@ class DeviseCreateStudents < ActiveRecord::Migration
       # t.datetime :locked_at
 
 
+      t.string   :auth_token, default: ""
+
+
       t.timestamps null: false
     end
 
     add_index :students, :email,                unique: true
     add_index :students, :reset_password_token, unique: true
+    add_index :students, :auth_token,           unique: true
     # add_index :students, :confirmation_token,   unique: true
     # add_index :students, :unlock_token,         unique: true
   end
