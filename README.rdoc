@@ -3,9 +3,17 @@
 Game-a-Thon of Learning (GATOL) will supply an inexpensive and interactive method of learning through engaging and rewarding gameplay. Although there exist similar programs, they are often expensive and time consuming to integrate into a specific field of learning. By simply inputting a csv file of questions and their respective answers, trainers can quickly develop games to improve student’s interest in learning. 
 
 === Testing
-10/23/15:
-* in the project directory, run 'rake test'
-* to run rspec unit tests, run 'bundle exec rspec'
+11/03/15:
+
+This version is for testing backend locally. To test rquests, Python 2.7 and requests are required
+link to python requests:
+http://docs.python-requests.org/en/latest/
+
+
+* run "rake db:reset db:migrate" to clear database
+* run "rails server" start local server
+* run "python api_tests.py" to test http requests
+
 
 
 === Links
