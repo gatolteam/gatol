@@ -43,9 +43,20 @@
 			    <i></i>
 		    </div>
 		    <input class="last_item" type="password" placeholder="password" required>
-		    <a href="#" onclick="forgotPassword" class="forgot_link">forgot ?</a>
+		    <a href="#" onclick="forgotPassword" id="user_forgot" class="forgot_link">forgot ?</a>
 		    <button id="sign_in">Sign in</button> 
             <button id="login_back" class="other_buttons white_button">Back</button>
+        </div>
+
+        <div id="trainer_login_screen">
+           	<input class="first_item" type="text" placeholder="username" required>
+		    <div class="bar">
+			    <i></i>
+		    </div>
+		    <input class="last_item" type="password" placeholder="password" required>
+		    <a href="#" onclick="forgotPassword" id="trainer_forgot" class="forgot_link">forgot ?</a>
+		    <button id="trainer_sign_in">Sign in</button> 
+            <button id="trainer_login_back" class="other_buttons white_button">Back</button>
         </div>
 
         <div id="register_screen">
@@ -72,6 +83,13 @@
 		    <button id="password_reset" class="button_space_top">Reset Password</button> 
             <button id="forgot_back" class="other_buttons white_button">Back</button>
         </div>
+
+        <div id="trainer_forgot_screen">
+            <input class="only_item" type="text" placeholder="email" required>
+		    <button id="trainer_password_reset" class="button_space_top">Reset Password</button> 
+            <button id="trainer_forgot_back" class="other_buttons white_button">Back</button>
+        </div>
+
 
 	</div>
     

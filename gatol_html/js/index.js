@@ -6,12 +6,38 @@ var GameAThon = (function() {
     // PRIVATE VARIABLES
     var loginContainer; // holds login objects, value set in the "start" method below
 
+    // the backend we are using
+    var apiUrl = 'https://gatol.herokuapp.com; 
+
     // PRIVATE METHODS
+
+     /**
+     * HTTP POST request
+     * @param  {string}   url       URL path, e.g. "/api/trainers"
+     * @param  {Object}   data      JSON data to send in request body
+     * @param  {function} onSuccess   callback method to execute upon request success (201 status)
+     * @param  {function} onFailure   callback method to execute upon request failure (non-201 status)
+     * @return {None}
+     */
+    var makePostRequest = function(url, data, onSuccess, onFailure) {
+        $.ajax({
+            type: 'POST',
+            url: apiUrl + url,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            dataType: "json",
+            success: onSuccess,
+            error: onFailure
+        });
+    };
 
     var attachCreateHandler = function(e) {
 
         // hide the login screen initially
         loginContainer.find("#login_screen").hide();
+
+        // hide the trainer login screen initially
+        loginContainer.find("#trainer_login_screen").hide();
 
         // hide the register screen initially
         loginContainer.find("#register_screen").hide();
@@ -19,11 +45,14 @@ var GameAThon = (function() {
         // hide the forgot screen initially
         loginContainer.find('#forgot_screen').hide();
 
+        // hide the trainer forgot screen initially
+        loginContainer.find("#trainer_forgot_screen").hide();
+
         // hide the login title
         loginContainer.find('#login_title').hide();
 
         // forgot password 
-        loginContainer.on('click', '.forgot_link', function(e) {
+        loginContainer.on('click', '#user_forgot', function(e) {
             loginContainer.find('#login_title').html('');
             loginContainer.find('#login_title').append('Reset Password');
             loginContainer.find('#login_title').show();
@@ -40,6 +69,25 @@ var GameAThon = (function() {
             loginContainer.find('#login_screen').show(); 
         });
 
+        // forgot trainer password 
+        loginContainer.on('click', '#trainer_forgot', function(e) {
+            loginContainer.find('#login_title').html('');
+            loginContainer.find('#login_title').append('Reset Trainer Password');
+            loginContainer.find('#login_title').show();
+            loginContainer.find('#trainer_login_screen').hide();
+            loginContainer.find('#trainer_forgot_screen').show(); 
+        });
+
+        // forgot trainer password back button
+        loginContainer.on('click', '#trainer_forgot_back', function(e) {
+            loginContainer.find('#login_title').html('');
+            loginContainer.find('#login_title').append('Trainer Login');
+            loginContainer.find('#login_title').show();
+            loginContainer.find('#trainer_forgot_screen').hide();
+            loginContainer.find('#trainer_login_screen').show(); 
+        });
+
+
         // student login
         loginContainer.on('click', '#student_login', function(e) {
             loginContainer.find('#login_title').html('');
@@ -50,8 +98,14 @@ var GameAThon = (function() {
         });
 
         loginContainer.on('click', '#sign_in', function(e) {
-            // do sign in logic
+            // do user sign in logic
+            
         });
+
+        loginContainer.on('click', '#trainer_sign_in', function(e) {
+            // do trainer sign in logic
+        });
+
 
         // login back
         loginContainer.on('click', '#login_back', function(e) {
@@ -60,13 +114,21 @@ var GameAThon = (function() {
             loginContainer.find("#select_screen").show();
         });
 
+        // trainer login back
+        loginContainer.on('click', '#trainer_login_back', function(e) {
+            loginContainer.find('#login_title').hide();
+            loginContainer.find("#trainer_login_screen").hide();
+            loginContainer.find("#select_screen").show();
+        });
+
+
         // trainer login
         loginContainer.on('click', '#trainer_login', function(e) {
             loginContainer.find('#login_title').html('');
-            loginContainer.find('#login_title').append('Login');
+            loginContainer.find('#login_title').append('Trainer Login');
             loginContainer.find('#login_title').show();
             loginContainer.find('#select_screen').hide();   
-            loginContainer.find("#login_screen").show(); 
+            loginContainer.find("#trainer_login_screen").show(); 
         });
 
         // register 
