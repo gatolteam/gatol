@@ -249,7 +249,7 @@ button {
 	text-decoration: center;
 	border: none;
 	color: #51771a;
-  margin-top:-5px;
+    margin-top:-5px;
 	padding-top: 14px;
 	padding-bottom: 14px;
 	outline: none;
@@ -290,3 +290,34 @@ button:active {
 }
 
 
+.screenTitle {
+    font-weight: bold;
+    color: #E2FFFF;
+    letter-spacing: 1pt;
+    word-spacing: 2pt;
+    font-size: 65px;
+    text-align: center;
+    font-family: comic sans, comic sans ms, cursive, verdana, arial, sans-serif;
+    margin-top: 5%;
+    margin-bottom: 35px;
+
+}
+
+.centerText, .questionText {
+    font-weight: bold;
+    color: #E2FFFF;
+    letter-spacing: 1pt;
+    word-spacing: 2pt;
+    font-size: 25px;
+    margin: 15px
+}
+
+.centerBtns, .bottomBtns {
+    text-align: center;
+}
+
+.centerBtns button, .bottomBtns button{
+    width: 20%;
+    margin-top: 0px;
+    font-size: 16px;
+}
