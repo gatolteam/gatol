@@ -1,5 +1,5 @@
 require 'rails_helper'
 
-RSpec.describe GameTemplatesController, type: :controller do
+RSpec.describe Api::GameTemplatesController, type: :controller do
 
 end
