@@ -1,4 +1,4 @@
-class GameTemplatesController < ApplicationController
+class Api::GameTemplatesController < ApplicationController
   before_action :set_game_template, only: [:show, :edit, :update, :destroy]
 
   # GET /game_templates
