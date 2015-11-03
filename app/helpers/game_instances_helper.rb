@@ -1,0 +1,2 @@
+module GameInstancesHelper
+end

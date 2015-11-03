@@ -1,17 +1,18 @@
-class Question
-	attr_accessor :question, :answerCorrect, :answerWrong
-    def initialize(params=nil)
-    	@question = nil
-    	@answerCorrect = nil
+class Question < ActiveRecord::Base 
+	self.table_name = "question_sets"
+	attr_accessor :answerWrong
+
+    def buildQuestion(params)
     	@answerWrong = Array.new(7)
     	if !params.nil?
-        	fromStringArray(params)
+        	extractFields(params)
+        	setWrongAnswers
         end
     end
 
-    def fromStringArray(s)
-    	@question = s[0]
-    	@answerCorrect = s[1]
+    def extractFields(s)
+    	self.question = s[0]
+    	self.answerCorrect = s[1]
     	for i in 0..6
     		if s[i+2].empty?
     			@answerWrong[i] = nil
@@ -25,4 +26,14 @@ class Question
     	return @answerWrong[i]
 	end
     
+	def setWrongAnswers
+		self.answerWrong1 = @answerWrong[0]
+		self.answerWrong2 = @answerWrong[1]
+		self.answerWrong3 = @answerWrong[2]
+		self.answerWrong4 = @answerWrong[3]
+		self.answerWrong5 = @answerWrong[4]
+		self.answerWrong6 = @answerWrong[5]
+		self.answerWrong7 = @answerWrong[6]
+	end
+
 end

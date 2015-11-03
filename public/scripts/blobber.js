@@ -81,11 +81,11 @@ Game.prototype = {
 		if (num == this.currentCorrectQuestion) {
 			// console.log("DINGDINGDING");
 			var answerText = new PIXI.Text("CORRECT!", {font: "48px Verdana", fill: "green"});
-			this.blobRadius += 10;
+			this.blobRadius *= 1.25;
 		} else {
 			// console.log("holy crap you suck");
 			var answerText = new PIXI.Text("INCORRECT", {font: "48px Verdana", fill: "red"});
-			this.blobRadius -= 10;
+			this.blobRadius /= 1.25;
 		}
 		this.stage.removeChild(this.blobGraphics);
 		this.world.removeBody(this.blob);
@@ -179,7 +179,7 @@ Game.prototype = {
 		for (i = 0; i < questions[this.questionNum].incorrectAnswers.length + 1; i++) {
 			var x = Math.round(Math.random() * this._width);
 			var y = Math.round(Math.random() * this._height);	
-			while (Math.sqrt(Math.pow(x - this._width/2, 2) + Math.pow(y - this._height/2, 2)) < 50) {
+			while (Math.sqrt(Math.pow(x - this._width/2, 2) + Math.pow(y - this._height/2, 2)) < this.blobRadius * 2) {
 				x = Math.round(Math.random() * this._width);
 				y = Math.round(Math.random() * this._height);	
 			}
