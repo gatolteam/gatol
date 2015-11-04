@@ -12,7 +12,7 @@ FactoryGirl.define do
   	answerWrong7 "9"
 
   	factory :question_color do
-	  	questionIdx 0
+	  	questionIdx 1
 	  	question "Which is not a color?"
 	  	answerCorrect "potato"
 	  	answerWrong1 "blue"
