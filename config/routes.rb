@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   devise_for :students
   devise_for :trainers
+  devise_for :question_sets
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -65,6 +66,7 @@ Rails.application.routes.draw do
     resources :trainers, :only => [:show, :create, :destroy, :update]
     resources :students, :only => [:show, :create, :destroy, :update]
     resources :sessions, :only => [:create, :destroy]
+    resources :question_sets, :only => [:index, :show]
 
 
   end

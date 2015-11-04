@@ -9,22 +9,12 @@ RSpec.describe Question, type: :model do
 
   context "Question is not empty"
   	before (:context) do
-  		@sid = 5
   		@sname = 'simple'
   		@qid = 0
   		@arr = ['1+1?','2','1','3','4','5','6','7','8']
-  		@q = Question.new(setid: @sid, 
-  						  setname: @sname, 
-  						  questionIdx: @qid)
+  		@q = Question.new(questionIdx: @qid)
+      @q.build_question_set(setname: @sname)
   		@q.buildQuestion(@arr)
-  	end
-
-  	it "sets the setid" do
-  		expect(@q.setid).to eq(@sid)
-  	end
-
-  	it "sets the setname" do
-  		expect(@q.setname).to eq(@sname)
   	end
 
   	it "sets the questionIdx" do

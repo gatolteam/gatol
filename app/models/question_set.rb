@@ -1,26 +1,14 @@
-class QuestionSet
+class QuestionSet < ActiveRecord::Base 
     require 'csv'
-    attr_accessor :questions, :setname, :setid
-
-    def initialize(params)
-        super()
-        @setname = params[:setname]
-        @setid = getSetID()
-        @questions = []
+    has_many :questions
+    attr_accessor :qs
+    after_initialize do |set|
+        @qs = []
     end
     
     #sets up new QuestionSet
     def createSet(file)
         createQuestions(parseCSV(file))
-    end
-
-    def getSetID
-        last = Question.maximum(:setid)
-        if last.nil?
-            return last.to_i
-        else
-            last.to_i + 1
-        end
     end
     
     # turns the array d of array of strings into an array of Question objects
@@ -28,15 +16,14 @@ class QuestionSet
         arr.each do |a| 
             q = Question.new
             q.buildQuestion(a)
-            q.setid = @setid
-            q.setname = @setname
-            @questions.push(q)
+            q.question_set = self
+            @qs.push(q)
         end
     end
 
     def saveSet
         all = false
-        @questions.each do |q|
+        @qs.each do |q|
             all = all && q.save!
         end
         all
@@ -53,11 +40,14 @@ class QuestionSet
     end
     
     def getQuestionByIndex(i)
-        if (i > 0 && i < @questions.length)
-            return @questions[i]
+        if (i > 0 && i < @qs.length)
+            return @qs[i]
         else
         #Raise Exception here?
         end
     end
-    
+
+    def getQuestions
+        @qs = self.qs
+    end
 end

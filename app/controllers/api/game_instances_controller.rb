@@ -1,4 +1,4 @@
-class GameInstancesController < ApplicationController
+class Api::GameInstancesController < ApplicationController
   before_action :set_game_instance, only: [:show, :edit, :update, :destroy]
 
   # GET /game_instances

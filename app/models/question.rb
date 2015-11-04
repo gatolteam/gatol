@@ -1,5 +1,5 @@
 class Question < ActiveRecord::Base 
-	self.table_name = "question_sets"
+    belongs_to :question_set
 	attr_accessor :answerWrong
 
     def buildQuestion(params)
