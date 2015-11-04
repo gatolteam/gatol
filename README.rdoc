@@ -8,6 +8,9 @@ Game-a-Thon of Learning (GATOL) will supply an inexpensive and interactive metho
 
 
 === Links
+
+{Website} [http://allenyu94.github.io/gatol-html/]
+
 {Proposal}[https://docs.google.com/document/d/1IiahMK5TQYPZWBQT8WDCv2QKuEInlEROecR-jghnP6k/edit]
 
 {PivotalTracker}[https://www.pivotaltracker.com/n/projects/1432368]
