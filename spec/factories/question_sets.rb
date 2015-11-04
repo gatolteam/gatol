@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :question_set do 
-  	id 5
     setname "simpleset"
     trainer_id 1234
 
