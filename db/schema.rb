@@ -11,23 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151102073130) do
+ActiveRecord::Schema.define(version: 20151104004940) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "game_templates", force: :cascade do |t|
-    t.string   "name",        limit: 255, null: false
+    t.string   "name",                    null: false
     t.string   "description", limit: 256, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "games", force: :cascade do |t|
-    t.integer  "trainerid",               null: false
-    t.integer  "setid",                   null: false
-    t.integer  "gametempid",              null: false
-    t.string   "description", limit: 256, null: false
+    t.integer  "trainer_id"
+    t.integer  "question_set_id"
+    t.integer  "game_template_id"
+    t.string   "description",      limit: 256, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "games", ["game_template_id"], name: "index_games_on_game_template_id", using: :btree
+  add_index "games", ["question_set_id"], name: "index_games_on_question_set_id", using: :btree
+  add_index "games", ["trainer_id"], name: "index_games_on_trainer_id", using: :btree
 
   create_table "question_sets", force: :cascade do |t|
     t.string   "setname",    limit: 128, null: false
@@ -36,7 +43,7 @@ ActiveRecord::Schema.define(version: 20151102073130) do
     t.datetime "updated_at"
   end
 
-  add_index "question_sets", ["trainer_id"], name: "index_question_sets_on_trainer_id"
+  add_index "question_sets", ["trainer_id"], name: "index_question_sets_on_trainer_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
     t.integer  "question_set_id"
@@ -54,7 +61,7 @@ ActiveRecord::Schema.define(version: 20151102073130) do
     t.datetime "updated_at"
   end
 
-  add_index "questions", ["question_set_id"], name: "index_questions_on_question_set_id"
+  add_index "questions", ["question_set_id"], name: "index_questions_on_question_set_id", using: :btree
 
   create_table "students", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -72,9 +79,9 @@ ActiveRecord::Schema.define(version: 20151102073130) do
     t.string   "auth_token",             default: ""
   end
 
-  add_index "students", ["auth_token"], name: "index_students_on_auth_token", unique: true
-  add_index "students", ["email"], name: "index_students_on_email", unique: true
-  add_index "students", ["reset_password_token"], name: "index_students_on_reset_password_token", unique: true
+  add_index "students", ["auth_token"], name: "index_students_on_auth_token", unique: true, using: :btree
+  add_index "students", ["email"], name: "index_students_on_email", unique: true, using: :btree
+  add_index "students", ["reset_password_token"], name: "index_students_on_reset_password_token", unique: true, using: :btree
 
   create_table "trainers", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -92,17 +99,20 @@ ActiveRecord::Schema.define(version: 20151102073130) do
     t.string   "auth_token",             default: ""
   end
 
-  add_index "trainers", ["auth_token"], name: "index_trainers_on_auth_token", unique: true
-  add_index "trainers", ["email"], name: "index_trainers_on_email", unique: true
-  add_index "trainers", ["reset_password_token"], name: "index_trainers_on_reset_password_token", unique: true
+  add_index "trainers", ["auth_token"], name: "index_trainers_on_auth_token", unique: true, using: :btree
+  add_index "trainers", ["email"], name: "index_trainers_on_email", unique: true, using: :btree
+  add_index "trainers", ["reset_password_token"], name: "index_trainers_on_reset_password_token", unique: true, using: :btree
 
   create_table "training_history", force: :cascade do |t|
-    t.integer  "gameid",       null: false
-    t.integer  "studentid",    null: false
+    t.integer  "game_id"
+    t.integer  "student_id"
     t.integer  "score",        null: false
     t.integer  "lastQuestion", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "training_history", ["game_id"], name: "index_training_history_on_game_id", using: :btree
+  add_index "training_history", ["student_id"], name: "index_training_history_on_student_id", using: :btree
 
 end
