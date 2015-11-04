@@ -34,7 +34,6 @@ class DeviseCreateStudents < ActiveRecord::Migration
 
     add_index :students, :email,                unique: true
     add_index :students, :reset_password_token, unique: true
-    add_index :students, :auth_token,           unique: true
     # add_index :students, :confirmation_token,   unique: true
     # add_index :students, :unlock_token,         unique: true
   end

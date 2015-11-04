@@ -34,7 +34,6 @@ class DeviseCreateTrainers < ActiveRecord::Migration
 
     add_index :trainers, :email,                unique: true
     add_index :trainers, :reset_password_token, unique: true
-    add_index :trainers, :auth_token,           unique: true
     # add_index :trainers, :confirmation_token,   unique: true
     # add_index :trainers, :unlock_token,         unique: true
   end
