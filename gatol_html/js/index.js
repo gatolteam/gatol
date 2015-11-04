@@ -7,7 +7,7 @@ var GameAThon = (function() {
     var loginContainer; // holds login objects, value set in the "start" method below
 
     // the backend we are using
-    var apiUrl = 'https://gatol.herokuapp.com; 
+    var apiUrl = 'http://localhost:3000' 
 
     // PRIVATE METHODS
 
@@ -25,7 +25,7 @@ var GameAThon = (function() {
             url: apiUrl + url,
             data: JSON.stringify(data),
             contentType: "application/json",
-            dataType: "json",
+            dataType: "JSON",
             success: onSuccess,
             error: onFailure
         });
@@ -138,6 +138,31 @@ var GameAThon = (function() {
             loginContainer.find('#login_title').show();
             loginContainer.find('#select_screen').hide(); 
             loginContainer.find('#register_screen').show();
+        });
+
+        loginContainer.on('click', '#register_user', function(e) {
+            var creds = {} // prepare credentials for passing into backend
+
+            if (loginContainer.find('#register_password').val() != loginContainer.find('#register_confirm_password').val()) {
+                alert('password does not match');
+                return;
+            }
+
+            creds.email = loginContainer.find('#register_email').val();
+            creds.password = loginContainer.find('#register_password').val();
+            creds.confirm_password = loginContainer.find('#register_confirm_password').val();
+
+            var onSuccess = function(data) {
+                alert('successfully registered user');
+            };
+            var onFailure = function() { 
+                console.error('failure to register user');
+            };
+            
+            url = '/api/trainers';
+            console.log(creds);
+            makePostRequest(url, creds, onSuccess, onFailure);
+
         });
 
         // register back
