@@ -1,9 +1,9 @@
 class QuestionSet < ActiveRecord::Base 
     require 'csv'
     has_many :questions
-    attr_accessor :questions
+    attr_accessor :qs
     after_initialize do |set|
-        @questions = []
+        @qs = []
     end
     
     #sets up new QuestionSet
@@ -17,13 +17,13 @@ class QuestionSet < ActiveRecord::Base
             q = Question.new
             q.buildQuestion(a)
             q.question_set = self
-            @questions.push(q)
+            @qs.push(q)
         end
     end
 
     def saveSet
         all = false
-        @questions.each do |q|
+        @qs.each do |q|
             all = all && q.save!
         end
         all
@@ -40,11 +40,14 @@ class QuestionSet < ActiveRecord::Base
     end
     
     def getQuestionByIndex(i)
-        if (i > 0 && i < @questions.length)
-            return @questions[i]
+        if (i > 0 && i < @qs.length)
+            return @qs[i]
         else
         #Raise Exception here?
         end
     end
 
+    def getQuestions
+        @qs = self.qs
+    end
 end
