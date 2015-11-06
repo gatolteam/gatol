@@ -72,6 +72,10 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			end
 	end
 
+	describe "GET #show" do
+		pending
+	end
+
 	describe "POST #import" do
 		context "successful" do
 			before(:each) do
@@ -95,7 +99,13 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			end
 
 		end
-
 	end
+
+
+	describe "DELETE #destroy" do
+		pending
+	end
+
+
 
 end

@@ -26,7 +26,7 @@ class Api::QuestionSetsController < ApplicationController
     else
       render json: {
         status: 401,
-        errors: []
+        errors: ['trainer does not have access to this question set']
       }
     end
   end
@@ -55,7 +55,7 @@ class Api::QuestionSetsController < ApplicationController
     else
       render json: {
         status: 500,
-        errors: []
+        errors: ['question set could not be saved']
       }
     end
 
@@ -63,10 +63,24 @@ class Api::QuestionSetsController < ApplicationController
 
   # DELETE /question_sets/1.json
   def destroy
-    @question_set.destroy
-    render json: {
-      status: 200
-    }
+    user = current_user
+    question_set = QuestionSet.find(params[:id])
+    if !question_set.nil? && question_set.trainer_id == user.id
+      question_set.destroy
+      render json: {
+        status: 200
+      }
+    elsif question_set.nil?
+      render json: {
+        status: 400,
+        errors: ['question set does not exist']
+      }
+    else
+      render json: {
+        status: 401,
+        errors: ['trainer does not have access to this question set']
+      }
+    end
   end
 
   private
