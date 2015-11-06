@@ -76,6 +76,15 @@ Rails.application.routes.draw do
 
     resources :sessions, :only => [:create, :destroy]
 
+    resources :question_sets, :only => [:index, :show, :destroy]
+    post "/question_sets/import", to: "question_sets#import"
+    resources :question_sets do
+      collection { post :import }
+    end
+    resources :games, :only => [:show, :create, :destroy, :update]
+    resources :game_templates, :only => [:show, :create, :destroy, :update]
+    resources :game_instances, :only => [:show, :create, :destroy, :update]
+
 
   end
 

@@ -42,6 +42,7 @@ group :development, :test do
   gem 'byebug'
   gem 'factory_girl_rails'
   gem 'ffaker'
+  gem 'database_cleaner'
 end
 
 group :development do

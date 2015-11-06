@@ -14,4 +14,10 @@ class Trainer < ActiveRecord::Base
     end while self.class.exists?(auth_token: auth_token)
   end
 
+
+  def is_trainer?
+    return true
+  end
+
+
 end

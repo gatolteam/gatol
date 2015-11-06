@@ -9,7 +9,7 @@ class Api::SessionsController < ApplicationController
 		end
 		
 		if user.nil?
-			render json: { errors: "Invalid email" }, status: 422
+			render json: { errors: ["Invalid email"] }, status: 422
 
 		# elsif !user.confirmed
 		# 	render json: { errors: "Emails needs to be verified" }, status: 422
@@ -18,10 +18,10 @@ class Api::SessionsController < ApplicationController
 			sign_in user, store: false
 			user.generate_authentication_token!
 			user.save
-			render json: user, status: 200, location: [:api, user]
+			render json: { username: user.username, auth_token: user.auth_token }, status: 200, location: [:api, user]
 
 		else
-			render json: { errors: "Invalid password" }, status: 422
+			render json: { errors: ["Invalid password"] }, status: 422
 		end
 
 	end
@@ -36,7 +36,7 @@ class Api::SessionsController < ApplicationController
 		end
 
 		if user.nil?
-			render json: { errors: 'Not authenticated' }, status: 401
+			render json: { errors: ['Not authenticated'] }, status: 401
 		else
 			user.generate_authentication_token!
 			user.save

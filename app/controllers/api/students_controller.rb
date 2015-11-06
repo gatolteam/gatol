@@ -12,7 +12,7 @@ class Api::StudentsController < ApplicationController
 
   def create
     if Trainer.find_by(email: params[:email]).nil?
-      user = Student.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation])
+      user = Student.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation], :username => params[:username])
       if user.save
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
@@ -60,7 +60,7 @@ class Api::StudentsController < ApplicationController
   def reset
     user = Student.find_by(email: params[:email])
     if user.nil?
-      render json: { errors: 'Invalid email' }, status: 422
+      render json: { errors: ['Invalid email'] }, status: 422
     else
       random_string = (0...8).map { (65 + rand(26)).chr }.join
       user.password = random_string

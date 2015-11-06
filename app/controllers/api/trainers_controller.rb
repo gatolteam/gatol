@@ -12,7 +12,7 @@ class Api::TrainersController < ApplicationController
 
   def create
     if Student.find_by(email: params[:email]).nil?
-      user = Trainer.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation])
+      user = Trainer.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation], :username => params[:username])
       if user.save
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
