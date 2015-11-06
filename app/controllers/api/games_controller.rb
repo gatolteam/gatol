@@ -5,12 +5,36 @@ class Api::GamesController < ApplicationController
   # GET /games
   # GET /games.json
   def index
-    @games = Game.all
+    user = current_user
+    #if user is trainer
+    games = Game.where(trainer_id: user.id)
+    render json: {
+      status: 200,
+      games: games
+    }
   end
 
   # GET /games/1
   # GET /games/1.json
   def show
+    user = current_user
+    game = Game.find(params[:id])
+    if !game.nil? && game.trainer_id == user.id
+      render json: {
+        status: 200,
+        game: game
+      }
+    elsif game.nil?
+      render json: {
+        status: 400,
+        errors: ['game does not exist']
+      }  
+    else
+      render json: {
+        status: 401,
+        errors: ['trainer does not have access to this game']
+      }
+    end
   end
 
   # GET /games/new
@@ -25,40 +49,40 @@ class Api::GamesController < ApplicationController
   # POST /games
   # POST /games.json
   def create
+    user = current_user
+    #if user is trainer
     @game = Game.new(game_params)
-
-    respond_to do |format|
-      if @game.save
-        format.html { redirect_to @game, notice: 'Game was successfully created.' }
-        format.json { render :show, status: :created, location: @game }
-      else
-        format.html { render :new }
-        format.json { render json: @game.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /games/1
-  # PATCH/PUT /games/1.json
-  def update
-    respond_to do |format|
-      if @game.update(game_params)
-        format.html { redirect_to @game, notice: 'Game was successfully updated.' }
-        format.json { render :show, status: :ok, location: @game }
-      else
-        format.html { render :edit }
-        format.json { render json: @game.errors, status: :unprocessable_entity }
-      end
+    if @game.save
+      render json: {
+        status: 200
+      }
+    else
+      render json: {
+        status: 401
+      }
     end
   end
 
   # DELETE /games/1
   # DELETE /games/1.json
   def destroy
-    @game.destroy
-    respond_to do |format|
-      format.html { redirect_to games_url, notice: 'Game was successfully destroyed.' }
-      format.json { head :no_content }
+    user = current_user
+    game = Game.find(params[:id])
+    if !game.nil? && game.trainer_id == user.id
+      game.destroy
+      render json: {
+        status: 200
+      }
+    elsif game.nil?
+      render json: {
+        status: 400,
+        errors: ['game does not exist']
+      }
+    else
+      render json: {
+        status: 401,
+        errors: ['trainer does not have access to this game']
+      }
     end
   end
 
@@ -66,10 +90,5 @@ class Api::GamesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_game
       @game = Game.find(params[:id])
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def game_params
-      params.require(:game).permit(:gamehash, :trainerhash, :sethash, :gametempid, :description)
     end
 end

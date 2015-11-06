@@ -4,12 +4,30 @@ class Api::GameTemplatesController < ApplicationController
   # GET /game_templates
   # GET /game_templates.json
   def index
+    #if user is trainer
     @game_templates = GameTemplate.all
+    render json: {
+      status: 200,
+      templates: @game_templates
+    }
   end
 
   # GET /game_templates/1
   # GET /game_templates/1.json
   def show
+    #if user is trainer
+    template = GameTemplate.find(params[:id])
+    if !template.nil?
+      render json: {
+        status: 200,
+        template: template
+      }
+    else
+      render json: {
+        status: 400,
+        errors: ['game template does not exist']
+      }
+    end
   end
 
   # GET /game_templates/new
@@ -24,40 +42,32 @@ class Api::GameTemplatesController < ApplicationController
   # POST /game_templates
   # POST /game_templates.json
   def create
-    @game_template = GameTemplate.new(game_template_params)
-
-    respond_to do |format|
-      if @game_template.save
-        format.html { redirect_to @game_template, notice: 'Game template was successfully created.' }
-        format.json { render :show, status: :created, location: @game_template }
-      else
-        format.html { render :new }
-        format.json { render json: @game_template.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /game_templates/1
-  # PATCH/PUT /game_templates/1.json
-  def update
-    respond_to do |format|
-      if @game_template.update(game_template_params)
-        format.html { redirect_to @game_template, notice: 'Game template was successfully updated.' }
-        format.json { render :show, status: :ok, location: @game_template }
-      else
-        format.html { render :edit }
-        format.json { render json: @game_template.errors, status: :unprocessable_entity }
-      end
+    @template = GameTemplate.new(game_params)
+    if @template.save
+      render json: {
+        status: 200
+      }
+    else
+      render json: {
+        status: 401
+      }
     end
   end
 
   # DELETE /game_templates/1
   # DELETE /game_templates/1.json
   def destroy
-    @game_template.destroy
-    respond_to do |format|
-      format.html { redirect_to game_templates_url, notice: 'Game template was successfully destroyed.' }
-      format.json { head :no_content }
+    template = GameTemplate.find(params[:id])
+    if !template.nil?
+      template.destroy
+      render json: {
+        status: 200
+      }
+    else
+      render json: {
+        status: 400,
+        errors: ['game template does not exist']
+      }
     end
   end
 
