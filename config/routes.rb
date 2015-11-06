@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   devise_for :students
   devise_for :trainers
   devise_for :question_sets
+  devise_for :game_templates
+  devise_for :game_instances
+  devise_for :games
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -66,12 +70,13 @@ Rails.application.routes.draw do
     resources :trainers, :only => [:show, :create, :destroy, :update]
     resources :students, :only => [:show, :create, :destroy, :update]
     resources :sessions, :only => [:create, :destroy]
-    resources :question_sets, :only => [:index, :show, :import]
+    resources :question_sets, :only => [:index, :show, :import, :destroy]
     resources :question_sets do
       collection { post :import }
     end
-
-
+    resources :games, :only => [:show, :create, :destroy, :update]
+    resources :game_templates, :only => [:show, :create, :destroy, :update]
+    resources :game_instances, :only => [:show, :create, :destroy, :update]
   end
 
 
