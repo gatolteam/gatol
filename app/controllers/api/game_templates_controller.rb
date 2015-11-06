@@ -1,6 +1,6 @@
 class Api::GameTemplatesController < ApplicationController
-  before_action :set_game_template, only: [:show, :edit, :update, :destroy]
-
+  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy]
+  respond_to :json
   # GET /game_templates
   # GET /game_templates.json
   def index

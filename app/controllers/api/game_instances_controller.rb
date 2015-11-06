@@ -1,6 +1,6 @@
 class Api::GameInstancesController < ApplicationController
-  before_action :set_game_instance, only: [:show, :edit, :update, :destroy]
-
+  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy]
+  respond_to :json
   # GET /game_instances
   # GET /game_instances.json
   def index

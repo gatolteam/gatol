@@ -1,5 +1,6 @@
 class Api::GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy]
+  respond_to :json
 
   # GET /games
   # GET /games.json
