@@ -66,7 +66,10 @@ Rails.application.routes.draw do
     resources :trainers, :only => [:show, :create, :destroy, :update]
     resources :students, :only => [:show, :create, :destroy, :update]
     resources :sessions, :only => [:create, :destroy]
-    resources :question_sets, :only => [:index, :show]
+    resources :question_sets, :only => [:index, :show, :import]
+    resources :question_sets do
+      collection { post :import }
+    end
 
 
   end

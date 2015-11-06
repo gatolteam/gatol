@@ -17,7 +17,7 @@ RSpec.describe QuestionSet do
 
   context "parse CSV"
   	before(:context) do
-  		@qsa = QuestionSet.parseCSV("#{Rails.root}/spec/demo1.csv")
+  		@qsa = QuestionSet.parseCSV("#{Rails.root}/spec/fixtures/files/demo1.csv")
   	end
 	  it "parses all rows of CSV file " do
 	  	expect(@qsa.length).to eq(3)

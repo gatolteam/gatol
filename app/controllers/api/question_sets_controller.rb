@@ -1,5 +1,5 @@
 class Api::QuestionSetsController < ApplicationController
-  before_action :authenticate_with_token!, :set_question_set, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy, :import]
   respond_to :json
 
   # Get all the QuestionSets belonging to a particular User
@@ -7,8 +7,79 @@ class Api::QuestionSetsController < ApplicationController
   def index
     user = current_user
     #if user.is_trainer?
-      @question_sets = QuestionSet.where(trainer_id: user.id)
-      render json: { id: user.id, question_sets: @question_sets.to_json(:include => :questions) }
+      @sets = QuestionSet.where(trainer_id: user.id)
+      render json: {
+        question_sets: qs_json(@sets)
+      }
+  end
+
+  # GET a certain QuestionSet by id
+  # GET /question_sets/1
+  def show
+    user = current_user
+    set = QuestionSet.find(params[:id])
+    if set.trainer_id == user.id
+      render json: {
+        status: 200,
+        question_set: qs_json(set)
+      }
+    else
+      render json: {
+        status: 401,
+        errors: []
+      }
+    end
+  end
+
+  # GET /question_sets/new
+  def new
+    @question_set = QuestionSet.new
+  end
+
+  #def create
+  #  @question_set = QuestionSet.new
+  #end
+
+
+  #POST /question_sets/import
+  def import
+    user = current_user
+    f = params[:file]
+    q = QuestionSet.new(trainer_id: user.id)
+    q.createSet(f)
+    if (q.saveSet)
+      render json: {
+        status: 200,
+        question_set: qs_json(q)
+      }
+    else
+      render json: {
+        status: 500,
+        errors: []
+      }
+    end
+
+  end
+
+  # DELETE /question_sets/1.json
+  def destroy
+    @question_set.destroy
+    render json: {
+      status: 200
+    }
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def question_set_params
+      params[:question_set]
+    end
+
+
+  def qs_json(qs)
+    return qs.to_json(:include => :questions) 
   end
 
 end

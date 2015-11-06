@@ -14,7 +14,7 @@ class Question < ActiveRecord::Base
     	self.question = s[0]
     	self.answerCorrect = s[1]
     	for i in 0..6
-    		if s[i+2].empty?
+    		if s[i+2].nil? || s[i+2].empty?
     			@answerWrong[i] = nil
     		else
             	@answerWrong[i] = s[i+2]
