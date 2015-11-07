@@ -1,13 +1,22 @@
-var Game = function(parent, width, height, questions) {
+/** Initializes a blobber game object
+ * @param parent the containing elemnt (like a div or something)
+ * @param width element width
+ * @param height element height
+ * @param num_choices the number of answer choices to choose from
+ * @param state object varies for each game
+ 	potential state variables for Blobber:
+ 		radius: the radius of the blob
+ 		numEnemies: pretty self explanatory
+ */
+var Game = function(parent, width, height, num_choices, state) {
 	// set up scene width and height
 	this._width = width-12;//window.innerWidth - 4;
 	this._height = height-12;//window.innerHeight - 4;
 
 	// set up rendering surface
 	this.renderer = new PIXI.CanvasRenderer(this._width, this._height);
-	parent.appendChild(this.renderer.view);
-
-	console.log(this._width, this._height);
+	this.parent = parent;
+	this.parent.appendChild(this.renderer.view);
 
 	// create the main stage to draw on
 	this.stage = new PIXI.Stage();
@@ -32,10 +41,9 @@ var Game = function(parent, width, height, questions) {
 	this.foodGraphics = [];
 	this.answerChoices = [];
 
-	this.questions = questions;
-	this.questionNum = 0;
-
-	this.blobRadius = 40;
+	this.blobRadius = state.radius || 40;
+	this.numEnemies = state.numEnemies || 0;
+	this.num_choices = num_choices;
 
 	// Start running the game.
 	this.build();
@@ -45,7 +53,7 @@ Game.prototype = {
 	// Build scene and start animating 
 	build: function() {
 		// set up question
-		this.setupQuestion();
+		// this.setupQuestion();
 		// set up the boundaries
 		this.setupBoundaries();
 		// create foods
@@ -56,55 +64,55 @@ Game.prototype = {
 		requestAnimationFrame(this.tick.bind(this));
 	},
 
-	setupQuestion: function() {
-		if (this.questionNum >= this.questions.length) {
-			return;
-		}
-		this.currentCorrectQuestion = Math.round(Math.random()*(questions[this.questionNum].incorrectAnswers.length ));
-		var questionString = this.questions[this.questionNum].questionText + "\n";
-		var i = 0;
-		for (; i < this.currentCorrectQuestion; i++) {
-			questionString = questionString + String.fromCharCode(65 + i) + ") " + this.questions[this.questionNum].incorrectAnswers[i] + "\n";
-		}
-		questionString = questionString + String.fromCharCode(65 + i) + ") " + this.questions[this.questionNum].answerText + "\n";
-		for (j = i; j< this.questions[this.questionNum].incorrectAnswers.length; j++) {
-			questionString = questionString + String.fromCharCode(65 + j + 1) + ") " + this.questions[this.questionNum].incorrectAnswers[j] + "\n";
-		}
-		this.questionText = new PIXI.Text(questionString, {font: "24px Verdana", fill: "white"});
-		this.stage.addChild(this.questionText);
-		this.questionText.x = 14;
-		this.questionText.y = 13;
-		// console.log(this.currentCorrectQuestion);
-		// console.log(questionString);
-	},
+	// setupQuestion: function() {
+	// 	if (this.questionNum >= this.questions.length) {
+	// 		return;
+	// 	}
+	// 	this.currentCorrectQuestion = Math.round(Math.random()*(questions[this.questionNum].incorrectAnswers.length ));
+	// 	var questionString = this.questions[this.questionNum].questionText + "\n";
+	// 	var i = 0;
+	// 	for (; i < this.currentCorrectQuestion; i++) {
+	// 		questionString = questionString + String.fromCharCode(65 + i) + ") " + this.questions[this.questionNum].incorrectAnswers[i] + "\n";
+	// 	}
+	// 	questionString = questionString + String.fromCharCode(65 + i) + ") " + this.questions[this.questionNum].answerText + "\n";
+	// 	for (j = i; j< this.questions[this.questionNum].incorrectAnswers.length; j++) {
+	// 		questionString = questionString + String.fromCharCode(65 + j + 1) + ") " + this.questions[this.questionNum].incorrectAnswers[j] + "\n";
+	// 	}
+	// 	this.questionText = new PIXI.Text(questionString, {font: "24px Verdana", fill: "white"});
+	// 	this.stage.addChild(this.questionText);
+	// 	this.questionText.x = 14;
+	// 	this.questionText.y = 13;
+	// 	// console.log(this.currentCorrectQuestion);
+	// 	// console.log(questionString);
+	// },
 
 	recordAnswer: function(num) {
-		var answerText;
-		if (num == this.currentCorrectQuestion) {
-			// console.log("DINGDINGDING");
-			var answerText = new PIXI.Text("CORRECT!", {font: "48px Verdana", fill: "green"});
-			this.blobRadius *= 1.25;
-		} else {
-			// console.log("holy crap you suck");
-			var answerText = new PIXI.Text("INCORRECT", {font: "48px Verdana", fill: "red"});
-			this.blobRadius /= 1.25;
-		}
+		// var answerText;
+		// if (num == this.currentCorrectQuestion) {
+		// 	// console.log("DINGDINGDING");
+		// 	var answerText = new PIXI.Text("CORRECT!", {font: "48px Verdana", fill: "green"});
+		// 	this.blobRadius *= 1.25;
+		// } else {
+		// 	// console.log("holy crap you suck");
+		// 	var answerText = new PIXI.Text("INCORRECT", {font: "48px Verdana", fill: "red"});
+		// 	this.blobRadius /= 1.25;
+		// }
 		this.stage.removeChild(this.blobGraphics);
 		this.world.removeBody(this.blob);
-		this.createBlob();
+		// this.createBlob();
 
-		this.stage.addChild(answerText);
-		answerText.x = Math.round(this._width/2) - 110;
-		answerText.y = 40;
-		setTimeout(function(stage) {
-			stage.removeChild(answerText);
-		}, 800, this.stage);
+		// this.stage.addChild(answerText);
+		// answerText.x = Math.round(this._width/2) - 110;
+		// answerText.y = 40;
+		// setTimeout(function(stage) {
+		// 	stage.removeChild(answerText);
+		// }, 800, this.stage);
 
 
-		this.blob.position[0] = Math.round(this._width/2);
-		this.blob.position[1] = Math.round(this._height/2);
-		this.blob.velocity[0] = 0;
-		this.blob.velocity[1] = 0;
+		// this.blob.position[0] = Math.round(this._width/2);
+		// this.blob.position[1] = Math.round(this._height/2);
+		// this.blob.velocity[0] = 0;
+		// this.blob.velocity[1] = 0;
 
 		for (i=0; i < this.foodGraphics.length; i++) {
 			this.stage.removeChild(this.foodGraphics[i]);
@@ -118,18 +126,19 @@ Game.prototype = {
 		this.foodBodies = [];
 		this.foodGraphics = [];
 		this.answerChoices = [];
-		this.questionNum++;
-		if (this.questionNum >= this.questions.length) {
-			return;
-		}
-		this.createFoods();
-		this.setupQuestion();
+		// this.questionNum++;
+		// if (this.questionNum >= this.questions.length) {
+		// 	return;
+		// }
+		// this.createFoods();
+		// this.setupQuestion();
 
-		// For some reason, it very rarely glitches without this repeated
-		this.blob.position[0] = Math.round(this._width/2);
-		this.blob.position[1] = Math.round(this._height/2);
-		this.blob.velocity[0] = 0;
-		this.blob.velocity[1] = 0;
+		// // For some reason, it very rarely glitches without this repeated
+		// this.blob.position[0] = Math.round(this._width/2);
+		// this.blob.position[1] = Math.round(this._height/2);
+		// this.blob.velocity[0] = 0;
+		// this.blob.velocity[1] = 0;
+
 
 	},
 
@@ -178,7 +187,7 @@ Game.prototype = {
 	},
 
 	createFoods: function() {
-		for (i = 0; i < questions[this.questionNum].incorrectAnswers.length + 1; i++) {
+		for (i = 0; i < this.num_choices; i++) {
 			var x = Math.round(Math.random() * this._width);
 			var y = Math.round(Math.random() * this._height);	
 			while (Math.sqrt(Math.pow(x - this._width/2, 2) + Math.pow(y - this._height/2, 2)) < this.blobRadius * 2) {
@@ -209,7 +218,6 @@ Game.prototype = {
 
 
 			var answerText = new PIXI.Text(String.fromCharCode(65+i), {font: "24px Verdana", fill: "white"});
-			// var 
 
 			this.stage.addChild(foodGraphics);
 			this.stage.addChild(answerText);

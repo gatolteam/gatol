@@ -136,7 +136,7 @@ var Screens = (function() {
 			new Question("The square root of 1600 is 40.", "true", ["false"]),
 			new Question("Which of these is not a color?", "cheese stick", ["red", "orange", "yellow", "green", "blue", "purple"])];
 
-		var game = new Game(document.getElementById("gameScreen"), $(".gameScreen").width(), $(".gameScreen").width()/2, questions);
+		var game = new Game(document.getElementById("gameScreen"), $(".gameScreen").width(), $(".gameScreen").width()/2, 5, {radius:40, numEnemies:0});
 	};
 
 
