@@ -20,7 +20,7 @@ FILEPATH = 'C://Users//Aspire//Documents//Book1.csv'
 
 def delete_account(idn, email, password):
     # get verification code
-    r = requests.get(SERVER + '/api/trainers/' + str(idn), timeout=200)
+    r = requests.get(SERVER + '/api/students/' + str(idn), timeout=200)
     if r.status_code != 200:
         raise ValueError("failed GET request "+ str(r.json()['errors'])+ str(r.status_code))
 
@@ -181,7 +181,7 @@ class GatolTest:
                        'username':'test001',
                        'password':'password1',
                        'password_confirmation':'password1'}
-            r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
+            r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
             if r.status_code != 201:
                 raise ValueError("failed POST request " + str(r.status_code))
 
@@ -190,7 +190,7 @@ class GatolTest:
 
             # create new session (logging in)
             payload = {'email':email,
-                       'password':password}
+                       'password':'password1'}
             r = requests.post(SERVER + '/api/sessions', json=payload, timeout=200)
 
             if r.status_code != 200:
@@ -203,12 +203,10 @@ class GatolTest:
 
             # upload csv
             headers = {'Authorization':token}
-            files = {'file': ('report.xls', open('report.xls', 'rb'))}
-            r.requests.post(SERVER + '/api/question_sets', files=files)
+            files = {'file': ('Book1.csv', open(FILEPATH, 'rb'))}
+            r = requests.post(SERVER + '/api/question_sets/import', headers=headers, files=files)
 
-            status = r.json()['status']
-
-            if not status.startswith('2'):
+            if r.status_code > 300:
                 raise ValueError("failed to upload csv " + str(r.json()))
 
 
