@@ -8,8 +8,8 @@ import random
 ########################
 
 
-SERVER = 'http://localhost:3000'
-#SERVER = 'https://calm-garden-9078.herokuapp.com'
+# SERVER = 'http://localhost:3000'
+SERVER = 'https://calm-garden-9078.herokuapp.com'
 TEST = ""
 FILEPATH = 'C://Users//Aspire//Documents//Book1.csv'
 
