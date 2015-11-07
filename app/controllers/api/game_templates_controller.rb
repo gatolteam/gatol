@@ -42,7 +42,7 @@ class Api::GameTemplatesController < ApplicationController
   # POST /game_templates
   # POST /game_templates.json
   def create
-    @template = GameTemplate.new(params)
+    @template = GameTemplate.new(game_template_params)
     if @template.save
       render json: {
         status: 200

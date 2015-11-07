@@ -91,4 +91,8 @@ class Api::GamesController < ApplicationController
     def set_game
       @game = Game.find(params[:id])
     end
+
+    def game_params
+      params[:game]
+    end
 end
