@@ -7,26 +7,42 @@ class QuestionSet < ActiveRecord::Base
     end
     
     #sets up new QuestionSet
-    def createSet(file)
-        createQuestions(parseCSV(file))
+    def createSet(file, params={})
+        if !params.empty?
+            if params.key?(:trainer_id)
+                self.trainer_id = params[:trainer_id]
+            end
+            if params.key?(:setname)
+                self.setname = params[:setname]
+            end
+        end
+        if self.setname.nil?
+                t = Time.now.strftime("%Y%m%d_%H%M%S")
+                self.setname = "QSET_#{self.id}_#{t}"
+        end
+
+        arr = QuestionSet.parseCSV(file)
+        createQuestions(arr)
     end
     
     # turns the array d of array of strings into an array of Question objects
     def createQuestions(arr)
-        arr.each do |a| 
+
+        for i in 0..arr.length-1
             q = Question.new
-            q.buildQuestion(a)
+            q.buildQuestion(arr[i])
             q.question_set = self
+            q.questionIdx = i
             @qs.push(q)
         end
     end
 
     def saveSet
-        all = false
+        all = true
         @qs.each do |q|
             all = all && q.save!
         end
-        all
+        all && self.save
     end
 
     # parses CSV

@@ -1,15 +1,39 @@
 class Api::GameInstancesController < ApplicationController
-  before_action :set_game_instance, only: [:show, :edit, :update, :destroy]
-
+  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy]
+  respond_to :json
   # GET /game_instances
   # GET /game_instances.json
   def index
-    @game_instances = GameInstance.all
+    user = current_user
+    #if user is student
+    game_instances = GameInstance.where(student_id: user.id)
+    render json: {
+      status: 200,
+      games: game_instances
+    }
   end
 
   # GET /game_instances/1
   # GET /game_instances/1.json
   def show
+    user = current_user
+    game_instance = GameInstance.find(params[:id])
+    if !game_instance.nil? && game_instance.student_id == user.id
+      render json: {
+        status: 200,
+        game_instance: game_instance
+      }
+    elsif game_instance.nil?
+      render json: {
+        status: 400,
+        errors: ['game instance does not exist']
+      }  
+    else
+      render json: {
+        status: 401,
+        errors: ['trainer does not have access to this game instance']
+      }
+    end
   end
 
   # GET /game_instances/new
@@ -24,40 +48,43 @@ class Api::GameInstancesController < ApplicationController
   # POST /game_instances
   # POST /game_instances.json
   def create
-    @game_instance = GameInstance.new(game_instance_params)
-
-    respond_to do |format|
-      if @game_instance.save
-        format.html { redirect_to @game_instance, notice: 'Game instance was successfully created.' }
-        format.json { render :show, status: :created, location: @game_instance }
-      else
-        format.html { render :new }
-        format.json { render json: @game_instance.errors, status: :unprocessable_entity }
-      end
+    @game_instance = GameInstance.new(game_params)
+    if @game_instance.save
+      render json: {
+        status: 200
+      }
+    else
+      render json: {
+        status: 401
+      }
     end
   end
 
   # PATCH/PUT /game_instances/1
   # PATCH/PUT /game_instances/1.json
   def update
-    respond_to do |format|
-      if @game_instance.update(game_instance_params)
-        format.html { redirect_to @game_instance, notice: 'Game instance was successfully updated.' }
-        format.json { render :show, status: :ok, location: @game_instance }
-      else
-        format.html { render :edit }
-        format.json { render json: @game_instance.errors, status: :unprocessable_entity }
-      end
-    end
   end
 
   # DELETE /game_instances/1
   # DELETE /game_instances/1.json
   def destroy
-    @game_instance.destroy
-    respond_to do |format|
-      format.html { redirect_to game_instances_url, notice: 'Game instance was successfully destroyed.' }
-      format.json { head :no_content }
+    user = current_user
+    game = GameInstance.find(params[:id])
+    if !game.nil? && game.student_id == user.id
+      game.destroy
+      render json: {
+        status: 200
+      }
+    elsif game.nil?
+      render json: {
+        status: 400,
+        errors: ['game instance does not exist']
+      }
+    else
+      render json: {
+        status: 401,
+        errors: ['student does not have access to this game instance']
+      }
     end
   end
 
