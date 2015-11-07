@@ -128,7 +128,6 @@ var Screens = (function() {
 			new Question("The square root of 1600 is 40.", "true", ["false"]),
 			new Question("Which of these is not a color?", "cheese stick", ["red", "orange", "yellow", "green", "blue", "purple"])];
 		this.game = new Game(questionList, $(".gameScreen").width(), $(".gameScreen").width()/2);
-		console.log("MUTHAFUCKA");
 		
 
 		$(".all").hide();
@@ -282,7 +281,7 @@ var Screens = (function() {
 		}
 		send_data = {student: studentID, gameName: gName, score: currScore, questionIndex: index};
 
-		postRequest("/games", send_data, update, updateFailed) //here to update the score of the current player
+		postRequest("/api/games", send_data, update, updateFailed) //here to update the score of the current player
 	};
 
 
@@ -305,7 +304,7 @@ var Screens = (function() {
 		}
 
 		send_data = {student: studentID, gameName: gName};
-		postRequest("/game_instance", send_data, setGame, gameNotReached);
+		postRequest("/api/game_instance", send_data, setGame, gameNotReached);
 
         attachHandlers();
         setMainTitleScreen();
