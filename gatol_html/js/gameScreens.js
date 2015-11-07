@@ -166,7 +166,7 @@ var Screens = (function() {
 			setQuestionScreen(); 
 		});
 
-		$(".btnPlay").click(function() {
+		$(".btnGame").click(function() {
 			// Goes to start a level of the bubble game. Depends on how we 
 			// implement and merge the beginning of the game. Also depends on 
 			// which game template was chosed for this game.
