@@ -8,7 +8,8 @@
  		radius: the radius of the blob
  		numEnemies: pretty self explanatory
  */
-var Game = function(parent, width, height, num_choices, state) {
+var Blobbers = function(parent, width, height, num_choices, state, answerFunc) {
+	console.log({parent: parent, width:width, height:height, num_choices: num_choices, state:state, answerFunc:answerFunc})
 	// set up scene width and height
 	this._width = width-12;//window.innerWidth - 4;
 	this._height = height-12;//window.innerHeight - 4;
@@ -44,12 +45,13 @@ var Game = function(parent, width, height, num_choices, state) {
 	this.blobRadius = state.radius || 40;
 	this.numEnemies = state.numEnemies || 0;
 	this.num_choices = num_choices;
+	this.answerFunc = answerFunc;
 
 	// Start running the game.
 	this.build();
 };
 
-Game.prototype = {
+Blobbers.prototype = {
 	// Build scene and start animating 
 	build: function() {
 		// set up the boundaries
@@ -78,7 +80,7 @@ Game.prototype = {
 		this.foodBodies = [];
 		this.foodGraphics = [];
 		this.answerChoices = [];
-
+		this.answerFunc(num);
 
 	},
 

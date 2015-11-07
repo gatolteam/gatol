@@ -1,14 +1,13 @@
 var Screens = (function() {
 
 	//Prototypes
-
-	function question(questionText, answer, incorrectAnswers) {
+	function Question(questionText, answer, incorrectAnswers) {
 		this.questionText = questionText;
 		this.answerText = answer;
 		this.incorrectAnswerTexts = incorrectAnswers;
 	}
 
-	function game(questionList, w, h) {
+	function Game(questionList, w, h) {
 		this.questions = questionList;
 		this.width = w;
 		this.height = h;
@@ -17,6 +16,8 @@ var Screens = (function() {
 			score = newScore;
 		}
 	}
+
+	this.game = new Game([],0,0);
 
 	//Ajax methods to communicate with backend
 
@@ -70,6 +71,15 @@ var Screens = (function() {
 	};
 
 	var setSynopsisScreen = function() {
+		//TEMPORARY QUESTION INITIALIZATION CODE (pretend getRequest actually works)
+		//not even sure this is the right place
+		var questionList = [new Question("What is two plus two?", "4", ["1", "2", "3", "potato"]),
+			new Question("The square root of 1600 is 40.", "true", ["false"]),
+			new Question("Which of these is not a color?", "cheese stick", ["red", "orange", "yellow", "green", "blue", "purple"])];
+		this.game = new Game(questionList, $(".gameScreen").width(), $(".gameScreen").width()/2);
+		console.log("MUTHAFUCKA");
+		
+
 		$(".all").hide();
 
 		$(".screenTitle").show();
@@ -131,15 +141,27 @@ var Screens = (function() {
 		$(".screenTitle").text("Completed");	
 	};
 
-	var loadGame = function() {
-		questions = [new Question("What is two plus two?", "4", ["1", "2", "3", "potato"]),
-			new Question("The square root of 1600 is 40.", "true", ["false"]),
-			new Question("Which of these is not a color?", "cheese stick", ["red", "orange", "yellow", "green", "blue", "purple"])];
 
-		var game = new Game(document.getElementById("gameScreen"), $(".gameScreen").width(), $(".gameScreen").width()/2, 5, {radius:40, numEnemies:0});
+	var answer = function(num) {
+		console.log(num);
+
+	}
+
+	var loadGame = function() {
+		var game = new Blobbers(document.getElementById("gameScreen"), 
+								this.game.width,
+								this.game.height,
+								this.game.questions[0].incorrectAnswerTexts.length +1, 
+								{
+									radius:40, 
+									numEnemies:0
+								},
+								answer);
 	};
 
+	var nextQuestion = function() {
 
+	}
 
 	var attachHandlers = function() {
 		//pretty much just button clicks at this point
