@@ -20,4 +20,6 @@
 # Ignore fuse files
 *.fuse_hidden*
 
+# Ignore .orig
+*.orig
 
