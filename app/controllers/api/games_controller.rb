@@ -58,7 +58,8 @@ class Api::GamesController < ApplicationController
       }
     else
       render json: {
-        status: 401
+        status: 401,
+        errors: ['game template does not exist']
       }
     end
   end
