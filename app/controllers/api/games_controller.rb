@@ -6,12 +6,18 @@ class Api::GamesController < ApplicationController
   # GET /games.json
   def index
     user = current_user
-    #if user is trainer
-    games = Game.where(trainer_id: user.id)
-    render json: {
-      status: 200,
-      games: games
-    }
+    if user.is_trainer?
+      games = Game.where(trainer_id: user.id)
+      render json: {
+        status: 200,
+        games: games
+      }
+    else
+      render json: {
+        status: 401,
+        errors: ['user is not a trainer']
+      }
+    end
   end
 
   # GET /games/1
@@ -50,16 +56,22 @@ class Api::GamesController < ApplicationController
   # POST /games.json
   def create
     user = current_user
-    #if user is trainer
-    @game = Game.new(game_params)
-    if @game.save
-      render json: {
-        status: 200
-      }
+    if user.is_trainer?
+      @game = Game.new(game_params)
+      if @game.save
+        render json: {
+          status: 200
+        }
+      else
+        render json: {
+          status: 401,
+          errors: ['game could not be saved']
+        }
+      end
     else
       render json: {
-        status: 401,
-        errors: ['game template does not exist']
+          status: 401,
+          errors: ['user is not a trainer']
       }
     end
   end
@@ -87,6 +99,12 @@ class Api::GamesController < ApplicationController
     end
   end
 
+  # POST api/games/:id/enroll
+  def enroll
+  end
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_game
@@ -95,5 +113,26 @@ class Api::GamesController < ApplicationController
 
     def game_params
       params[:game]
+    end
+
+    def errors(i)
+      case i
+      when 0
+        render json: {
+          status: 401,
+          errors: ['user is not a trainer']
+        }
+      when 1
+        render json: {
+          status: 401,
+          errors: ['trainer does not have access to this game']
+        }
+      when 2
+        render json: {
+          status: 400,
+          errors: ['game does not exist']
+        }
+    else
+      end
     end
 end

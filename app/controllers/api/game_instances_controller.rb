@@ -88,6 +88,24 @@ class Api::GameInstancesController < ApplicationController
     end
   end
 
+
+  # View Games (Student): views all games that student is playing
+  def get_active
+  end
+
+  # View Player Statistics for all games (Student)
+  def get_stats_all
+  end
+
+  # View Player Statistics for specific game (Student)
+  def get_stats_game
+  end
+
+  # View Game Statistics for specific player (Trainer)
+  def get_stats_player
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_game_instance

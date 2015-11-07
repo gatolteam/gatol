@@ -70,10 +70,19 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 					expect(question1["answerWrong7"]).to eq(@sampleSet.questions[1].answerWrong7)
 				end
 			end
+
+		context "unsuccessful: not trainer" do
+			pending
+		end
 	end
 
 	describe "GET #show" do
-		pending
+		context "successful" do
+			pending
+		end
+		context "unsuccessful: not trainer" do
+			pending
+		end
 	end
 
 	describe "POST #import" do
@@ -103,7 +112,12 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 
 
 	describe "DELETE #destroy" do
-		pending
+		context "successful" do
+			pending
+		end
+		context "unsuccessful: not trainer" do
+			pending
+		end
 	end
 
 

@@ -6,11 +6,18 @@ class Api::QuestionSetsController < ApplicationController
   # GET /question_sets
   def index
     user = current_user
-    #if user.is_trainer?
-    @sets = QuestionSet.where(trainer_id: user.id)
-    render json: {
-      question_sets: qs_json(@sets)
-    }
+    if user.is_trainer?
+      @sets = QuestionSet.where(trainer_id: user.id)
+      render json: {
+        status: 200,
+        question_sets: qs_json(@sets)
+      }
+    else
+      render json: { 
+        status: 401,
+        errors: ['the user is not a trainer']
+      }
+    end
   end
 
   # GET a certain QuestionSet by id
@@ -18,15 +25,22 @@ class Api::QuestionSetsController < ApplicationController
   def show
     user = current_user
     set = QuestionSet.find(params[:id])
-    if set.trainer_id == user.id
-      render json: {
-        status: 200,
-        question_set: qs_json(set)
-      }
+    if user.is_trainer?
+      if set.trainer_id == user.id
+        render json: {
+          status: 200,
+          question_set: qs_json(set)
+        }
+      else
+        render json: {
+          status: 401,
+          errors: ['trainer does not have access to this question set']
+        }
+      end
     else
-      render json: {
+      render json: { 
         status: 401,
-        errors: ['trainer does not have access to this question set']
+        errors: ['the user is not a trainer']
       }
     end
   end
@@ -44,7 +58,6 @@ class Api::QuestionSetsController < ApplicationController
   #POST /question_sets/import
   def import
     user = current_user
-
     if user.is_trainer?
       f = params[:file]
       q = QuestionSet.new(trainer_id: user.id)
@@ -61,7 +74,10 @@ class Api::QuestionSetsController < ApplicationController
         }
       end
     else
-      render json: { errors: ['the user is not a trainer']}, status: 401
+      render json: { 
+        status: 401,
+        errors: ['the user is not a trainer']
+      }
     end
 
   end
@@ -70,21 +86,28 @@ class Api::QuestionSetsController < ApplicationController
   # DELETE /question_sets/1.json
   def destroy
     user = current_user
-    question_set = QuestionSet.find(params[:id])
-    if !question_set.nil? && question_set.trainer_id == user.id
-      question_set.destroy
-      render json: {
-        status: 200
-      }
-    elsif question_set.nil?
-      render json: {
-        status: 400,
-        errors: ['question set does not exist']
-      }
+    if user.is_trainer?
+      question_set = QuestionSet.find(params[:id])
+      if !question_set.nil? && question_set.trainer_id == user.id
+        question_set.destroy
+        render json: {
+          status: 200
+        }
+      elsif question_set.nil?
+        render json: {
+          status: 400,
+          errors: ['question set does not exist']
+        }
+      else
+        render json: {
+          status: 401,
+          errors: ['trainer does not have access to this question set']
+        }
+      end
     else
-      render json: {
+      render json: { 
         status: 401,
-        errors: ['trainer does not have access to this question set']
+        errors: ['the user is not a trainer']
       }
     end
   end
