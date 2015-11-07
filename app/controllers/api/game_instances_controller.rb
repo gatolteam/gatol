@@ -48,7 +48,7 @@ class Api::GameInstancesController < ApplicationController
   # POST /game_instances
   # POST /game_instances.json
   def create
-    @game_instance = GameInstance.new(game_params)
+    @game_instance = GameInstance.new(params)
     if @game_instance.save
       render json: {
         status: 200

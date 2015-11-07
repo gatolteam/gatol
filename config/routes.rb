@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root 'welcome#index'
+
   devise_for :students
   devise_for :trainers
   devise_for :question_sets
