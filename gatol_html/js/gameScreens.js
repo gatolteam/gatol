@@ -12,9 +12,40 @@ var Screens = (function() {
 		this.width = w;
 		this.height = h;
 		this.score = 0;
+		this.index = 0;
+
 		this.setScore = function(newScore) {
 			score = newScore;
 		}
+
+		/**
+		 * Determines whether the user's answer is correct.
+		 * answer is user's answer from the game
+		 */
+		this.checkAnswer = function(answer) {
+			return answer == this.questions[this.index].answer
+		};
+
+		/**
+		 * Increases the user's score and increments the question number.
+		 * Called whenever the user attempts to answer a question.
+		 * Returns True if there is a next question or False if no more questions.
+		 * isCorrect is whether the user is True or False for the current question 
+		 */
+		this.isNextQuestion = function(isCorrect) {
+			if (isCorrect){
+				score += 200;
+			}
+
+			this.index += 1;
+			return this.index < this.questions.length
+		};
+		/** 
+		 * Returns the current question
+		 */
+		this.getCurrentQuestion = function() {
+			return this.questions[this.index];
+		};
 	}
 
 	this.game = new Game([],0,0);
@@ -67,7 +98,10 @@ var Screens = (function() {
 		$(".bottomBtns .btnMain").show();
 
 		
+		var blobberInstructions = "Use W, A, S, and D to move your bubble Up, Left, Down, and Right, respectively. To choose an answer, collide your bubble with the smaller bubble that represents answer."
+		
 		$(".screenTitle").text("How to Play");
+		$(".centerText").text(blobberInstructions);
 	};
 
 	var setSynopsisScreen = function() {
@@ -98,10 +132,17 @@ var Screens = (function() {
 		$(".currQuestion").show();
 		$(".answer").show();
 		$(".btnGame").show();
-		
 
-		$(".screenTitle").text("Question #");
+		var question = this.game.getCurrentQuestion();
+
+		$(".screenTitle").text("Question " + (this.game.index+1).toString());
+		$(".currQuestion").text(question.questionText);
 		$(".answer").text("Choose between the following:");
+
+		$(".answer").append("<div>"+question.answerText+"</div>");
+		for (var i = question.incorrectAnswerTexts.length - 1; i >= 0; i--) {
+			$(".answer").append("<div>"+question.incorrectAnswerTexts[i]+"</div>");
+		};
 	};
 
 	var setCorrectScreen = function(){
@@ -159,10 +200,6 @@ var Screens = (function() {
 								answer);
 	};
 
-	var nextQuestion = function() {
-
-	}
-
 	var attachHandlers = function() {
 		//pretty much just button clicks at this point
 		
@@ -216,22 +253,21 @@ var Screens = (function() {
 		} else {
 			setCorrectScreen();
 		}
+		currGame.isNextQuestion();
 
 
-		// postRequest(...) //here to update the score of the current player
-	};
-
-	var nextQuestion = function() {
 
 		var update = function() {
-
+			console.log("it did it!");
 		}
 		var updateFailed = function() {
 			console.error('update score failed');
 		}
 		send_data = {student: studentID, gameName: gName, score: currScore, questionIndex: index};
-		postRequest(send_data, update, updateFailed);
-	}
+
+		postRequest(send_data, update, updateFailed) //here to update the score of the current player
+	};
+
 
 	var start = function() {
 		//probably initialized in a public method that is called by the screen that chooses the game from the student's game list
