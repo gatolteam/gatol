@@ -131,6 +131,16 @@ var Screens = (function() {
 		$(".screenTitle").text("Completed");	
 	};
 
+	var loadGame = function() {
+		console.log("shit");
+		questions = [new Question("What is two plus two?", "4", ["1", "2", "3", "potato"]),
+			new Question("The square root of 1600 is 40.", "true", ["false"]),
+			new Question("Which of these is not a color?", "cheese stick", ["red", "orange", "yellow", "green", "blue", "purple"])];
+
+		var game = new Game($(".gameScreen"), $(".gameScreen").width, $(".gameScreen").width/2, questions);
+	};
+
+
 
 	var attachHandlers = function() {
 		//pretty much just button clicks at this point
@@ -160,7 +170,8 @@ var Screens = (function() {
 			// Goes to start a level of the bubble game. Depends on how we 
 			// implement and merge the beginning of the game. Also depends on 
 			// which game template was chosed for this game.
-			// window.location.href="../public/scripts.testing.html"; 
+			// window.location.href="../public/scripts.testing.html";
+			loadGame();
 		});
 
 		$(".btnQuitGame").click(function() {
