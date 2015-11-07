@@ -11,6 +11,7 @@ class CreateAllTables < ActiveRecord::Migration
 	    t.integer  "trainer_id"
 	    t.integer  "question_set_id"
 	    t.integer  "game_template_id"
+	    t.string   "name",      limit: 128, null: false
 	    t.string   "description",      limit: 256, null: false
 	    t.datetime "created_at"
 	    t.datetime "updated_at"
