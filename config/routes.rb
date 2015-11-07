@@ -69,16 +69,30 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     ### Add API here
 
-    resources :trainers, :only => [:show, :create, :destroy, :update]
-    resources :students, :only => [:show, :create, :destroy, :update]
+    resources :trainers, :only => [:show, :create]
+    post "/trainers/confirm", to: "trainers#verify"
+    post "/trainers/reset", to: "trainers#reset"
+    post "/trainers/update", to: "trainers#update"
+    delete "/trainers", to: "trainers#destroy"
+
+    resources :students, :only => [:show, :create]
+    post "/students/confirm", to: "students#verify"
+    post "/students/reset", to: "students#reset"
+    post "/students/update", to: "students#update"
+    delete "/students", to: "students#destroy"
+
     resources :sessions, :only => [:create, :destroy]
-    resources :question_sets, :only => [:index, :show, :import, :destroy]
+
+    resources :question_sets, :only => [:index, :show, :destroy]
+    post "/question_sets/import", to: "question_sets#import"
     resources :question_sets do
       collection { post :import }
     end
     resources :games, :only => [:show, :create, :destroy, :update]
     resources :game_templates, :only => [:show, :create, :destroy, :update]
     resources :game_instances, :only => [:show, :create, :destroy, :update]
+
+
   end
 
 

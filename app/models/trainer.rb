@@ -15,4 +15,9 @@ class Trainer < ActiveRecord::Base
   end
 
 
+  def is_trainer?
+    return true
+  end
+
+
 end
