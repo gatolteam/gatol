@@ -6,7 +6,7 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module GatolS
+module Gatol
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -32,7 +32,16 @@ module GatolS
       g.helper = false
     end
 
-    config.autoload_paths += %W(\#{config.root}/lib)
+
+    config.middleware.insert_before 0, "Rack::Cors" do
+      allow do
+        origins '*'
+        resource '*', :headers => :any, :methods => [:get, :post, :delete, :options]
+      end
+    end
+
+
+    
     config.active_record.raise_in_transactional_callbacks = true
   end
 end

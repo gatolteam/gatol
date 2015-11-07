@@ -58,7 +58,8 @@ class Api::GamesController < ApplicationController
       }
     else
       render json: {
-        status: 401
+        status: 401,
+        errors: ['game template does not exist']
       }
     end
   end
@@ -90,5 +91,9 @@ class Api::GamesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_game
       @game = Game.find(params[:id])
+    end
+
+    def game_params
+      params[:game]
     end
 end

@@ -7,10 +7,10 @@ class Api::QuestionSetsController < ApplicationController
   def index
     user = current_user
     #if user.is_trainer?
-      @sets = QuestionSet.where(trainer_id: user.id)
-      render json: {
-        question_sets: qs_json(@sets)
-      }
+    @sets = QuestionSet.where(trainer_id: user.id)
+    render json: {
+      question_sets: qs_json(@sets)
+    }
   end
 
   # GET a certain QuestionSet by id
@@ -44,22 +44,28 @@ class Api::QuestionSetsController < ApplicationController
   #POST /question_sets/import
   def import
     user = current_user
-    f = params[:file]
-    q = QuestionSet.new(trainer_id: user.id)
-    q.createSet(f)
-    if (q.saveSet)
-      render json: {
-        status: 200,
-        question_set: qs_json(q)
-      }
+
+    if user.is_trainer?
+      f = params[:file]
+      q = QuestionSet.new(trainer_id: user.id)
+      q.createSet(f)
+      if (q.saveSet)
+        render json: {
+          status: 200,
+          question_set: qs_json(q)
+        }
+      else
+        render json: {
+          status: 500,
+          errors: ['question set could not be saved']
+        }
+      end
     else
-      render json: {
-        status: 500,
-        errors: ['question set could not be saved']
-      }
+      render json: { errors: ['the user is not a trainer']}, status: 401
     end
 
   end
+
 
   # DELETE /question_sets/1.json
   def destroy
@@ -82,6 +88,7 @@ class Api::QuestionSetsController < ApplicationController
       }
     end
   end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

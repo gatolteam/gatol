@@ -10,6 +10,12 @@ class Api::GameTemplatesController < ApplicationController
       status: 200,
       templates: @game_templates
     }
+    #else
+    #render json: {
+    #  status: 401,
+    #  errors: ['access denied to students']
+    #}
+
   end
 
   # GET /game_templates/1
@@ -26,23 +32,28 @@ class Api::GameTemplatesController < ApplicationController
       render json: {
         status: 400,
         errors: ['game template does not exist']
+        #else
+      #render json: {
+      #  status: 401,
+      #  errors: ['access denied to students']
+      #}
       }
     end
   end
 
   # GET /game_templates/new
-  def new
-    @game_template = GameTemplate.new
-  end
+  #def new
+  #  @game_template = GameTemplate.new
+  #end
 
   # GET /game_templates/1/edit
-  def edit
-  end
+  #def edit
+  #end
 
   # POST /game_templates
   # POST /game_templates.json
   def create
-    @template = GameTemplate.new(params)
+    @template = GameTemplate.new(game_template_params)
     if @template.save
       render json: {
         status: 200
