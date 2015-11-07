@@ -26,23 +26,6 @@ RSpec.describe Api::StudentsController, type: :controller do
 
 
 	describe "POST #create" do
-		context "successful" do
-			before(:each) do
-				@user_attributes = FactoryGirl.attributes_for :student
-				post :create, { student: @user_attributes }, format: :json
-			end
-
-			it "returns email" do
-				user_response = JSON.parse(response.body, symbolize_names: true)
-				expect(user_response[:email]).to eql @user_attributes[:email]
-      		end
-
-
-      		it "status = 201" do
-				expect(response.status).to eql 201
-			end
-		end
-
 
 		context "unsuccessful" do
 			before(:each) do
@@ -65,22 +48,6 @@ RSpec.describe Api::StudentsController, type: :controller do
 			end
 		end
 	end
-
-
-	describe "PUT#update" do
-		context "successful update" do
-			before(:each) do
-				@user = FactoryGirl.create :student
-				request.headers['Authorization'] =  @user.auth_token
-				put :update, { id: @user.id, student: { password: "password2", password_confirmation: "password2" }}, format: :json
-			end
-
-			it "status = 200" do
-				expect(response.status).to eql 200
-			end
-		end
-	end
-
 
 	describe "DELETE #destroy" do
 		before(:each) do

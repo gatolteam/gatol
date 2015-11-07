@@ -10,7 +10,7 @@ import random
 
 # SERVER = 'http://localhost:3000'
 SERVER = 'https://calm-garden-9078.herokuapp.com'
-TEST = ""
+TEST = "test001"
 
 
 ########################
@@ -177,6 +177,7 @@ class GatolTest:
             
             # post
             payload = {'email':email,
+                       'username':'test1',
                        'password':'password1',
                        'password_confirmation':'password1'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -203,6 +204,7 @@ class GatolTest:
             email = str(random.randint(0,9999999)) + '@hi.edu'
             # create new account
             payload = {'email':email,
+                       'username':'test2',
                        'password':'password3',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=200)

@@ -34,7 +34,7 @@ RSpec.describe Api::SessionsController, type: :controller do
 
 			it "returns error" do
 				user_response = JSON.parse(response.body, symbolize_names: true)
-				expect(user_response[:errors]).to eql "Invalid email or password"
+				expect(user_response[:errors]).to eql ["Invalid password"]
 			end
 
 			it "status = 422" do
