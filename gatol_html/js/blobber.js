@@ -1,11 +1,13 @@
 var Game = function(parent, width, height, questions) {
 	// set up scene width and height
-	this._width = width;//window.innerWidth - 4;
-	this._height = height;//window.innerHeight - 4;
+	this._width = width-12;//window.innerWidth - 4;
+	this._height = height-12;//window.innerHeight - 4;
 
 	// set up rendering surface
 	this.renderer = new PIXI.CanvasRenderer(this._width, this._height);
 	parent.appendChild(this.renderer.view);
+
+	console.log(this._width, this._height);
 
 	// create the main stage to draw on
 	this.stage = new PIXI.Stage();
