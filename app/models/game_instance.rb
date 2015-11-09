@@ -1,4 +1,6 @@
 class GameInstance < ActiveRecord::Base
+	belongs_to :student
+	
 	self.table_name = "training_history"
 	after_initialize do |g|
         self.score = 0
