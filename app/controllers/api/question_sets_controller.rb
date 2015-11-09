@@ -87,7 +87,7 @@ class Api::QuestionSetsController < ApplicationController
   def destroy
     user = current_user
     if user.is_trainer?
-      question_set = QuestionSet.find(params[:id])
+      question_set = QuestionSet.find_by_id(params[:id])
       if !question_set.nil? && question_set.trainer_id == user.id
         question_set.destroy
         render json: {
