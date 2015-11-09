@@ -4,39 +4,42 @@ class Api::GameTemplatesController < ApplicationController
   # GET /game_templates
   # GET /game_templates.json
   def index
-    #if user is trainer
-    @game_templates = GameTemplate.all
-    render json: {
-      status: 200,
-      templates: @game_templates
-    }
-    #else
-    #render json: {
-    #  status: 401,
-    #  errors: ['access denied to students']
-    #}
-
+    user = current_user
+    if user.is_trainer?
+      @game_templates = GameTemplate.all
+      render json: {
+        status: 200,
+        templates: @game_templates
+      }
+    else
+      render json: {
+        status: 401,
+        errors: ['access denied to students']
+      }
+    end
   end
 
   # GET /game_templates/1
   # GET /game_templates/1.json
   def show
-    #if user is trainer
-    template = GameTemplate.find(params[:id])
-    if !template.nil?
-      render json: {
-        status: 200,
-        template: template
-      }
+    user = current_user
+    if user.is_trainer?
+      template = GameTemplate.find_by_id(params[:id])
+      if !template.nil?
+        render json: {
+          status: 200,
+          template: template
+        }
+      else
+        render json: {
+          status: 400,
+          errors: ['game template does not exist']
+        }
+      end
     else
       render json: {
-        status: 400,
-        errors: ['game template does not exist']
-        #else
-      #render json: {
-      #  status: 401,
-      #  errors: ['access denied to students']
-      #}
+        status: 401,
+        errors: ['access denied to students']
       }
     end
   end
@@ -85,7 +88,7 @@ class Api::GameTemplatesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_game_template
-      @game_template = GameTemplate.find(params[:id])
+      @game_template = GameTemplate.find_by_id(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

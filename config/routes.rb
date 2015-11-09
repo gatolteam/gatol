@@ -89,7 +89,7 @@ Rails.application.routes.draw do
       collection { post :import }
     end
     resources :games, :only => [:show, :create, :destroy, :update]
-    resources :game_templates, :only => [:show, :create, :destroy, :update]
+    resources :game_templates, :only => [:index, :show, :create, :destroy, :update]
     resources :game_instances, :only => [:show, :create, :destroy, :update]
 
 
