@@ -8,6 +8,9 @@ RSpec.describe Api::GameTemplatesController, type: :controller do
 			before(:each) do
 				@user = FactoryGirl.create(:trainer, id: 1234)
 	 			request.headers['Authorization'] =  @user.auth_token
+
+	 			FactoryGirl.create(:game_template)
+
 			end
 			
 
