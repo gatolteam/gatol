@@ -4,7 +4,7 @@ RSpec.describe Question, type: :model do
 
   it "cannot save an empty question" do
   	@q = Question.new
-  	expect { @q.save }.to raise_error
+  	expect { @q.save }.to raise_error(ActiveRecord::StatementInvalid)
   end
 
   context "Question is not empty"

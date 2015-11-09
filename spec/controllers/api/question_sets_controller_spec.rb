@@ -19,7 +19,10 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			before(:each) do
  				@user = FactoryGirl.create(:trainer, id: 1234)
  				request.headers['Authorization'] =  @user.auth_token
- 				@sampleSet = FactoryGirl.create(:question_set_varied)
+ 				s1 = FactoryGirl.create(:question_set_varied, trainer_id: 1234)
+ 				s0 = FactoryGirl.create(:question_set_repeat, question_count: 1, trainer_id: 1234)
+
+ 				@s = [s0, s1]
  				FactoryGirl.create(:question_set_repeat, trainer_id: 2233)
  				FactoryGirl.create(:question_set_repeat, trainer_id: 6291)
  				get :index
@@ -28,40 +31,103 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			end
 
 	 			it "only gets QuestionSets belonging to specified User" do
-					#expect(@result["id"]).to eq(@user.id)
-					expect(@resultSet.length).to eq(1)
+	 				for i in 0..1
+						expect(@resultSet[i]["trainer_id"]).to eq(@user.id)
+					end
+					expect(@resultSet.length).to eq(2)
 	 			end
 
 				it "gets each QuestionSet's data" do
-					set = @resultSet[0]
-					expect(set["id"]).to eq(@sampleSet.id)
-					expect(set["setname"]).to eq(@sampleSet.setname)
+					for i in 0..1
+						set = @resultSet[i]
+						expect(set["id"]).to eq(@s[i].id)
+						expect(set["setname"]).to eq(@s[i].setname)
+					end
 				end
 
 				it "gets all QuestionSet's Questions" do
-					expect(@resultSet[0]["questions"].length).to eq(2)
+					expect(@resultSet[1]["questions"].length).to eq(2)
+					expect(@resultSet[0]["questions"].length).to eq(1)
 				end
 
 				it "gets QuestionSet's Questions: 1st" do
-					checkQuestion(@resultSet[0]["questions"][0], @sampleSet.questions[0])
+					for i in 0..1
+						checkQuestion(@resultSet[i]["questions"][0], @s[i].questions[0])
+					end
 				end
 
 				it "gets QuestionSet's Questions: 2nd" do
-					checkQuestion(@resultSet[0]["questions"][1], @sampleSet.questions[1])
+					checkQuestion(@resultSet[1]["questions"][1], @s[1].questions[1])
 				end
 			end
 
-		context "unsuccessful: not trainer" do
-			pending
+		context "unsuccessful" do
+			it "cannot get due to 'not trainer' error" do
+				@user = FactoryGirl.create(:student, id: 333)
+	 			request.headers['Authorization'] =  @user.auth_token
+
+	 			get :index
+	 			result = JSON.parse(response.body)
+	 			expect(result["status"]).to eq(401)
+	 			expect(result["errors"][0]).to eq('the user is not a trainer')
+			end
 		end
 	end
 
 	describe "GET #show" do
 		context "successful" do
-			pending
+			it "gets correct QuestionSet" do
+				user = FactoryGirl.create(:trainer, id: 1234)
+ 				request.headers['Authorization'] =  user.auth_token
+ 				s1 = FactoryGirl.create(:question_set_varied, trainer_id: 1234, setname: "coolio")
+ 				s0 = FactoryGirl.create(:question_set_repeat, trainer_id: 1234, setname: "lame-o")
+ 				get :show, id: s1.id
+ 				result = JSON.parse(response.body)
+ 				resultSet = JSON.parse(result["question_set"])
+ 				#puts resultSet
+ 				expect(resultSet).to be_instance_of(Hash)
+ 				expect(resultSet).not_to be_instance_of(Array)
+ 				expect(resultSet["setname"]).to eq(s1.setname)
+ 				resultQ = resultSet["questions"]
+ 				expect(resultQ.length).to eq(2)
+ 				for i in 0..1
+	 				checkQuestion(resultQ[i], s1.questions[i])
+ 				end
+			end
 		end
-		context "unsuccessful: not trainer" do
-			pending
+		context "unsuccessful" do
+			it "cannot get due to 'not trainer' error" do
+				user = FactoryGirl.create(:student, id: 333)
+	 			request.headers['Authorization'] =  user.auth_token
+
+	 			get :show, id: 5
+	 			result = JSON.parse(response.body)
+	 			expect(result["status"]).to eq(401)
+	 			expect(result["errors"][0]).to eq('the user is not a trainer')
+			end
+
+			it "cannot get due to 'no access' error" do
+				user = FactoryGirl.create(:trainer, id: 0020)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			f = FactoryGirl.create(:question_set_repeat, trainer_id: 1234)
+
+	 			get :show, id: f.id
+
+	 			result = JSON.parse(response.body)
+	 			expect(result["status"]).to eq(401)
+	 			expect(result["errors"][0]).to eq('trainer does not have access to this question set')
+			end
+
+			it "cannot get due to 'not exist' error" do
+				user = FactoryGirl.create(:trainer, id: 0020)
+	 			request.headers['Authorization'] =  user.auth_token
+
+	 			get :show, id: 5
+	 			result = JSON.parse(response.body)
+	 			expect(result["status"]).to eq(400)
+	 			expect(result["errors"][0]).to eq('question set does not exist')
+
+			end
 		end
 	end
 
@@ -88,6 +154,12 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			end
 
 		end
+
+		context "unsuccessful" do
+			pending
+		end
+
+
 	end
 
 

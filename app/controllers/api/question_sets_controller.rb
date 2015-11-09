@@ -24,12 +24,17 @@ class Api::QuestionSetsController < ApplicationController
   # GET /question_sets/1
   def show
     user = current_user
-    set = QuestionSet.find(params[:id])
     if user.is_trainer?
-      if set.trainer_id == user.id
+      set = QuestionSet.find_by_id(params[:id])
+      if !set.nil? && set.trainer_id == user.id
         render json: {
           status: 200,
           question_set: qs_json(set)
+        }
+      elsif set.nil?
+        render json: {
+          status: 400,
+          errors: ['question set does not exist']
         }
       else
         render json: {
@@ -69,7 +74,7 @@ class Api::QuestionSetsController < ApplicationController
         }
       else
         render json: {
-          status: 500,
+          status: 400,
           errors: ['question set could not be saved']
         }
       end
