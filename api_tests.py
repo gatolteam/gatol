@@ -10,7 +10,8 @@ import random
 
 # SERVER = 'http://localhost:3000'
 SERVER = 'https://calm-garden-9078.herokuapp.com'
-TEST = ""
+TEST = "test024"
+FILEPATH = 'Book1.csv'
 
 
 ########################
@@ -1042,6 +1043,67 @@ class GatolTest:
         
         except ValueError as e:
             return (False, str(e))
+
+
+
+
+    # test 24
+    @classmethod
+    def test024_trainer_upload_csv(self):
+        try:
+            email = str(random.randint(0,9999999)) + '@hi.edu'
+            
+            # post
+            payload = {'email':email,
+                       'username':'test001',
+                       'password':'password1',
+                       'password_confirmation':'password1'}
+            r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
+            if r.status_code != 201:
+                raise ValueError("failed POST request " + str(r.status_code))
+
+            idn = r.json()['id']
+
+
+            # create new session (logging in)
+            payload = {'email':email,
+                       'password':'password1'}
+            r = requests.post(SERVER + '/api/sessions', json=payload, timeout=200)
+
+            if r.status_code != 200:
+                raise ValueError("failed to login " + str(r.json()['errors']) + str(r.status_code))
+
+            token = r.json()['auth_token']
+            token = token.encode()
+
+
+
+            # upload csv
+            headers = {'Authorization':token}
+            files = {'file': ('Book1.csv', open(FILEPATH, 'rb'))}
+            r = requests.post(SERVER + '/api/question_sets/import', headers=headers, files=files)
+
+            if r.status_code > 300:
+                raise ValueError("failed to upload csv " + str(r.json()))
+
+
+
+
+
+
+            return (True, "")
+
+        except ValueError as e:
+            return (False, str(e))
+
+
+
+
+
+
+
+
+        
 
 
 
