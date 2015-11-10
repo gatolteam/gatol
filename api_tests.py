@@ -10,8 +10,8 @@ import random
 
 # SERVER = 'http://localhost:3000'
 SERVER = 'https://calm-garden-9078.herokuapp.com'
-TEST = "test001"
-
+TEST = ""
+FILEPATH = 'Book1.csv'
 
 ########################
 ### HELPER FUNCTIONS ###
@@ -272,6 +272,7 @@ class GatolTest:
 
             # create new account
             payload = {'email':'test3@berkeley.edu',
+                       'username':'user3',
                        'password':'password3',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -325,6 +326,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test4@berkeley.edu',
+                       'username':'test4',
                        'password':'password1',
                        'password_confirmation':'password1'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -336,6 +338,7 @@ class GatolTest:
 
             # create new account with same email address - should be fail
             payload = {'email':'test4@berkeley.edu',
+                       'username':'test4-2',
                        'password':'password4',
                        'password_confirmation':'password4'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -354,6 +357,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test5@berkeley.edu',
+                       'username':'test5',
                        'password':'password1',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -371,6 +375,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test6@berkeley.edu',
+                       'username':'test6',
                        'password':'password3',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -397,6 +402,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test7@berkeley.edu',
+                       'username':'test7',
                        'password':'password7',
                        'password_confirmation':'password7'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -423,6 +429,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test8@berkeley.edu',
+                       'username':'test8',
                        'password':'password8',
                        'password_confirmation':'password8'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -498,6 +505,7 @@ class GatolTest:
             
             # create new account
             payload = {'email':email,
+                       'username':'test9',
                        'password':'password9',
                        'password_confirmation':'password9'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -584,6 +592,7 @@ class GatolTest:
             email = 'test12@hi.edu'
             
             payload = {'email':email,
+                       'username':'test12',
                        'password':'password12',
                        'password_confirmation':'password12'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -614,6 +623,7 @@ class GatolTest:
             
             # post
             payload = {'email':email,
+                       'username':'test13',
                        'password':'password1',
                        'password_confirmation':'password1'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -641,6 +651,7 @@ class GatolTest:
             email = str(random.randint(0,9999999)) + '@hi.edu'
             # create new account
             payload = {'email':email,
+                       'username':'test14',
                        'password':'password3',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -708,6 +719,7 @@ class GatolTest:
 
             # create new account
             payload = {'email':'test15@berkeley.edu',
+                       'username':'test15',
                        'password':'password3',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -762,6 +774,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test16@berkeley.edu',
+                       'username':'test16',
                        'password':'password1',
                        'password_confirmation':'password1'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -773,6 +786,7 @@ class GatolTest:
 
             # create new account with same email address - should be fail
             payload = {'email':'test16@berkeley.edu',
+                       'username':'test16-2',
                        'password':'password4',
                        'password_confirmation':'password4'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -791,6 +805,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test17@berkeley.edu',
+                       'username':'test17',
                        'password':'password1',
                        'password_confirmation':'password1'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -802,6 +817,7 @@ class GatolTest:
 
             # create new account with same email address - should be fail
             payload = {'email':'test17@berkeley.edu',
+                       'username':'test17-2',
                        'password':'password4',
                        'password_confirmation':'password4'}
             r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
@@ -821,6 +837,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test18@berkeley.edu',
+                       'username':'test18',
                        'password':'password1',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -839,6 +856,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test19@berkeley.edu',
+                       'username':'test19',
                        'password':'password3',
                        'password_confirmation':'password3'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -867,6 +885,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test20@berkeley.edu',
+                       'username':'test20',
                        'password':'password7',
                        'password_confirmation':'password7'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -894,6 +913,7 @@ class GatolTest:
         try:
             # create new account
             payload = {'email':'test21@berkeley.edu',
+                       'username':'test21',
                        'password':'password8',
                        'password_confirmation':'password8'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -971,6 +991,7 @@ class GatolTest:
             
             # create new account
             payload = {'email':email,
+                       'username':'test22',
                        'password':'password9',
                        'password_confirmation':'password9'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -1024,6 +1045,7 @@ class GatolTest:
             email = 'test23@hi.edu'
             
             payload = {'email':email,
+                       'username':'test23',
                        'password':'password12',
                        'password_confirmation':'password12'}
             r = requests.post(SERVER + '/api/students', json=payload, timeout=20)
@@ -1041,6 +1063,54 @@ class GatolTest:
                 raise ValueError("logged out? " + str(r.status_code))
             
             return (delete_account_student(idn, email, 'password12'), "")
+        
+        except ValueError as e:
+            return (False, str(e))
+
+
+
+    # test 24
+    @classmethod
+    def test024_trainer_upload_csv(self):
+        try:
+            email = random_email()
+            
+            # post
+            payload = {'email':email,
+                       'username':'test24',
+                       'password':'password24',
+                       'password_confirmation':'password24'}
+            r = requests.post(SERVER + '/api/trainers', json=payload, timeout=20)
+            if r.status_code != 201:
+                raise ValueError("failed POST request " + str(r.status_code))
+
+            idn = r.json()['id']
+
+
+            # create new session (logging in)
+            payload = {'email':email,
+                       'password':'password24'}
+            r = requests.post(SERVER + '/api/sessions', json=payload, timeout=200)
+
+            if r.status_code != 200:
+                raise ValueError("failed to login " + str(r.json()['errors']) + str(r.status_code))
+
+            token = r.json()['auth_token']
+            token = token.encode()
+
+
+
+            # upload csv
+            headers = {'Authorization':token}
+            files = {'file': ('Book1.csv', open(FILEPATH, 'rb'))}
+            r = requests.post(SERVER + '/api/question_sets/import', headers=headers, files=files)
+
+            if r.status_code > 300:
+                raise ValueError("failed to upload csv " + str(r.json()))
+
+
+
+            return (True, "")
         
         except ValueError as e:
             return (False, str(e))
