@@ -52,7 +52,11 @@ class QuestionSet < ActiveRecord::Base
     #                  ['1+1?','2','1','3','4','5','6','7','8']
     # and encapsualted in another array containing all the lines of CSV
     def self.parseCSV(file)
-        arr = CSV.read(file)
+        csvFile = file
+        if file.is_a?(ActionDispatch::Http::UploadedFile)
+            csvFile = file.tempfile
+        end
+        arr = CSV.read(csvFile)
     end
     
     def getQuestionByIndex(i)
