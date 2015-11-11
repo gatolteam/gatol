@@ -5,17 +5,17 @@ RSpec.describe Student, type: :model do
 
   subject { @user }
 
-  it { should respond_to(:email) }
+  it { is_expected.to respond_to(:email) }
 
-  it { should respond_to(:password) }
+  it { is_expected.to respond_to(:password) }
 
-  it { should respond_to(:password_confirmation) }
+  it { is_expected.to respond_to(:password_confirmation) }
 
-  it { should respond_to(:auth_token) }
+  it { is_expected.to respond_to(:auth_token) }
 
   describe "#generate_authentication_token!" do
   	it "generate an unique token" do
-  	  Devise.stub(:friendly_token).and_return("token1")
+      allow(Devise).to receive(:friendly_token).and_return("token1")
   	  @user.generate_authentication_token!
   	  expect(@user.auth_token).to eql "token1"
   	end
@@ -27,7 +27,7 @@ RSpec.describe Student, type: :model do
   	end
   end
 
-  it { should be_valid }
+  it { is_expected.to be_valid }
 
 
   # pending "add some examples to (or delete) #{__FILE__}"
