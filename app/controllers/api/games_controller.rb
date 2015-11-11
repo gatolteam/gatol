@@ -9,14 +9,12 @@ class Api::GamesController < ApplicationController
     if user.is_trainer?
       games = Game.where(trainer_id: user.id)
       render json: {
-        status: 200,
         games: games
-      }
+      }, status: 200
     else
       render json: {
-        status: 401,
         errors: ['user is not a trainer']
-      }
+      }, status: 401
     end
   end
 
@@ -28,25 +26,21 @@ class Api::GamesController < ApplicationController
       game = Game.find_by_id(params[:id])
       if !game.nil? && game.trainer_id == user.id
         render json: {
-          status: 200,
           game: game
-        }
+        }, status: 200
       elsif game.nil?
         render json: {
-          status: 400,
           errors: ['game does not exist']
-        }  
+        }, status: 400
       else
         render json: {
-          status: 401,
           errors: ['trainer does not have access to this game']
-        }
+        }, status: 401
       end
     else
       render json: {
-        status: 401,
         errors: ['user is not a trainer']
-      }
+      }, status: 401
     end
   end
 
@@ -66,20 +60,16 @@ class Api::GamesController < ApplicationController
     if user.is_trainer?
       @game = Game.new(game_params)
       if @game.save
-        render json: {
-          status: 200
-        }
+        render json: {}, status: 200
       else
         render json: {
-          status: 401,
           errors: ['game could not be saved']
-        }
+        }, status: 401
       end
     else
       render json: {
-          status: 401,
           errors: ['user is not a trainer']
-      }
+      }, status: 401
     end
   end
 
@@ -90,19 +80,15 @@ class Api::GamesController < ApplicationController
     game = Game.find(params[:id])
     if !game.nil? && game.trainer_id == user.id
       game.destroy
-      render json: {
-        status: 200
-      }
+      render json: {}, status: 200
     elsif game.nil?
       render json: {
-        status: 400,
         errors: ['game does not exist']
-      }
+      }, status: 400
     else
       render json: {
-        status: 401,
         errors: ['trainer does not have access to this game']
-      }
+      }, status: 401
     end
   end
 
@@ -126,19 +112,16 @@ class Api::GamesController < ApplicationController
       case i
       when 0
         render json: {
-          status: 401,
           errors: ['user is not a trainer']
-        }
+        }, status: 401
       when 1
         render json: {
-          status: 401,
           errors: ['trainer does not have access to this game']
-        }
+        }, status: 401
       when 2
         render json: {
-          status: 400,
           errors: ['game does not exist']
-        }
+        }, status: 400
     else
       end
     end

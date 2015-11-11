@@ -35,7 +35,7 @@ RSpec.describe Api::GameTemplatesController, type: :controller do
 	 			request.headers['Authorization'] =  user.auth_token
 	 			get :index
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('access denied to students')
 			end
 		end
@@ -66,7 +66,7 @@ RSpec.describe Api::GameTemplatesController, type: :controller do
 
 	 			get :show, id: 5
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('access denied to students')
 			end
 
@@ -76,7 +76,7 @@ RSpec.describe Api::GameTemplatesController, type: :controller do
 
 	 			get :show, id: 5
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(400)
+	 			expect(response.status).to eq(400)
 	 			expect(result["errors"][0]).to eq('game template does not exist')
 			end
 		end

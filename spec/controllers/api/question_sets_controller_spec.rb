@@ -68,7 +68,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 
 	 			get :index
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('the user is not a trainer')
 			end
 		end
@@ -102,7 +102,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 
 	 			get :show, id: 5
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('the user is not a trainer')
 			end
 
@@ -114,7 +114,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 	 			get :show, id: f.id
 
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('trainer does not have access to this question set')
 			end
 
@@ -124,7 +124,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 
 	 			get :show, id: 5
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(400)
+	 			expect(response.status).to eq(400)
 	 			expect(result["errors"][0]).to eq('question set does not exist')
 
 			end
@@ -142,7 +142,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			end
 
 			it "has success status" do
-				expect(@result["status"]).to eq(200)
+				expect(@response.status).to eq(200)
 			end
 
 			it "saves new set" do
@@ -173,7 +173,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 	 			delete :destroy, id: f.id
 
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(200)
+	 			expect(response.status).to eq(200)
 	 			expect(result.has_key?("errors")).to be_falsey
 	 			expect(QuestionSet.find_by_id(f.id)).to be_nil
 			end
@@ -187,7 +187,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 	 			delete :destroy, id: @f.id
 
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('trainer does not have access to this question set')
 			end
 
@@ -197,7 +197,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 
 	 			delete :destroy, id: 6667
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(400)
+	 			expect(response.status).to eq(400)
 	 			expect(result["errors"][0]).to eq('question set does not exist')
 
 			end
@@ -208,7 +208,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 
 	 			delete :destroy, id: 2
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('the user is not a trainer')
 			end
 

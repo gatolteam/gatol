@@ -29,7 +29,7 @@ RSpec.describe Api::GamesController, type: :controller do
 	 			request.headers['Authorization'] =  user.auth_token
 	 			get :index
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('user is not a trainer')
 			end
 		end
@@ -58,7 +58,7 @@ RSpec.describe Api::GamesController, type: :controller do
 
 	 			get :show, id: 5
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('user is not a trainer')
 			end
 
@@ -69,7 +69,7 @@ RSpec.describe Api::GamesController, type: :controller do
 
 	 			get :show, id: f.id
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(401)
+	 			expect(response.status).to eq(401)
 	 			expect(result["errors"][0]).to eq('trainer does not have access to this game')
 			end
 
@@ -79,7 +79,7 @@ RSpec.describe Api::GamesController, type: :controller do
 
 	 			get :show, id: 5
 	 			result = JSON.parse(response.body)
-	 			expect(result["status"]).to eq(400)
+	 			expect(response.status).to eq(400)
 	 			expect(result["errors"][0]).to eq('game does not exist')
 			end
 		end
