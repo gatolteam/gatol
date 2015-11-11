@@ -24,21 +24,28 @@ class Api::GamesController < ApplicationController
   # GET /games/1.json
   def show
     user = current_user
-    game = Game.find(params[:id])
-    if !game.nil? && game.trainer_id == user.id
-      render json: {
-        status: 200,
-        game: game
-      }
-    elsif game.nil?
-      render json: {
-        status: 400,
-        errors: ['game does not exist']
-      }  
+    if user.is_trainer?
+      game = Game.find_by_id(params[:id])
+      if !game.nil? && game.trainer_id == user.id
+        render json: {
+          status: 200,
+          game: game
+        }
+      elsif game.nil?
+        render json: {
+          status: 400,
+          errors: ['game does not exist']
+        }  
+      else
+        render json: {
+          status: 401,
+          errors: ['trainer does not have access to this game']
+        }
+      end
     else
       render json: {
         status: 401,
-        errors: ['trainer does not have access to this game']
+        errors: ['user is not a trainer']
       }
     end
   end
