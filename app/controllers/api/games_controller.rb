@@ -59,13 +59,20 @@ class Api::GamesController < ApplicationController
     user = current_user
     if user.is_trainer?
       @game = Game.new(game_params)
-      if @game.save
-        render json: {}, status: 200
-      else
+      begin 
+        if @game.save!
+          render json: {}, status: 200
+          return
+        end
+      rescue ActiveRecord::RecordInvalid
         render json: {
-          errors: ['game could not be saved']
+          errors: @game.errors.full_messages
         }, status: 401
+        return
       end
+      render json: {
+        errors: ['game could not be saved']
+      }, status: 422
     else
       render json: {
           errors: ['user is not a trainer']
@@ -105,7 +112,7 @@ class Api::GamesController < ApplicationController
     end
 
     def game_params
-      params[:game]
+      params.require(:game).permit(:name, :description, :trainer_id, :question_set_id, :game_template_id)
     end
 
     def errors(i)
