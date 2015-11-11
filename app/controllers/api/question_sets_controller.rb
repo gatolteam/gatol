@@ -64,7 +64,6 @@ class Api::QuestionSetsController < ApplicationController
   def import
     user = current_user
     if user.is_trainer?
-      puts params[:file].class
       f = params[:file]
       q = QuestionSet.new(trainer_id: user.id)
       q.createSet(f)

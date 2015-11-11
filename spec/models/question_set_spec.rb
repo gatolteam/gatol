@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QuestionSet do
 
-  context "create trivial QuestionSet"
+  context "create trivial QuestionSet" do
   	before(:context) do
   		@qs = QuestionSet.new(setname: 'simpleset')
   	end
@@ -14,8 +14,9 @@ RSpec.describe QuestionSet do
 	  it "initializes question array" do
 	  	expect(@qs.qs).to eq([])
 	  end
+	end
 
-  context "parse CSV"
+  context "parse CSV using fixture_file_upload" do
   	before(:context) do
   		@qsa = QuestionSet.parseCSV("#{Rails.root}/spec/fixtures/files/demo1.csv")
   	end
@@ -35,9 +36,41 @@ RSpec.describe QuestionSet do
 				['Can sheep fly?','No','Of course!','Meep',nil,nil,nil,nil,nil]  ]
 		expect(@qsa).to eq(arr)
 	  end
+	end
+
+  context "parse CSV using ActionDispatch::Http::UploadedFile" do
+  	before(:context) do
+
+  		f = ActionDispatch::Http::UploadedFile.new({
+  				:filename => 'demo1.csv',
+    			:type => 'text/csv',
+    			:tempfile => File.new("#{Rails.root}/spec/fixtures/files/demo1.csv")
+  			})
+
+  		@qsa = QuestionSet.parseCSV(f)
+  	end
+	  it "parses all rows of CSV file " do
+	  	expect(@qsa.length).to eq(3)
+	  end
+
+	  it "parses all columns of CSV file " do
+	  	expect(@qsa[0].length).to eq(9)
+	  	expect(@qsa[1].length).to eq(9)
+	  	expect(@qsa[2].length).to eq(9)
+	  end
+
+	  it "parses data of CSV file correctly" do
+	  	arr = [ ['T/F: Apples are always red','F','T',nil,nil,nil,nil,nil,nil], 
+	  			['1+1?','2','1','3','4','5','6','7','8'],
+				['Can sheep fly?','No','Of course!','Meep',nil,nil,nil,nil,nil]  ]
+		expect(@qsa).to eq(arr)
+	  end
+	end
 
 
-  context "create QuestionSet from array"
+
+
+  context "create QuestionSet from array" do
   	before(:context) do
   		@arr = [ ['1+1?','2','1','3','4','5','6','7','8'],
 				['Can pigs fly?','No','Of course!','Meep','','','','',''],
@@ -83,5 +116,6 @@ RSpec.describe QuestionSet do
     it "saves all Questions in QuestionSet" do
     	expect { @set.saveSet }.not_to raise_error
   	end
+  end
 
 end
