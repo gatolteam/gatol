@@ -88,7 +88,7 @@ Rails.application.routes.draw do
     resources :question_sets do
       collection { post :import }
     end
-    resources :games, :only => [:show, :create, :destroy, :update]
+    resources :games, :only => [:index, :show, :create, :destroy, :update]
     resources :game_templates, :only => [:index, :show, :create, :destroy, :update]
     resources :game_instances, :only => [:show, :create, :destroy, :update]
 
