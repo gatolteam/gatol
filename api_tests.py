@@ -10,7 +10,7 @@ import random
 
 # SERVER = 'http://localhost:3000'
 SERVER = 'https://calm-garden-9078.herokuapp.com'
-TEST = ""
+TEST = "test024"
 FILEPATH = 'Book1.csv'
 
 ########################

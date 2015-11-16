@@ -1,7 +1,7 @@
 require 'net/smtp'
 
 class Api::TrainersController < ApplicationController
-	before_action :authenticate_with_token!, only: [:update, :destroy, :verify]
+	before_action :authenticate_with_token!, only: [:update, :destroy]
 	respond_to :json
 
 	def show
@@ -14,6 +14,8 @@ class Api::TrainersController < ApplicationController
     if Student.find_by(email: params[:email]).nil?
       user = Trainer.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation], :username => params[:username])
       if user.save
+        hostname = request.host
+        WelcomeMailer.verification_email(user, hostname).deliver
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
         render json: { errors: user.errors }, status: 422
@@ -48,7 +50,7 @@ class Api::TrainersController < ApplicationController
 
 
   def verify
-    user = current_user
+    user = Trainer.find_by(auth_token: params['auth_token'])
     if user.update_attribute(:confirmed, true)
       render json: { email: user[:email] }, status: 200, location: [:api, user]
     else
