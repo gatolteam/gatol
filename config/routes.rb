@@ -92,6 +92,8 @@ Rails.application.routes.draw do
     get "/game_instances/stats", to: "game_instances#get_stats_game"
     get "/game_instances/player", to: "game_instances#get_stats_player"
 
+    resources :game_enrollments
+
 
   end
 
