@@ -6,7 +6,7 @@ class Api::TrainersController < ApplicationController
 
 	def show
     user = Trainer.find(params[:id])
-		render json: { id: user[:id], email: user[:email], password: user[:password], auth_token: user[:auth_token], confirmed: user[:confirmed]}
+		render json: { id: user[:id], email: user[:email], password: user[:password], auth_token: user[:auth_token], confirmed: user[:confirmed]}, status: 200
 	end
 
 
@@ -14,7 +14,9 @@ class Api::TrainersController < ApplicationController
     if Student.find_by(email: params[:email]).nil?
       user = Trainer.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation], :username => params[:username])
       if user.save
-        WelcomeMailer.verification_email(user).deliver
+        if (params[:email].end_with? "gmail.com") || (params[:email].end_with? "berkeley.edu")
+          WelcomeMailer.verification_email(user).deliver
+        end
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
         render json: { errors: user.errors }, status: 422
