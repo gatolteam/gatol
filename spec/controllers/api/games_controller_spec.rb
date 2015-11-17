@@ -91,7 +91,12 @@ RSpec.describe Api::GamesController, type: :controller do
 			it "creates new game" do
 				user = FactoryGirl.create(:trainer, id: 0020)
 	 			request.headers['Authorization'] =  user.auth_token
-	 			g =  { trainer_id: user.id, question_set_id: 0, game_template_id: 0, name: "Blubber", description: "what"}
+	 			g =  { trainer_id: user.id, 
+	 				   question_set_id: 0, 
+	 				   game_template_id: 0, 
+	 				   name: "Blubber", 
+	 				   description: "what"}
+	 				   
 	 			post :create, game: g
 
 	 			expect(response.status).to eq(200)

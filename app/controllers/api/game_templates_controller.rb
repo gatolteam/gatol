@@ -51,7 +51,9 @@ class Api::GameTemplatesController < ApplicationController
   # POST /game_templates
   # POST /game_templates.json
   def create
-    @template = GameTemplate.new(game_template_params)
+    name = params[:name]
+    desc = params[:description]
+    @template = GameTemplate.new(name: name, description: desc)
     if @template.save
       render json: {}, status: 200
     else
