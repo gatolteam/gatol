@@ -81,6 +81,6 @@ class Api::GameTemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_template_params
-      params[:game_template]
+      params.require(:game_template).permit(:name, :description)
     end
 end
