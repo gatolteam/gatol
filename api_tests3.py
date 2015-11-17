@@ -8,10 +8,10 @@ import random
 ########################
 
 
-# SERVER = 'http://localhost:3000'
+SERVER = 'http://localhost:3000'
 # SERVER = 'https://calm-garden-9078.herokuapp.com'
-SERVER = 'https://gatol.herokuapp.com'
-TEST = ""
+# SERVER = 'https://gatol.herokuapp.com'
+TEST = "test024"
 FILEPATH = 'Book1.csv'
 TIMEOUT = 200
 PASS = 'samplePass'
@@ -145,14 +145,13 @@ class GatolTest:
             r = requests.post(SERVER + '/api/games', headers=headers, json=payload)
             if r.status_code > 299:
                 raise ValueError("failed to create game " + str(r.status_code))
-
             # get game list
             headers = {'Authorization':token}
             r = requests.get(SERVER + '/api/games', headers=headers)
 
             if r.status_code > 299:
                 raise ValueError("failed to get games " + str(r.status_code))
-
+            
             games = r.json()[u'games']
             gameTitle = games[0][u'name']
             if gameTitle != u'testGame1':
@@ -163,6 +162,127 @@ class GatolTest:
         except ValueError as e:
             return (False, str(e))
 
+
+
+# test 24
+    @classmethod
+    def test024_trainer_enrollment(self):
+        try:
+            email = random_email()
+            email2 = random_email()
+            email3 = random_email()
+            decoder = json.JSONDecoder()
+        
+            # create account
+            token = create_and_login(email, PASS)
+            token = token.encode()
+
+            # create account2
+            r = create_account(email2, 'test2', PASS, PASS, False)
+            if r.status_code > 299:
+                raise ValueError("failed to create second account " + str(r.status_code))
+            
+            # upload csv
+            upload_csv(token)
+
+            # get question Set id
+            headers = {'Authorization':token}
+            r = requests.get(SERVER + '/api/question_sets', headers=headers)
+            if r.status_code > 299:
+                raise ValueError("failed to get set id " + str(r.status_code))
+
+            questionSets = r.json()[u'question_sets']
+            questionSets = decoder.decode(questionSets)
+            setID = questionSets[0]['id']
+
+            # create game
+            payload = {u'game':{u'name':u'testGame1',
+                                u'description':u'this is a good game',
+                                'question_set_id':setID,
+                                u'game_template_id':0}}
+            json_data = json.dumps(payload)
+            headers = {'Authorization':token}
+            r = requests.post(SERVER + '/api/games', headers=headers, json=payload)
+            if r.status_code > 299:
+                raise ValueError("failed to create game " + str(r.status_code))
+            
+            # get game list
+            headers = {'Authorization':token}
+            r = requests.get(SERVER + '/api/games', headers=headers)
+            if r.status_code > 299:
+                raise ValueError("failed to get games " + str(r.status_code))
+
+            games = r.json()[u'games']
+            
+            gameID = games[0][u'id']
+            gameTitle = games[0][u'name']
+            if gameTitle != u'testGame1':
+                raise ValueError("game title does not match " + str(r.status_code))
+
+            print(gameID)
+            print(type(gameID))
+
+
+            # create enrollment
+            headers = {'Authorization':token}
+            payload = {u'game_enrollment':{u'game_id':gameID,
+                                           u'student_email':email3}}
+            r = requests.post(SERVER + '/api/game_enrollments', headers=headers, json=payload)
+            if r.status_code > 299:
+                raise ValueError("failed to create enrollment " + str(r.status_code))
+
+
+            # create enrollment
+            headers = {'Authorization':token}
+            payload = {u'game_enrollment':{u'game_id':gameID,
+                                           u'student_email':email2}}
+            r = requests.post(SERVER + '/api/game_enrollments', headers=headers, json=payload)
+
+            if r.status_code > 299:
+                raise ValueError("failed to create enrollment " + str(r.status_code))
+
+
+            # view enrollment
+            headers = {'Authorization':token}
+            r = requests.get(SERVER + '/api/game_enrollments/' + str(gameID), headers=headers)
+
+            if r.status_code > 299:
+                raise ValueError("failed to create enrollment " + str(r.status_code))
+
+
+            enrollments = r.json()[u'enrollments']
+            if len(enrollments) != 2:
+                raise ValueError("failed to get enrollments " + str(len(enrollments)))
+            entryID = enrollments[0][u'id']
+
+
+            # delete enrollment
+            headers = {'Authorization':token}
+            r = requests.delete(SERVER + '/api/game_enrollments/' + str(entryID), headers=headers)
+            if r.status_code > 299:
+                raise ValueError("failed to create enrollment " + str(r.status_code))
+
+
+            # view enrollment
+            headers = {'Authorization':token}
+            r = requests.get(SERVER + '/api/game_enrollments/' + str(gameID), headers=headers)
+            print(r.json())
+            if r.status_code > 299:
+                raise ValueError("failed to create enrollment " + str(r.status_code))
+
+            print(r.json())
+
+            enrollments = r.json()[u'enrollments']
+            if len(enrollments) != 1:
+                raise ValueError("failed to get enrollments " + str(len(enrollments)))
+
+
+
+            
+            return (True, "")
+
+        except ValueError as e:
+            return (False, str(e))
 
    
 

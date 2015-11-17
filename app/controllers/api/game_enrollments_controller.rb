@@ -34,7 +34,9 @@ class Api::GameEnrollmentsController < ApplicationController
   	  return
   	end
 
-  	game = Game.find_by_id(game_enrollment_params[:id])
+
+  	game = Game.find_by_id(game_enrollment_params[:game_id])
+
   	if game.nil? || game.trainer_id != user.id
   	  render json: { errors: ['trainer does not have access to this game'] }, status: 401
   	  return
@@ -42,7 +44,7 @@ class Api::GameEnrollmentsController < ApplicationController
 
   	newEnrollment = GameEnrollment.new(game_enrollment_params)
   	newEnrollment.trainer_id = user.id
-  	student = Student.find_by(email: game_enrollment_params[:email])
+  	student = Student.find_by(email: game_enrollment_params[:student_email])
   	if student.nil?
   		newEnrollment.registered = false
   	else
