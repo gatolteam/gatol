@@ -7,7 +7,7 @@ var GameAThon = (function() {
     var loginContainer; // holds login objects, value set in the "start" method below
 
     // the backend we are using
-    var apiUrl = 'http://localhost:3000' 
+    var apiUrl = 'https://calm-garden-9078.herokuapp.com' 
 
     // PRIVATE METHODS
 

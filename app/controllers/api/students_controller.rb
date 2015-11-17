@@ -1,12 +1,12 @@
 require 'net/smtp'
 
 class Api::StudentsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:update, :destroy, :verify]
+  before_action :authenticate_with_token!, only: [:update, :destroy]
   respond_to :json
 
   def show
     user = Student.find(params[:id])
-    render json: { id: user[:id], email: user[:email], password: user[:password], auth_token: user[:auth_token], confirmed: user[:confirmed]}
+    render json: { id: user[:id], email: user[:email], password: user[:password], auth_token: user[:auth_token], confirmed: user[:confirmed]}, status: 200
   end
 
 
@@ -14,6 +14,9 @@ class Api::StudentsController < ApplicationController
     if Trainer.find_by(email: params[:email]).nil?
       user = Student.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation], :username => params[:username])
       if user.save
+        if (params[:email].end_with? "gmail.com") || (params[:email].end_with? "berkeley.edu")
+          WelcomeMailer.verification_email(user).deliver
+        end
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
         render json: { errors: user.errors }, status: 422
@@ -48,7 +51,7 @@ class Api::StudentsController < ApplicationController
 
 
   def verify
-    user = current_user
+    user = Student.find_by(auth_token: params['auth_token'])
     if user.update_attribute(:confirmed, true)
       render json: { email: user[:email] }, status: 200, location: [:api, user]
     else

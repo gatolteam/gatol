@@ -3,10 +3,6 @@ Rails.application.routes.draw do
 
   devise_for :students
   devise_for :trainers
-  devise_for :question_sets
-  devise_for :game_templates
-  devise_for :game_instances
-  devise_for :games
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -70,13 +66,13 @@ Rails.application.routes.draw do
     ### Add API here
 
     resources :trainers, :only => [:show, :create]
-    post "/trainers/confirm", to: "trainers#verify"
+    get "/trainers/:auth_token/confirm", to: "trainers#verify"
     post "/trainers/reset", to: "trainers#reset"
     post "/trainers/update", to: "trainers#update"
     delete "/trainers", to: "trainers#destroy"
 
     resources :students, :only => [:show, :create]
-    post "/students/confirm", to: "students#verify"
+    get "/students/:auth_token/confirm", to: "students#verify"
     post "/students/reset", to: "students#reset"
     post "/students/update", to: "students#update"
     delete "/students", to: "students#destroy"
