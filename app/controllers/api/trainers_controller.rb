@@ -14,8 +14,7 @@ class Api::TrainersController < ApplicationController
     if Student.find_by(email: params[:email]).nil?
       user = Trainer.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation], :username => params[:username])
       if user.save
-        hostname = request.host
-        WelcomeMailer.verification_email(user, hostname).deliver
+        WelcomeMailer.verification_email(user).deliver
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
         render json: { errors: user.errors }, status: 422

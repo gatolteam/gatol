@@ -88,4 +88,5 @@ Rails.application.configure do
     :password             => "gatol@test",
     :authentication       => "plain",
     :enable_starttls_auto => true
+  }
 end
