@@ -59,6 +59,7 @@ class Api::GamesController < ApplicationController
     user = current_user
     if user.is_trainer?
       @game = Game.new(game_params)
+      @game.trainer_id = user.id
       begin 
         if @game.save!
           render json: {}, status: 200
