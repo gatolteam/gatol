@@ -84,23 +84,30 @@ class Api::GamesController < ApplicationController
   # DELETE /games/1.json
   def destroy
     user = current_user
-    game = Game.find(params[:id])
-    if !game.nil? && game.trainer_id == user.id
-      game.destroy
-      render json: {}, status: 200
-    elsif game.nil?
-      render json: {
-        errors: ['game does not exist']
-      }, status: 400
+    if user.is_trainer?
+      game = Game.find_by_id(params[:id])
+      if !game.nil? && game.trainer_id == user.id
+        game.destroy
+        render json: {}, status: 200
+      elsif game.nil?
+        render json: {
+          errors: ['game does not exist']
+        }, status: 400
+      else
+        render json: {
+          errors: ['trainer does not have access to this game']
+        }, status: 401
+      end
     else
       render json: {
-        errors: ['trainer does not have access to this game']
+          errors: ['user is not a trainer']
       }, status: 401
     end
   end
 
   # POST api/games/:id/enroll
   def enroll
+
   end
 
 
@@ -108,7 +115,7 @@ class Api::GamesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_game
-      @game = Game.find(params[:id])
+      @game = Game.find_by_id(params[:id])
     end
 
     def game_params
