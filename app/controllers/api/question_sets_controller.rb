@@ -9,14 +9,12 @@ class Api::QuestionSetsController < ApplicationController
     if user.is_trainer?
       @sets = QuestionSet.where(trainer_id: user.id)
       render json: {
-        status: 200,
         question_sets: qs_json(@sets)
-      }
+      }, status: 200
     else
-      render json: { 
-        status: 401,
+      render json: {
         errors: ['the user is not a trainer']
-      }
+      }, status: 401
     end
   end
 
@@ -28,25 +26,21 @@ class Api::QuestionSetsController < ApplicationController
       set = QuestionSet.find_by_id(params[:id])
       if !set.nil? && set.trainer_id == user.id
         render json: {
-          status: 200,
           question_set: qs_json(set)
-        }
+        }, status: 200
       elsif set.nil?
         render json: {
-          status: 400,
           errors: ['question set does not exist']
-        }
+        }, status: 400
       else
         render json: {
-          status: 401,
           errors: ['trainer does not have access to this question set']
-        }
+        }, status: 401
       end
     else
-      render json: { 
-        status: 401,
-        errors: ['the user is not a trainer']
-      }
+      render json: {
+          errors: ['the user is not a trainer']
+        }, status: 401
     end
   end
 
@@ -64,26 +58,22 @@ class Api::QuestionSetsController < ApplicationController
   def import
     user = current_user
     if user.is_trainer?
-      puts params[:file].class
       f = params[:file]
       q = QuestionSet.new(trainer_id: user.id)
       q.createSet(f)
       if (q.saveSet)
         render json: {
-          status: 200,
           question_set: qs_json(q)
-        }
+        }, status: 200
       else
         render json: {
-          status: 400,
           errors: ['question set could not be saved']
-        }
+        }, status: 400
       end
     else
-      render json: { 
-        status: 401,
+      render json: {
         errors: ['the user is not a trainer']
-      }
+      }, status: 401
     end
 
   end
@@ -96,25 +86,20 @@ class Api::QuestionSetsController < ApplicationController
       question_set = QuestionSet.find_by_id(params[:id])
       if !question_set.nil? && question_set.trainer_id == user.id
         question_set.destroy
-        render json: {
-          status: 200
-        }
+        render json: {}, status: 200
       elsif question_set.nil?
         render json: {
-          status: 400,
           errors: ['question set does not exist']
-        }
+        }, status: 400
       else
         render json: {
-          status: 401,
           errors: ['trainer does not have access to this question set']
-        }
+        }, status: 401
       end
     else
-      render json: { 
-        status: 401,
+      render json: {
         errors: ['the user is not a trainer']
-      }
+      }, status: 401
     end
   end
 
