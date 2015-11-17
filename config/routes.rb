@@ -91,6 +91,10 @@ Rails.application.routes.draw do
     resources :games, :only => [:index, :show, :create, :destroy, :update]
     resources :game_templates, :only => [:index, :show, :create, :destroy, :update]
     resources :game_instances, :only => [:show, :create, :destroy, :update]
+    get "/game_instances/active", to: "game_instances#get_active"
+    get "/game_instances/all", to: "game_instances#get_status_all"
+    get "/game_instances/stats", to: "game_instances#get_stats_game"
+    get "/game_instances/player", to: "game_instances#get_stats_player"
 
 
   end
