@@ -1,7 +1,7 @@
 require 'net/smtp'
 
 class Api::StudentsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:update, :destroy, :verify]
+  before_action :authenticate_with_token!, only: [:update, :destroy]
   respond_to :json
 
   def show
@@ -51,7 +51,7 @@ class Api::StudentsController < ApplicationController
 
 
   def verify
-    user = current_user
+    user = Student.find_by(auth_token: params['auth_token'])
     if user.update_attribute(:confirmed, true)
       render json: { email: user[:email] }, status: 200, location: [:api, user]
     else
