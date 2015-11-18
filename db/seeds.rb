@@ -28,6 +28,7 @@ so = []
 students.each do |i|
 	s = Student.new(i)
 	s.skip_confirmation!
+	s.save!
 	so << s
 end
 
@@ -43,6 +44,7 @@ to = []
 trainers.each do |i|
 	t = Trainer.new(i)
 	t.skip_confirmation!
+	t.save!
 	to << t
 end
 
