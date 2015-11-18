@@ -1,6 +1,7 @@
 #this describes a Game (based off GameTemplate) created by Trainer
 class Game < ActiveRecord::Base
 	belongs_to :trainer
+	has_many :game_instances
 	validates :name, presence: true, length: { 
 		minimum: 1,
 		maximum: 128,
