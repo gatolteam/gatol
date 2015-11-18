@@ -26,7 +26,9 @@ students = [
 
 so = []
 students.each do |i|
-	so << Student.create!(i)
+	s = Student.new(i)
+	s.skip_confirmation!
+	so << s
 end
 
 
@@ -39,7 +41,9 @@ trainers = [
 
 to = []
 trainers.each do |i|
-	to << Trainer.create!(i)
+	t = Trainer.new(i)
+	t.skip_confirmation!
+	to << t
 end
 
 # QUESTION SET
