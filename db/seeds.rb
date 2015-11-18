@@ -51,6 +51,7 @@ end
 # QUESTION SET
 qs = QuestionSet.new(trainer_id: to[0].id)
 qs.createSet("#{Rails.root}/spec/fixtures/files/demo1.csv")
+qs.saveSet
 
 # GAMES
 games = [
