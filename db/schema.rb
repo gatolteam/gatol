@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151117015320) do
+ActiveRecord::Schema.define(version: 20151117203110) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "game_enrollments", force: :cascade do |t|
+    t.integer  "trainer_id"
+    t.integer  "game_id"
+    t.string   "student_email"
+    t.boolean  "registered"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
 
   create_table "game_templates", force: :cascade do |t|
     t.string   "name",                    null: false
@@ -101,7 +110,7 @@ ActiveRecord::Schema.define(version: 20151117015320) do
     t.datetime "updated_at",                             null: false
     t.string   "auth_token",             default: ""
     t.boolean  "confirmed",              default: false
-    t.string   "username"
+    t.string   "username",               default: ""
   end
 
   add_index "trainers", ["auth_token"], name: "index_trainers_on_auth_token", unique: true, using: :btree
