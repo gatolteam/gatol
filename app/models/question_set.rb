@@ -6,7 +6,6 @@ class QuestionSet < ActiveRecord::Base
     validates_presence_of :trainer
 
 
-
     after_initialize do |set|
         @qs = []
     end
@@ -61,7 +60,7 @@ class QuestionSet < ActiveRecord::Base
         if file.is_a?(ActionDispatch::Http::UploadedFile)
             csvFile = file.tempfile
         end
-        arr = CSV.read(csvFile)
+        arr = CSV.read(csvFile, headers: true)
     end
     
     def getQuestionByIndex(i)
