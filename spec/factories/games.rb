@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :game do 
+    name "test"
+    description "test game"
   	trainer_id 1111
   	game_template_id 1
     question_set_id 1
