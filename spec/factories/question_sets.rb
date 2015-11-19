@@ -3,6 +3,13 @@ FactoryGirl.define do
     setname "simpleset"
     trainer_id 1234
 
+    before(:create) do |set|
+      set.trainer = Trainer.find_by_id(set.trainer_id)
+      if set.trainer.nil?
+        set.trainer = create(:trainer, id: set.trainer_id)
+      end
+    end
+
 
     # factory will generate a set with 2 of the same question by default
     # use `create(:question_set_repeat, question_count: 15)`,

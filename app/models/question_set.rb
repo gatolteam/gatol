@@ -1,7 +1,12 @@
 class QuestionSet < ActiveRecord::Base 
     require 'csv'
+    belongs_to :trainer
     has_many :questions
     attr_accessor :qs
+    validates_presence_of :trainer
+
+
+
     after_initialize do |set|
         @qs = []
     end
@@ -17,8 +22,8 @@ class QuestionSet < ActiveRecord::Base
             end
         end
         if self.setname.nil?
-                t = Time.now.strftime("%Y%m%d_%H%M%S")
-                self.setname = "QSET_#{self.id}_#{t}"
+            t = Time.now.strftime("%Y%m%d_%H%M%S")
+            self.setname = "QSET_#{self.id}_#{t}"
         end
 
         arr = QuestionSet.parseCSV(file)

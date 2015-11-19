@@ -1,6 +1,21 @@
 class Question < ActiveRecord::Base 
     belongs_to :question_set
 	attr_accessor :answerWrong
+    validates :questionIdx, presence: true, numericality: { only_integer: true 
+    }
+    validates :question, presence: true, length: { 
+        minimum: 1,
+        maximum: 128,
+        too_short: "must have at least %{count} characters",
+        too_long: "must have at most %{count} characters"
+    }
+    validates :answerCorrect, presence: true, length: { 
+        minimum: 1,
+        maximum: 256,
+        too_short: "must have at least %{count} characters",
+        too_long: "must have at most %{count} characters"
+    }
+    validates_presence_of :question_set
 
     def buildQuestion(params)
     	@answerWrong = Array.new(7)

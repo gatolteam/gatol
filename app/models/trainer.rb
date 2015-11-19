@@ -8,6 +8,9 @@ class Trainer < ActiveRecord::Base
 
   before_create :generate_authentication_token!
 
+  has_many :games
+  has_many :question_sets
+
   def generate_authentication_token!
     begin
       self.auth_token = Devise.friendly_token
