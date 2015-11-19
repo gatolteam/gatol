@@ -1,5 +1,5 @@
 class Api::GamesController < ApplicationController
-  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_with_token!, only: [:show, :update, :destroy]
   respond_to :json
 
   # GET /games
@@ -42,15 +42,6 @@ class Api::GamesController < ApplicationController
         errors: ['user is not a trainer']
       }, status: 401
     end
-  end
-
-  # GET /games/new
-  def new
-    @game = Game.new
-  end
-
-  # GET /games/1/edit
-  def edit
   end
 
   # POST /games
@@ -105,13 +96,6 @@ class Api::GamesController < ApplicationController
       }, status: 401
     end
   end
-
-  # POST api/games/:id/enroll
-  def enroll
-
-  end
-
-
 
   private
     # Use callbacks to share common setup or constraints between actions.

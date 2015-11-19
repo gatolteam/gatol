@@ -1,5 +1,5 @@
 class Api::GameInstancesController < ApplicationController
-  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_with_token!, only: [:show, :update, :destroy]
   respond_to :json
   # GET /game_instances
   # GET /game_instances.json
@@ -37,15 +37,6 @@ class Api::GameInstancesController < ApplicationController
         errors: ['user does not have access to this game instance']
       }
     end
-  end
-
-  # GET /game_instances/new
-  def new
-    @game_instance = GameInstance.new
-  end
-
-  # GET /game_instances/1/edit
-  def edit
   end
 
   # POST /game_instances
