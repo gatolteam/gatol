@@ -8,9 +8,9 @@ import random
 ########################
 
 
-SERVER = 'http://localhost:3000'
+# SERVER = 'http://localhost:3000'
 # SERVER = 'https://calm-garden-9078.herokuapp.com'
-# SERVER = 'https://gatol.herokuapp.com'
+SERVER = 'https://gatol.herokuapp.com'
 TEST = "test024"
 FILEPATH = 'Book1.csv'
 TIMEOUT = 200
@@ -245,7 +245,7 @@ class GatolTest:
             # view enrollment
             headers = {'Authorization':token}
             r = requests.get(SERVER + '/api/game_enrollments/' + str(gameID), headers=headers)
-
+            print(r.json())
             if r.status_code > 299:
                 raise ValueError("failed to create enrollment " + str(r.status_code))
 
@@ -269,8 +269,6 @@ class GatolTest:
             print(r.json())
             if r.status_code > 299:
                 raise ValueError("failed to create enrollment " + str(r.status_code))
-
-            print(r.json())
 
             enrollments = r.json()[u'enrollments']
             if len(enrollments) != 1:
