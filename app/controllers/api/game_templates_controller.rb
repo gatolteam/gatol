@@ -38,16 +38,7 @@ class Api::GameTemplatesController < ApplicationController
       }, status: 401
     end
   end
-
-  # GET /game_templates/new
-  #def new
-  #  @game_template = GameTemplate.new
-  #end
-
-  # GET /game_templates/1/edit
-  #def edit
-  #end
-
+  
   # POST /game_templates
   # POST /game_templates.json
   def create
