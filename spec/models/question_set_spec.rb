@@ -103,6 +103,7 @@ RSpec.describe QuestionSet do
 
   	it "creates correct numnber of Questions" do
   		expect(@sarr.length).to eq(@arr.length)
+  		expect(@set.qcount).to eq(@arr.length)
   	end
 
   	it "creates correct Question objects for each csv question" do
@@ -120,4 +121,20 @@ RSpec.describe QuestionSet do
   	end
   end
 
+  context "existing QuestionSet" do
+  	before(:context) do
+  		@count = 4
+  		@set = FactoryGirl.create(:question_set_repeat, question_count: @count)
+  		@s = QuestionSet.find_by_id(@set.id)
+  	end
+
+  	it "gets the correct count by method" do
+  		expect(@s.getNumberQuestions).to eq(@count)
+  	end
+
+  	it "gets the correct count by field" do
+  		expect(@s.qcount).to eq(@count)
+  	end
+
+  end
 end
