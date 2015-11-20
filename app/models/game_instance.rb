@@ -2,6 +2,7 @@ class GameInstance < ActiveRecord::Base
 	self.table_name = "training_history"
 	belongs_to :student
 	belongs_to :game
+	#attr_accessor :
 
 	validates_presence_of :student
 	validates_presence_of :game
@@ -9,30 +10,32 @@ class GameInstance < ActiveRecord::Base
 	after_initialize do |g|
         self.score = 0
 		self.lastQuestion = 0
+		@qcount = nil
     end
 
+
+    #Returns true if update succeeds and false if not
+    #Will raise ArgumentError if lastQuestion is invalid
     def update(score, lastQuestion)
-    	self.score = x
-    	self.lastQuestion = lastQuestion
-    	self.save
+    	if self.active
+    		if @qcount.nil?
+				@qcount = self.game.question_set.getNumberQuestions
+			end
+    		if lastQuestion > @qcount
+    			raise ArgumentError, 'invalid lastQuestion: exceeds number of questions'
+    		elsif lastQuestion < self.lastQuestion
+    			raise ArgumentError, 'invalid lastQuestion: smaller than last stored question number'
+    		else
+    			self.score = score
+    			self.lastQuestion = lastQuestion
+    			checkGameOngoing
+    			self.save!
+    		end
+    	end
+    	self.active
     end
 
-	def updateScore(x)
-		self.score = x
-		self.save
-	end
-
-	def updateScoreByVal(x)
-		self.score = self.score + x
-		self.save
-	end
-
-	def updateLastQuestion(i)
-		self.lastQuestion = i
-		self.save
-	end
-
-	#Gets (score, date) tuples for a certain game and orders by student_id
+	#Gets (score, date) tuples for a classertain game and orders by student_id
 	#If a student is specified, only scores for that studeny are returned
 	def self.getAllScoresForGame(gid, tid, sid=nil)
 		if sid.nil?
@@ -47,6 +50,12 @@ class GameInstance < ActiveRecord::Base
 	end
 
 	def self.getGameRanking(gid)
+	end
+
+	def checkGameOngoing
+		if self.active && self.lastQuestion == @qcount
+			self.active = false
+		end
 	end
 
 end
