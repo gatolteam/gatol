@@ -178,9 +178,15 @@ class GatolTest:
             token = token.encode()
 
             # create account2
-            r = create_account(email2, 'test2', PASS, PASS, False)
+            token2 = create_and_login(email2, PASS, False)
+            token2 = token2.encode()
+
+            # view enrollment
+            headers = {'Authorization':token}
+            r = requests.get(SERVER + '/api/game_enrollments/' + str(gameID), headers=headers)
             if r.status_code > 299:
-                raise ValueError("failed to create second account " + str(r.status_code))
+                raise ValueError("failed to view enrollment " + str(r.status_code))
+            print(r.json())
             
             # upload csv
             upload_csv(token)
@@ -232,6 +238,14 @@ class GatolTest:
                 raise ValueError("failed to create enrollment " + str(r.status_code))
 
 
+            # student view enrollment
+            headers = {'Authorization':token}
+            r = requests.get(SERVER + '/api/game_enrollments', headers=headers)
+            print(r.json())
+            if r.status_code > 299:
+                raise ValueError("failed to view student enrollment0 " + str(r.status_code))
+
+
             # create enrollment
             headers = {'Authorization':token}
             payload = {u'game_enrollment':{u'game_id':gameID,
@@ -245,15 +259,24 @@ class GatolTest:
             # view enrollment
             headers = {'Authorization':token}
             r = requests.get(SERVER + '/api/game_enrollments/' + str(gameID), headers=headers)
-            print(r.json())
             if r.status_code > 299:
-                raise ValueError("failed to create enrollment " + str(r.status_code))
+                raise ValueError("failed to view enrollment " + str(r.status_code))
 
 
             enrollments = r.json()[u'enrollments']
             if len(enrollments) != 2:
                 raise ValueError("failed to get enrollments " + str(len(enrollments)))
             entryID = enrollments[0][u'id']
+
+
+            # student view enrollment
+            headers = {'Authorization':token}
+            r = requests.get(SERVER + '/api/game_enrollments', headers=headers)
+            print(r.json())
+            if r.status_code > 299:
+                raise ValueError("failed to view student enrollment " + str(r.status_code))
+
+
 
 
             # delete enrollment
@@ -273,6 +296,7 @@ class GatolTest:
             enrollments = r.json()[u'enrollments']
             if len(enrollments) != 1:
                 raise ValueError("failed to get enrollments " + str(len(enrollments)))
+ 
 
 
 

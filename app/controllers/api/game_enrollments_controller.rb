@@ -1,5 +1,5 @@
 class Api::GameEnrollmentsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:show]
+  before_action :authenticate_with_token!, only: [:show, :index, :delete, :create]
   respond_to :json
 
 
