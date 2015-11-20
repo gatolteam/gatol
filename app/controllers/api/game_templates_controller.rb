@@ -1,5 +1,5 @@
 class Api::GameTemplatesController < ApplicationController
-  before_action :authenticate_with_token!, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_with_token!, only: [:show, :update, :destroy]
   respond_to :json
   # GET /game_templates
   # GET /game_templates.json
@@ -38,16 +38,7 @@ class Api::GameTemplatesController < ApplicationController
       }, status: 401
     end
   end
-
-  # GET /game_templates/new
-  #def new
-  #  @game_template = GameTemplate.new
-  #end
-
-  # GET /game_templates/1/edit
-  #def edit
-  #end
-
+  
   # POST /game_templates
   # POST /game_templates.json
   def create

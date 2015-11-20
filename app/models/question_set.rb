@@ -1,9 +1,14 @@
 class QuestionSet < ActiveRecord::Base 
     require 'csv'
+    belongs_to :trainer
     has_many :questions
-    attr_accessor :qs
+    attr_accessor :qs, :qcount
+    validates_presence_of :trainer
+
+
     after_initialize do |set|
         @qs = []
+        @qcount = 0
     end
     
     #sets up new QuestionSet
@@ -17,8 +22,8 @@ class QuestionSet < ActiveRecord::Base
             end
         end
         if self.setname.nil?
-                t = Time.now.strftime("%Y%m%d_%H%M%S")
-                self.setname = "QSET_#{self.id}_#{t}"
+            t = Time.now.strftime("%Y%m%d_%H%M%S")
+            self.setname = "QSET_#{self.id}_#{t}"
         end
 
         arr = QuestionSet.parseCSV(file)
@@ -27,8 +32,8 @@ class QuestionSet < ActiveRecord::Base
     
     # turns the array d of array of strings into an array of Question objects
     def createQuestions(arr)
-
-        for i in 0..arr.length-1
+        @qcount = arr.length
+        for i in 0..@qcount-1
             q = Question.new
             q.buildQuestion(arr[i])
             q.question_set = self
@@ -56,7 +61,7 @@ class QuestionSet < ActiveRecord::Base
         if file.is_a?(ActionDispatch::Http::UploadedFile)
             csvFile = file.tempfile
         end
-        arr = CSV.read(csvFile)
+        arr = CSV.read(csvFile, headers: true)
     end
     
     def getQuestionByIndex(i)
@@ -69,5 +74,14 @@ class QuestionSet < ActiveRecord::Base
 
     def getQuestions
         @qs = self.qs
+    end
+
+    def getNumberQuestions
+        if @qcount == 0 && @qs.empty?
+            @qcount = self.questions.count
+            return @qcount
+        else
+            return @qcount
+        end
     end
 end

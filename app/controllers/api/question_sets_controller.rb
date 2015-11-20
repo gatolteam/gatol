@@ -44,16 +44,6 @@ class Api::QuestionSetsController < ApplicationController
     end
   end
 
-  # GET /question_sets/new
-  def new
-    @question_set = QuestionSet.new
-  end
-
-  #def create
-  #  @question_set = QuestionSet.new
-  #end
-
-
   #POST /question_sets/import
   def import
     user = current_user

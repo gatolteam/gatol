@@ -5,7 +5,7 @@ RSpec.describe Api::GamesController, type: :controller do
 	#view all games created by trainer
 	describe "GET #index" do
 		context "successful" do
-			it "" do
+			it "gets all of trainer's games" do
 				user = FactoryGirl.create(:trainer, id: 1234)
 	 			request.headers['Authorization'] =  user.auth_token
 	 			g = []
@@ -88,12 +88,16 @@ RSpec.describe Api::GamesController, type: :controller do
 	#create game
 	describe "POST #create" do
 		context "successful" do
+			before(:each) do
+				@temp = FactoryGirl.create(:game_template_a)
+				@set = FactoryGirl.create(:question_set_varied)
+			end
 			it "creates new game" do
 				user = FactoryGirl.create(:trainer, id: 0020)
 	 			request.headers['Authorization'] =  user.auth_token
 	 			g =  { trainer_id: user.id, 
-	 				   question_set_id: 0, 
-	 				   game_template_id: 0, 
+	 				   question_set_id: @set.id, 
+	 				   game_template_id: @temp.id, 
 	 				   name: "Blubber", 
 	 				   description: "what"}
 	 				   
@@ -111,10 +115,14 @@ RSpec.describe Api::GamesController, type: :controller do
 		end
 
 		context "unsuccessful" do
+			before(:each) do
+				@temp = FactoryGirl.create(:game_template_a)
+				@set = FactoryGirl.create(:question_set_varied)
+			end
 			it "cannot create due to 'not trainer' error" do
 				user = FactoryGirl.create(:student, id: 6679)
 	 			request.headers['Authorization'] =  user.auth_token
-	 			g =  { trainer_id: user.id, question_set_id: 0, game_template_id: 0, name: "Blubber", description: "what"}
+	 			g =  { trainer_id: user.id, question_set_id: @set.id, game_template_id: @temp.id, name: "Blubber", description: "what"}
 
 	 			post :create, game: g
 
@@ -126,7 +134,7 @@ RSpec.describe Api::GamesController, type: :controller do
 			it "cannot save due to missing attribute" do
 				user = FactoryGirl.create(:trainer, id: 6679)
 	 			request.headers['Authorization'] =  user.auth_token
-	 			g =  { trainer_id: user.id, question_set_id: 0, game_template_id: 0, name: "Blubber"}
+	 			g =  { trainer_id: user.id, question_set_id: @set.id, game_template_id: @temp.id, name: "Blubber"}
 
 	 			post :create, game: g
 	 			
@@ -137,11 +145,6 @@ RSpec.describe Api::GamesController, type: :controller do
 			end
 		end
 	end
-
-	#enroll players in game
-	describe "POST #enroll" do
-	end
-
 
 	def checkGame(act, exp)
 		expect(act["name"]).to eq(exp.name)

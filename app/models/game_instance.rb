@@ -1,8 +1,11 @@
 class GameInstance < ActiveRecord::Base
+	self.table_name = "training_history"
 	belongs_to :student
 	belongs_to :game
-	
-	self.table_name = "training_history"
+
+	validates_presence_of :student
+	validates_presence_of :game
+
 	after_initialize do |g|
         self.score = 0
 		self.lastQuestion = 0

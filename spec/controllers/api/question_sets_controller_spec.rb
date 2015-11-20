@@ -84,7 +84,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
  				get :show, id: s1.id
  				result = JSON.parse(response.body)
  				resultSet = JSON.parse(result["question_set"])
- 				#puts resultSet
+
  				expect(resultSet).to be_instance_of(Hash)
  				expect(resultSet).not_to be_instance_of(Array)
  				expect(resultSet["setname"]).to eq(s1.setname)
@@ -109,7 +109,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			it "cannot get due to 'no access' error" do
 				user = FactoryGirl.create(:trainer, id: 0020)
 	 			request.headers['Authorization'] =  user.auth_token
-	 			f = FactoryGirl.create(:question_set_repeat, trainer_id: 1234)
+	 			f = FactoryGirl.create(:question_set_repeat, trainer_id: 999)
 
 	 			get :show, id: f.id
 

@@ -8,6 +8,8 @@ class Student < ActiveRecord::Base
 
   before_create :generate_authentication_token!
 
+  has_many :game_instances
+
   def generate_authentication_token!
     begin
       self.auth_token = Devise.friendly_token

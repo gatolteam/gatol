@@ -31,10 +31,11 @@ RSpec.describe QuestionSet do
 	  end
 
 	  it "parses data of CSV file correctly" do
-	  	arr = [ ['T/F: Apples are always red','F','T',nil,nil,nil,nil,nil,nil], 
+	  	arr = [ [ 'Question','Correct Answer','Wrong Answer 1','Wrong Answer 2','Wrong Answer 3','Wrong Answer 4','Wrong Answer 5','Wrong Answer 6','Wrong Answer 7'], 
+	  			['T/F: Apples are always red','F','T',nil,nil,nil,nil,nil,nil], 
 	  			['1+1?','2','1','3','4','5','6','7','8'],
 				['Can sheep fly?','No','Of course!','Meep',nil,nil,nil,nil,nil]  ]
-		expect(@qsa).to eq(arr)
+		expect(@qsa.to_a).to eq(arr)
 	  end
 	end
 
@@ -60,10 +61,11 @@ RSpec.describe QuestionSet do
 	  end
 
 	  it "parses data of CSV file correctly" do
-	  	arr = [ ['T/F: Apples are always red','F','T',nil,nil,nil,nil,nil,nil], 
+	  	arr = [ [ 'Question','Correct Answer','Wrong Answer 1','Wrong Answer 2','Wrong Answer 3','Wrong Answer 4','Wrong Answer 5','Wrong Answer 6','Wrong Answer 7'], 
+	  			['T/F: Apples are always red','F','T',nil,nil,nil,nil,nil,nil], 
 	  			['1+1?','2','1','3','4','5','6','7','8'],
 				['Can sheep fly?','No','Of course!','Meep',nil,nil,nil,nil,nil]  ]
-		expect(@qsa).to eq(arr)
+		expect(@qsa.to_a).to eq(arr)
 	  end
 	end
 
@@ -101,6 +103,7 @@ RSpec.describe QuestionSet do
 
   	it "creates correct numnber of Questions" do
   		expect(@sarr.length).to eq(@arr.length)
+  		expect(@set.qcount).to eq(@arr.length)
   	end
 
   	it "creates correct Question objects for each csv question" do
@@ -118,4 +121,20 @@ RSpec.describe QuestionSet do
   	end
   end
 
+  context "existing QuestionSet" do
+  	before(:context) do
+  		@count = 4
+  		@set = FactoryGirl.create(:question_set_repeat, question_count: @count)
+  		@s = QuestionSet.find_by_id(@set.id)
+  	end
+
+  	it "gets the correct count by method" do
+  		expect(@s.getNumberQuestions).to eq(@count)
+  	end
+
+  	it "gets the correct count by field" do
+  		expect(@s.qcount).to eq(@count)
+  	end
+
+  end
 end
