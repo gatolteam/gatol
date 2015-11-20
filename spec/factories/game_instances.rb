@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :game_instance do 
   	game_id 1
-  	student_id 1234
+  	student_id 4568
 
     before(:create) do |inst|
       inst.student = Student.find_by_id(inst.student_id)

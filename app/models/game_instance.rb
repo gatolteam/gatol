@@ -35,27 +35,57 @@ class GameInstance < ActiveRecord::Base
     	self.active
     end
 
-	#Gets (score, date) tuples for a classertain game and orders by student_id
-	#If a student is specified, only scores for that studeny are returned
-	def self.getAllScoresForGame(gid, tid, sid=nil)
-		if sid.nil?
-			GameInstance.where(trainer_id: tid, game_id: gid, active: false).pluck(:score, :updated_at).order(:student_id, :score)
-		else
-			GameInstance.where(student_id: sid, trainer_id: tid, game_id: gid, active: false).pluck(:score, :updated_at).order(:score)
-		end
-	end
-
-	def self.getHighScoresForGame(tid, gid)
-		#GameInstance.where(trainer_id: tid, game_id: gid)
-	end
-
-	def self.getGameRanking(gid)
-	end
-
-	def checkGameOngoing
+    def checkGameOngoing
 		if self.active && self.lastQuestion == @qcount
 			self.active = false
 		end
 	end
+
+	##############################
+	### QUERY METHODS ############
+	##############################
+
+    def self.getActiveGames(sid)
+    	GameInstance.where(student_id: sid, active: false)
+    end
+
+
+	#Gets (score, date) tuples for a certain game and orders by student_id
+	#If a student is specified, only scores for that student are returned
+	def self.getAllScoresForGame(gid, sid=nil)
+		if sid.nil?
+			GameInstance.where(game_id: gid, active: false).pluck(:student_id, :score, :updated_at).order(:student_id, :score)
+		else
+			GameInstance.where(student_id: sid, game_id: gid, active: false).pluck(:score, :updated_at).order(:score)
+		end
+	end
+
+	def self.getAllScoresForStudent(sid)
+		GameInstance.where(student_id: sid, active: false).pluck(:game_id, :score, :updated_at).order(score: :desc)
+	end
+
+	def self.getTop(gid, x)
+		GameInstance.where(game_id: gid, active: false).pluck(:score, :student_id, :updated_at).order(score: :desc).limit(x)
+	end
+
+	def self.getTop10(gid)
+		self.getTop(gid, 10)
+	end
+
+	def self.getAllGameSummaries(tid)
+		GameInstance.joins(:trainers).where(trainer_id: tid, active: false).group(:game_id, :student_id).limit(5).order(:student_id, :score)
+		#games = GameInstance.select(:game_id).where(trainer_id: tid).group()
+	end
+
+	def self.getPlayerSummaries(gid)
+		#GameInstance.where(game_id: gid, active: false).group(:student_id).maximum(:score)
+		GameInstance.select("max(score) as highest_score", "avg(score) as avg_score").where(game_id: gid, active: false).group(:student_id)
+	end
+
+	def self.getRates(tid)
+		#GameInstance.select("completion_rate","win_rate").where(trainer_id: tid).group(:game_id)
+	end
+
+
 
 end

@@ -1,23 +1,21 @@
 class Api::GameInstancesController < ApplicationController
   before_action :authenticate_with_token!, only: [:show, :update, :destroy]
   respond_to :json
+
+
   # GET /game_instances
-  # GET /game_instances.json
+  # For students, this is the same as get_stats_all
+  # For trainers, this returns 
   def index
     user = current_user
     if user.is_trainer?
-      render json: {
-        #DO THIS
-        #history: list of tuples (email, high_score)
-
-        }, status: 200
+      get_stats_all_trainer
     else
-      get_stats_all
+      get_stats_all_student
     end
   end
 
   # GET /game_instances/1
-  # GET /game_instances/1.json
   def show
     user = current_user
     game_instance = GameInstance.find_by_id(params[:id])
@@ -40,7 +38,6 @@ class Api::GameInstancesController < ApplicationController
   end
 
   # POST /game_instances
-  # POST /game_instances.json
   def create
     game_instance = GameInstance.new(game_instance_params)
     if game_instance.save
@@ -58,7 +55,6 @@ class Api::GameInstancesController < ApplicationController
   end
 
   # PATCH/PUT /game_instances/1
-  # PATCH/PUT /game_instances/1.json
   def update
     user = current_user
     newScore = params[:score]
@@ -85,7 +81,6 @@ class Api::GameInstancesController < ApplicationController
   end
 
   # DELETE /game_instances/1
-  # DELETE /game_instances/1.json
   def destroy
     user = current_user
     game = GameInstance.find_by_id(params[:id])
@@ -114,33 +109,30 @@ class Api::GameInstancesController < ApplicationController
   end
 
   # View Player Statistics for all games (Student)
-  def get_stats_all
+  def get_stats_all_student
     user = current_user
-    all = GameInstance.where(student_id: user.id)
+    all = GameInstance.getAllScoresForStudent(user.id)
     render json: {
-      games: all
-      #DO THIS
-      #history: (date, score)
-      #ranking: list of 10 tuples (email, high_score)
+      history: all
     }
   end
 
   # View Player Statistics for specific game (Student)
   def get_stats_game
     user = current_user
-    gameid = params[:game_id]
-    stats = GameInstance.where(student_id: user.id, game_id: gameid)
+    gid = params[:game_id]
+    stats = GameInstance.getAllScoresForGame(gid, user.id)
     render json: {
-      game_stats: stats
+      history: stats
     }
   end
 
-  # View Game Statistics for specific player (Trainer)
+  # View Game Statistics for specific player on specific game (Trainer)
   def get_stats_player
     user = current_user
     pemail = params[:student_email]
-    gameid = params[:game_id]
-    g = Game.find_by_id(gameid)
+    gid = params[:game_id]
+    g = Game.find_by_id(gid)
     if g.nil?
       render json: {
         errors: ['no game exists for this game id']
@@ -156,11 +148,9 @@ class Api::GameInstancesController < ApplicationController
         }, status: 404
       #elsif student is enrolled in this game
       else
-        stats = GameInstance.where(game_id: gameid, student_id: pid)
+        stats = GameInstance.getAllScoresForGame(gid, pid)
         render json: {
-          game_stats: stats
-          #DO THIS
-          #history: list of tuples (date, score)
+          history: stats
         }, status: 200
       end
     elsif user.is_trainer?
@@ -176,6 +166,26 @@ class Api::GameInstancesController < ApplicationController
     end
   end
 
+  # View Game Summary for specific game (Trainer)
+  # Returns
+  def get_stats_summary
+    user = current_user
+    gid = params[:game_id]
+    render json: {
+      ranking: GameInstance.getTop(gid, 15),
+      player_summaries: GameInstance.getPlayerSummaries(gid)
+    }
+  end
+
+  def get_stats_all_trainer
+    user = current_user
+    gid = params[:game_id]
+    #ranking = GameInstance.
+    render json: {
+      ranking: GameInstance.getAllGameSummaries(user.id)
+      #player_summaries: GameInstance.getPlayerSummaries(gid)
+    }
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
