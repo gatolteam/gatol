@@ -21,9 +21,21 @@ class Api::GameEnrollmentsController < ApplicationController
   	  enrollments = GameEnrollment.where(game_id: params[:id])
   	  render json: { game_enrollment: enrollments }, status: 200
   	end
-
   end
 
+
+  # GET /api/game_enrollment
+  def index
+    user = current_user
+
+    if user.is_trainer?
+      GameEnrollment.where(trainer_id: user.id)
+      render json: { game_enrollment: enrollments }, status: 200
+    else
+      GameEnrollment.where(student_email: user.email)
+      render json: { game_enrollment: enrollments }, status: 200
+    end
+  end
 
 
   # POST /api/game_enrollment
