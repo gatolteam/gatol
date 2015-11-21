@@ -1,5 +1,5 @@
 class Api::GameEnrollmentsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:show, :index, :delete, :create]
+  before_action :authenticate_with_token!, only: [:show, :index, :destroy, :create]
   respond_to :json
 
 
@@ -82,6 +82,11 @@ class Api::GameEnrollmentsController < ApplicationController
   	end
 
   	gameEnrollmentInstance = GameEnrollment.find_by_id(params[:id])
+    if gameEnrollmentInstance.nil?
+      render json: { errors: ['could not find the enrollment'] }, status: 400
+      return
+    end
+
   	if gameEnrollmentInstance.trainer_id == user.id
   	  gameEnrollmentInstance.destroy
       head 204
