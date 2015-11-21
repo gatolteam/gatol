@@ -86,11 +86,7 @@ class Api::GameEnrollmentsController < ApplicationController
       render json: { errors: ['could not find the enrollment'] }, status: 400
       return
     end
-<<<<<<< HEAD
-
-=======
     
->>>>>>> 60cc92ca29a231e6c7b7b35a4c5f7fc8ed249a81
   	if gameEnrollmentInstance.trainer_id == user.id
   	  gameEnrollmentInstance.destroy
       head 204
