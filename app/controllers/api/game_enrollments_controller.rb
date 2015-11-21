@@ -19,7 +19,7 @@ class Api::GameEnrollmentsController < ApplicationController
   	  render json: { errors: ['trainer does not have access to this game'] }, status: 401
   	else
   	  enrollments = GameEnrollment.where(game_id: params[:id])
-  	  render json: { game_enrollment: enrollments }, status: 200
+  	  render json: { game_enrollments: enrollments }, status: 200
   	end
   end
 
@@ -29,11 +29,11 @@ class Api::GameEnrollmentsController < ApplicationController
     user = current_user
 
     if user.is_trainer?
-      GameEnrollment.where(trainer_id: user.id)
-      render json: { game_enrollment: enrollments }, status: 200
+      enrollments = GameEnrollment.where(trainer_id: user.id)
+      render json: { game_enrollments: enrollments }, status: 200
     else
-      GameEnrollment.where(student_email: user.email)
-      render json: { game_enrollment: enrollments }, status: 200
+      enrollments = GameEnrollment.where(student_email: user.email)
+      render json: { game_enrollments: enrollments }, status: 200
     end
   end
 
