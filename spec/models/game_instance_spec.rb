@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe GameInstance, type: :model do
-  describe "updateScore" do
+  describe "instance: updateScore" do
   	context "successful" do
 	  	before(:each) do
 	  		@i = FactoryGirl.create(:game_instance)
@@ -44,6 +44,62 @@ RSpec.describe GameInstance, type: :model do
 	  	end
 	  end
   end
+
+describe "getActive & getAll" do
+	before(:each) do
+		s = FactoryGirl.create(:student, id: 3)
+		g = FactoryGirl.create(:game, id: 1)
+		@a = FactoryGirl.create(:game_instance_inactive, score: 10, student_id: s.id, game_id: 1)
+		@b = FactoryGirl.create(:game_instance_inactive, score: 20, student_id: s.id, game_id: 1)
+		@c = FactoryGirl.create(:game_instance, score:5, student_id: s.id, game_id: 1)
+		@d = FactoryGirl.create(:game_instance_inactive, score: 10, student_id: 2, game_id: 1)
+
+		@sid = s.id
+		@gid = g.id
+	end
+
+	it "only gets active" do
+		inst = GameInstance.getActiveGames(@sid)
+		expect(inst.length).to eq(1)
+		expect(inst[0].id).to eq(@c.id)
+	end
+
+	it "gets all scores for one game (any student)" do
+		FactoryGirl.create(:game_instance_inactive, game_id: 55)
+		inst = GameInstance.getAllScoresForGame(@gid)
+		expect(inst.length).to eq(3)
+		#puts @d.id
+		#puts @a.id
+		#puts @b.id
+
+		expect(inst[2].id).to eq(@d.id)
+		expect(inst[1].id).to eq(@a.id)
+		expect(inst[0].id).to eq(@b.id)
+	end
+
+	it "gets all scores for one game, one student" do
+		inst = GameInstance.getAllScoresForGame(@gid, @sid)
+		expect(inst.length).to eq(2)
+		expect(inst[1].id).to eq(@a.id)
+		expect(inst[0].id).to eq(@b.id)
+	end
+
+	it "gets all scores for student (any game)" do
+		e = FactoryGirl.create(:game_instance_inactive, game_id: 56, score: 30, student_id: @sid)
+		inst = GameInstance.getAllScoresForStudent(@sid)
+		expect(inst.length).to eq(3)
+		expect(inst[1].id).to eq(@b.id)
+		expect(inst[2].id).to eq(@a.id)
+		expect(inst[0].id).to eq(e.id)
+
+	end
+
+end
+
+#describe
+
+
+########## HELPER METHODS ###########
 
 def failUpdate(newScore, newQuestion)
 	old_score = @i.score

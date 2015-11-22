@@ -46,7 +46,7 @@ class GameInstance < ActiveRecord::Base
 	##############################
 
     def self.getActiveGames(sid)
-    	GameInstance.where(student_id: sid, active: false)
+    	GameInstance.where(student_id: sid, active: true)
     end
 
 
@@ -54,14 +54,14 @@ class GameInstance < ActiveRecord::Base
 	#If a student is specified, only scores for that student are returned
 	def self.getAllScoresForGame(gid, sid=nil)
 		if sid.nil?
-			GameInstance.where(game_id: gid, active: false).pluck(:student_id, :score, :updated_at).order(:student_id, :score)
+			GameInstance.where(game_id: gid, active: false).order(student_id: :asc, score: :desc)
 		else
-			GameInstance.where(student_id: sid, game_id: gid, active: false).pluck(:score, :updated_at).order(:score)
+			GameInstance.where(student_id: sid, game_id: gid, active: false).order(score: :desc)
 		end
 	end
 
 	def self.getAllScoresForStudent(sid)
-		GameInstance.where(student_id: sid, active: false).pluck(:game_id, :score, :updated_at).order(score: :desc)
+		GameInstance.where(student_id: sid, active: false).order(score: :desc)
 	end
 
 	def self.getTop(gid, x)
