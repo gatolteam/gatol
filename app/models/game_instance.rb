@@ -2,14 +2,11 @@ class GameInstance < ActiveRecord::Base
 	self.table_name = "training_history"
 	belongs_to :student
 	belongs_to :game
-	#attr_accessor :
 
 	validates_presence_of :student
 	validates_presence_of :game
 
 	after_initialize do |g|
-        self.score = 0
-		self.lastQuestion = 0
 		@qcount = nil
     end
 
@@ -65,7 +62,7 @@ class GameInstance < ActiveRecord::Base
 	end
 
 	def self.getTop(gid, x)
-		GameInstance.where(game_id: gid, active: false).pluck(:score, :student_id, :updated_at).order(score: :desc).limit(x)
+		GameInstance.where(game_id: gid, active: false).order(score: :desc).limit(x)
 	end
 
 	def self.getTop10(gid)

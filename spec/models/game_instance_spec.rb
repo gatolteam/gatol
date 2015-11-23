@@ -45,7 +45,7 @@ RSpec.describe GameInstance, type: :model do
 	  end
   end
 
-describe "getActive & getAll" do
+describe "getActive, getAllScoresFor*, getTop" do
 	before(:each) do
 		s = FactoryGirl.create(:student, id: 3)
 		g = FactoryGirl.create(:game, id: 1)
@@ -68,10 +68,6 @@ describe "getActive & getAll" do
 		FactoryGirl.create(:game_instance_inactive, game_id: 55)
 		inst = GameInstance.getAllScoresForGame(@gid)
 		expect(inst.length).to eq(3)
-		#puts @d.id
-		#puts @a.id
-		#puts @b.id
-
 		expect(inst[2].id).to eq(@d.id)
 		expect(inst[1].id).to eq(@a.id)
 		expect(inst[0].id).to eq(@b.id)
@@ -94,9 +90,40 @@ describe "getActive & getAll" do
 
 	end
 
+	it "gets the top 10 scores out of 15" do
+		sids = []
+		sids << FactoryGirl.create(:student)
+		sids << FactoryGirl.create(:student)
+		sids << FactoryGirl.create(:student)
+		g = FactoryGirl.create(:game, id: 5)
+
+		#throw in an instance for some other game
+		FactoryGirl.create(:game_instance_inactive, score: 23, student_id: sids.sample.id)
+		expected = createInstances(5, 15, sids, g.id)
+
+		actual = GameInstance.getTop10(g.id)
+		expect(actual.length).to eq(10)
+		checkTopInstances(actual, expected, 10)
+	end
+
+	it "gets all scores ordered out of 5 for top 10" do
+		sids = []
+		sids << FactoryGirl.create(:student)
+		sids << FactoryGirl.create(:student)
+		sids << FactoryGirl.create(:student)
+		g = FactoryGirl.create(:game, id: 5)
+
+		#throw in an instance for some other game
+		FactoryGirl.create(:game_instance_inactive, score: 23, student_id: sids.sample.id)
+		expected = createInstances(0, 5, sids, g.id)
+
+		actual = GameInstance.getTop10(g.id)
+		expect(actual.length).to eq(5)
+		checkTopInstances(actual, expected, 5)
+	end
+
 end
 
-#describe
 
 
 ########## HELPER METHODS ###########
@@ -108,4 +135,33 @@ def failUpdate(newScore, newQuestion)
 	expect(@i.score).to eq(old_score)
 	expect(@i.lastQuestion).to eq(old_q)
 end
+
+
+def createInstances(bad, total, sids, gid)
+	a = []
+	for i in 1..bad
+		x = FactoryGirl.create(:game_instance_inactive, score: i, student_id: sids.sample.id, game_id: gid)
+		a << x
+	end
+
+	# the latter part of the array
+	for i in bad+1..total
+		x =  FactoryGirl.create(:game_instance_inactive, score: i, student_id: sids.sample.id, game_id: gid)
+		a << x
+	end
+	return a
+end
+
+def checkTopInstances(actual, expected, num)
+	total = expected.length-1
+	for i in 0..num-1
+		expect(actual[i].id).to eq(expected[total-i].id)
+		expect(actual[i].score).to eq(expected[total-i].score)
+		expect(actual[i].game_id).to eq(expected[total-i].game_id)
+	end
+
+end
+
+
+
 end
