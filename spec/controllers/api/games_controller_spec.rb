@@ -36,7 +36,6 @@ RSpec.describe Api::GamesController, type: :controller do
 	 			expect(response.status).to eq(200)
 	 			expect(resultGames.length).to eq(1)
 	 			checkStudentGame(resultGames[0], g)
-	 			#expect(result["errors"][0]).to eq('user is not a trainer')
 			end
 		end
 	end
@@ -66,7 +65,8 @@ RSpec.describe Api::GamesController, type: :controller do
 
 	 			get :show, id: g.id
 	 			result = JSON.parse(response.body)
-	 			resultGames = result["game"]
+	 			resultGame = result["game"]
+	 			
 	 			expect(response.status).to eq(200)
 	 			expect(resultGame).to be_instance_of(Hash)
  				expect(resultGame).not_to be_instance_of(Array)
