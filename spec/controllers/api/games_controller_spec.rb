@@ -81,11 +81,12 @@ RSpec.describe Api::GamesController, type: :controller do
 			it "cannot get game due to 'no access' error (student)" do
 				user = FactoryGirl.create(:student, id: 333)
 	 			request.headers['Authorization'] =  user.auth_token
+	 			f = FactoryGirl.create(:game_b, trainer_id: 777)
 
-	 			get :show, id: 5
-	 			#result = JSON.parse(response.body)
-	 			#expect(response.status).to eq(401)
-	 			##expect(result["errors"][0]).to eq('user is not a trainer')
+	 			get :show, id: f.id
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(401)
+	 			expect(result["errors"][0]).to eq('user does not have access to this game')
 			end
 
 			it "cannot get game due to 'no access' error (trainer)" do
