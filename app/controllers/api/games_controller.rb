@@ -120,9 +120,9 @@ class Api::GamesController < ApplicationController
 
     def games_for_students(user, gid=nil)
       if gid.nil?
-        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description').where(student_email: user.email)
+        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description, games.game_template_id as template_id').where(student_email: user.email)
       else
-        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description').where(student_email: user.email, game_id: gid).first
+        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description, games.game_template_id as template_id').where(student_email: user.email, game_id: gid).first
       end
     end
 
