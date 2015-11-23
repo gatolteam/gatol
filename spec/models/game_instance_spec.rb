@@ -45,7 +45,7 @@ RSpec.describe GameInstance, type: :model do
 	  end
   end
 
-describe "getActive, getAllScoresFor*, getTop" do
+describe "getActive, getAllScoresFor*" do
 	before(:each) do
 		s = FactoryGirl.create(:student, id: 3)
 		g = FactoryGirl.create(:game, id: 1)
@@ -89,40 +89,62 @@ describe "getActive, getAllScoresFor*, getTop" do
 		expect(inst[0].id).to eq(e.id)
 
 	end
+end
+
+  describe "getTop" do
+	before(:each) do
+		@sids = []
+		@sids << FactoryGirl.create(:student)
+		@sids << FactoryGirl.create(:student)
+		@sids << FactoryGirl.create(:student)
+		@g = FactoryGirl.create(:game, id: 5)
+		#throw in an instance for some other game
+		FactoryGirl.create(:game_instance_inactive, score: 23, student_id: @sids.sample.id)
+	end
 
 	it "gets the top 10 scores out of 15" do
-		sids = []
-		sids << FactoryGirl.create(:student)
-		sids << FactoryGirl.create(:student)
-		sids << FactoryGirl.create(:student)
-		g = FactoryGirl.create(:game, id: 5)
+		expected = createInstances(5, 15, @sids, @g.id)
 
-		#throw in an instance for some other game
-		FactoryGirl.create(:game_instance_inactive, score: 23, student_id: sids.sample.id)
-		expected = createInstances(5, 15, sids, g.id)
-
-		actual = GameInstance.getTop10(g.id)
+		actual = GameInstance.getTop10(@g.id)
 		expect(actual.length).to eq(10)
 		checkTopInstances(actual, expected, 10)
 	end
 
 	it "gets all scores ordered out of 5 for top 10" do
-		sids = []
-		sids << FactoryGirl.create(:student)
-		sids << FactoryGirl.create(:student)
-		sids << FactoryGirl.create(:student)
-		g = FactoryGirl.create(:game, id: 5)
+		expected = createInstances(0, 5, @sids, @g.id)
 
-		#throw in an instance for some other game
-		FactoryGirl.create(:game_instance_inactive, score: 23, student_id: sids.sample.id)
-		expected = createInstances(0, 5, sids, g.id)
-
-		actual = GameInstance.getTop10(g.id)
+		actual = GameInstance.getTop10(@g.id)
 		expect(actual.length).to eq(5)
 		checkTopInstances(actual, expected, 5)
 	end
+  end
 
-end
+  describe "get*Summaries" do
+  	before(:each) do
+  		@t = FactoryGirl.create(:trainer, id: 5)
+  		@g = []
+		@g << FactoryGirl.create(:game, trainer_id: @t.id)
+		@g << FactoryGirl.create(:game, trainer_id: @t.id)
+
+		@sids = []
+		@sids << FactoryGirl.create(:student)
+		@sids << FactoryGirl.create(:student)
+		a = createInstances(2, 4, @sids, @g[0].id)
+		a = createInstances(2, 4, @sids, @g[1].id)
+  	end
+
+	it "gets all summaries for trainer's games" do
+		result = GameInstance.getAllGameSummaries(@t.id)
+		puts result
+		#expect().to eq()
+
+	end
+
+	it "gets all summaries for player" do
+		result = GameInstance.getPlayerSummaries
+	end
+  end
+
 
 
 

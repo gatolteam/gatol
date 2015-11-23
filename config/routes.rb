@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     end
     resources :games, :only => [:index, :show, :create, :destroy, :update]
     resources :game_templates, :only => [:index, :show, :create, :destroy, :update]
+    get "/game_instances/leaderboard", to: "game_instances#get_leaderboard"
     get "/game_instances/active", to: "game_instances#get_active"
     get "/game_instances/summary", to: "game_instances#get_stats_summary"
     get "/game_instances/stats", to: "game_instances#get_stats_game"

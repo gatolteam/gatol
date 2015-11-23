@@ -98,6 +98,16 @@ class Api::GameInstancesController < ApplicationController
     end
   end
 
+  def get_leaderboard
+    user = current_user
+    gid = params[:game_id]
+    leaderboard = GameInstance.getTop10(gid)
+
+    render json: {
+      ranking: student_friendly_json(leaderboard)
+    }, status: 200
+  end
+
 
   # View Games (Student): views all games that student is playing
   def get_active
@@ -188,6 +198,11 @@ class Api::GameInstancesController < ApplicationController
   end
 
   private
+
+    def student_friendly_json(i)
+      return i.to_json(only: [:score, :email])
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_game_instance
       @game_instance = GameInstance.find_by_id(params[:id])

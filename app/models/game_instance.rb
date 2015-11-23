@@ -62,7 +62,7 @@ class GameInstance < ActiveRecord::Base
 	end
 
 	def self.getTop(gid, x)
-		GameInstance.where(game_id: gid, active: false).order(score: :desc).limit(x)
+		GameInstance.joins(:student).select(:id, :game_id, 'students.email as email', :score).where(game_id: gid, active: false).order(score: :desc).limit(x)
 	end
 
 	def self.getTop10(gid)
@@ -70,7 +70,7 @@ class GameInstance < ActiveRecord::Base
 	end
 
 	def self.getAllGameSummaries(tid)
-		GameInstance.joins(:trainers).where(trainer_id: tid, active: false).group(:game_id, :student_id).limit(5).order(:student_id, :score)
+		GameInstance.joins(:game).where(active: false, games: { trainer_id: tid }).limit(5).order(:student_id, :score)
 		#games = GameInstance.select(:game_id).where(trainer_id: tid).group()
 	end
 
