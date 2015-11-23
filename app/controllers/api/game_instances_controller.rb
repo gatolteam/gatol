@@ -39,12 +39,29 @@ class Api::GameInstancesController < ApplicationController
 
   # POST /game_instances
   def create
-    game_instance = GameInstance.new(game_instance_params)
+    user = current_user
+    if user.is_trainer?
+      game = Game.find_by_id(params[:game_id])
+      render json: {
+        game_instance_id: 0,
+        game_description: game.description,
+        question_set_id: game.question_set_id,
+        template_id: game.game_template_id
+      }, status: 200
+      return
+    end
+
+    game_instance = GameInstance.new()
+    game_instance.game_id = params[:game_id]
+    game_instance.student_id = user.id
+    game_instance.score = 0
+    game_instance.lastQuestion = 0
+
     if game_instance.save
       game = game_instance.game
       game 
       render json: {
-          game_id: @game_instance.id,
+          game_instance_id: game_instance.id,
           game_description: game.description,
           question_set_id: game.question_set_id,
           template_id: game.game_template_id
@@ -57,6 +74,10 @@ class Api::GameInstancesController < ApplicationController
   # PATCH/PUT /game_instances/1
   def update
     user = current_user
+    if user.is_trainer?
+      render json: {}, status 200
+      return
+    end
     newScore = params[:score]
     q = params[:lastQuestion]
     game_instance = GameInstance.find_by_id(params[:id])
