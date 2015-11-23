@@ -58,8 +58,6 @@ class Api::GameInstancesController < ApplicationController
     game_instance.lastQuestion = 0
 
     if game_instance.save
-      game = game_instance.game
-      game 
       render json: {
           game_instance_id: game_instance.id,
           game_description: game.description,
@@ -75,7 +73,7 @@ class Api::GameInstancesController < ApplicationController
   def update
     user = current_user
     if user.is_trainer?
-      render json: {}, status 200
+      render json: {}, status: 200
       return
     end
     newScore = params[:score]
