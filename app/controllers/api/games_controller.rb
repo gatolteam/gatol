@@ -3,7 +3,6 @@ class Api::GamesController < ApplicationController
   respond_to :json
 
   # GET /games
-  # GET /games.json
   def index
     user = current_user
     if user.is_trainer?
@@ -12,40 +11,49 @@ class Api::GamesController < ApplicationController
         games: games
       }, status: 200
     else
+      games = games_for_students(user)
       render json: {
-        errors: ['user is not a trainer']
-      }, status: 401
+        games: games
+      }, status: 200
     end
+
   end
 
   # GET /games/1
-  # GET /games/1.json
   def show
     user = current_user
-    if user.is_trainer?
-      game = Game.find_by_id(params[:id])
-      if !game.nil? && game.trainer_id == user.id
-        render json: {
-          game: game
-        }, status: 200
-      elsif game.nil?
-        render json: {
+    game = Game.find_by_id(params[:id])
+    if game.nil?
+      render json: {
           errors: ['game does not exist']
         }, status: 400
-      else
-        render json: {
-          errors: ['trainer does not have access to this game']
-        }, status: 401
-      end
     else
-      render json: {
-        errors: ['user is not a trainer']
-      }, status: 401
+      if user.is_trainer?
+        if game.trainer_id == user.id
+          render json: {
+            game: game
+          }, status: 200
+        else
+          render json: {
+            errors: ['trainer does not have access to this game']
+          }, status: 401
+        end
+      else
+        enrolled = games_for_students(user)
+        if enrolled.nil?
+          render json: {
+              game: enrolled
+            }, status: 200
+        else
+          render json: {
+            errors: ['user does not have access to this game']
+          }, status: 401
+        end
+      end
     end
   end
 
   # POST /games
-  # POST /games.json
   def create
     user = current_user
     if user.is_trainer?
@@ -73,7 +81,6 @@ class Api::GamesController < ApplicationController
   end
 
   # DELETE /games/1
-  # DELETE /games/1.json
   def destroy
     user = current_user
     if user.is_trainer?
@@ -105,6 +112,14 @@ class Api::GamesController < ApplicationController
 
     def game_params
       params.require(:game).permit(:name, :description, :trainer_id, :question_set_id, :game_template_id)
+    end
+
+    def games_for_students_json(g)
+      return g.to_json(:only => [:name, :description])
+    end
+
+    def games_for_students(user)
+      return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description').where(student_email: user.email)
     end
 
     def errors(i)

@@ -4,7 +4,7 @@ RSpec.describe Api::GamesController, type: :controller do
 
 	#view all games created by trainer
 	describe "GET #index" do
-		context "successful" do
+		context "successful trainer" do
 			it "gets all of trainer's games" do
 				user = FactoryGirl.create(:trainer, id: 1234)
 	 			request.headers['Authorization'] =  user.auth_token
@@ -17,27 +17,33 @@ RSpec.describe Api::GamesController, type: :controller do
 	 			resultGames = result["games"]
 
 	 			expect(resultGames.length).to eq(g.length)
-	 			for i in 1..0
-	 				checkGame(resultGames[i], g[i])
-	 			end
+	 			checkTrainerGame(resultGames[0], g[1])
+	 			checkTrainerGame(resultGames[1], g[0])
 			end
 		end
 
-		context "unsuccessful" do
-			it "cannot get games due to 'not trainer' error" do
-				user = FactoryGirl.create(:student, id: 665)
+		context "successful student" do
+			it "gets all of student's games" do
+				g = FactoryGirl.create(:game_b)
+				user = FactoryGirl.create(:student, id: 665, email: "hello@me.com")
 	 			request.headers['Authorization'] =  user.auth_token
+	 			e = FactoryGirl.create(:game_enrollment, game_id: g.id, student_email: user.email)
+	 			e.game = g
+
 	 			get :index
 	 			result = JSON.parse(response.body)
-	 			expect(response.status).to eq(401)
-	 			expect(result["errors"][0]).to eq('user is not a trainer')
+	 			resultGames = result["games"]
+	 			expect(response.status).to eq(200)
+	 			expect(resultGames.length).to eq(1)
+	 			checkStudentGame(resultGames[0], g)
+	 			#expect(result["errors"][0]).to eq('user is not a trainer')
 			end
 		end
 	end
 
 	describe "GET #show" do
 		context "successful" do
-			it "gets specific game" do
+			it "gets specific game for trainer" do
 				user = FactoryGirl.create(:trainer, id: 1234)
 	 			request.headers['Authorization'] =  user.auth_token
 	 			a = FactoryGirl.create(:game_a, trainer_id: user.id)
@@ -48,21 +54,41 @@ RSpec.describe Api::GamesController, type: :controller do
 	 			resultGame = result["game"]
 	 			expect(resultGame).to be_instance_of(Hash)
  				expect(resultGame).not_to be_instance_of(Array)
- 				checkGame(resultGame, a)
+ 				checkTrainerGame(resultGame, a)
 			end
+
+			it "gets specific game for student" do
+				g = FactoryGirl.create(:game_b)
+				user = FactoryGirl.create(:student, id: 665, email: "hello@me.com")
+	 			request.headers['Authorization'] =  user.auth_token
+	 			e = FactoryGirl.create(:game_enrollment, game_id: g.id, student_email: user.email)
+	 			e.game = g
+
+	 			get :show, id: g.id
+	 			result = JSON.parse(response.body)
+	 			resultGames = result["game"]
+	 			expect(response.status).to eq(200)
+	 			expect(resultGame).to be_instance_of(Hash)
+ 				expect(resultGame).not_to be_instance_of(Array)
+	 			checkStudentGame(resultGame, g)
+	 			#expect(response.status).to eq(401)
+	 			##expect(result["errors"][0]).to eq('user is not a trainer')
+			end
+
 		end
 		context "unsuccessful" do
-			it "cannot get game due to 'not trainer' error" do
+
+			it "cannot get game due to 'no access' error (student)" do
 				user = FactoryGirl.create(:student, id: 333)
 	 			request.headers['Authorization'] =  user.auth_token
 
 	 			get :show, id: 5
-	 			result = JSON.parse(response.body)
-	 			expect(response.status).to eq(401)
-	 			expect(result["errors"][0]).to eq('user is not a trainer')
+	 			#result = JSON.parse(response.body)
+	 			#expect(response.status).to eq(401)
+	 			##expect(result["errors"][0]).to eq('user is not a trainer')
 			end
 
-			it "cannot get game due to 'no access' error" do
+			it "cannot get game due to 'no access' error (trainer)" do
 				user = FactoryGirl.create(:trainer, id: 333)
 	 			request.headers['Authorization'] =  user.auth_token
 	 			f = FactoryGirl.create(:game_b, trainer_id: 777)
@@ -146,11 +172,17 @@ RSpec.describe Api::GamesController, type: :controller do
 		end
 	end
 
-	def checkGame(act, exp)
+	def checkTrainerGame(act, exp)
 		expect(act["name"]).to eq(exp.name)
 		expect(act["description"]).to eq(exp.description)
 	 	expect(act["trainer_id"]).to eq(exp.trainer_id)
 	 	expect(act["game_template_id"]).to eq(exp.game_template_id)
+	end
+
+	def checkStudentGame(act, exp)
+		expect(act["name"]).to eq(exp.name)
+		expect(act["description"]).to eq(exp.description)
+		expect(act.has_key?("trainer_id")).to be_falsey
 	end
 
 end
