@@ -179,7 +179,7 @@ class Api::GameInstancesController < ApplicationController
         }, status: 404
       #elsif student is enrolled in this game
       else
-        stats = GameInstance.getAllScoresForGame(gid, pemail)
+        stats = GameInstance.getAllScoresForGame(gid, pid)
         render json: {
           history: stats
         }, status: 200
