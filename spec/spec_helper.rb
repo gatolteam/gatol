@@ -97,6 +97,8 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 
+  #config.include FactoryGirl::Syntax::methods
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)

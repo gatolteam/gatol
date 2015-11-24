@@ -146,8 +146,6 @@ end
   end
 
 
-
-
 ########## HELPER METHODS ###########
 
 def failUpdate(newScore, newQuestion)

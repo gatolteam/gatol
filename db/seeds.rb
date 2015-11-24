@@ -79,7 +79,9 @@ enroll = [
 ]
 geo = []
 enroll.each do |i|
-	geo << GameEnrollment.find_or_create_by(i)
+	ge = GameEnrollment.where(i).first_or_initialize
+	ge.save!(validate: false)
+	geo << ge
 end
 
 
@@ -122,5 +124,8 @@ instances = [
 
 io = []
 instances.each do |i|
-	io << GameInstance.find_or_create_by(i)
+	gi = GameInstance.where(i).first_or_initialize
+	gi.save!(validate: false)
+	io << gi
+
 end
