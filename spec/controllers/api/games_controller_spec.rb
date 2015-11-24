@@ -67,7 +67,7 @@ RSpec.describe Api::GamesController, type: :controller do
 	 			get :show, id: g.id
 	 			result = JSON.parse(response.body)
 	 			resultGame = result["game"]
-
+	 			#puts resultGame
 	 			expect(response.status).to eq(200)
 	 			expect(resultGame).to be_instance_of(Hash)
  				expect(resultGame).not_to be_instance_of(Array)
@@ -184,7 +184,7 @@ RSpec.describe Api::GamesController, type: :controller do
 	def checkStudentGame(act, exp)
 		expect(act["name"]).to eq(exp.name)
 		expect(act["description"]).to eq(exp.description)
-		expect(act["template_id"]).to eq(exp.game_template_id)
+		expect(act["game_template_id"]).to eq(exp.game_template_id)
 		expect(act.has_key?("trainer_id")).to be_falsey
 	end
 

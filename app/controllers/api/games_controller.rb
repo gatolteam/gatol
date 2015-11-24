@@ -46,7 +46,7 @@ class Api::GamesController < ApplicationController
           }, status: 401
         else
           render json: {
-              game: games_with_qs(game)
+              game: games_with_qs(game, true)
             }, status: 200
         end
       end
@@ -120,14 +120,18 @@ class Api::GamesController < ApplicationController
 
     def games_for_students(user, gid=nil)
       if gid.nil?
-        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description, games.game_template_id as template_id').where(student_email: user.email)
+        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description, games.game_template_id as game_template_id').where(student_email: user.email)
       else
-        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description, games.game_template_id as template_id').where(student_email: user.email, game_id: gid).first
+        return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description, games.game_template_id as game_template_id').where(student_email: user.email, game_id: gid).first
       end
     end
 
-    def games_with_qs(g)
-      return g.as_json(:include => { :question_set => { :include => :questions} })
+    def games_with_qs(g, for_student=false)
+      if for_student
+        g.as_json(:include => { :question_set => { :include => :questions, :except => [:id]} }, :except => [:trainer_id, :question_set_id])
+      else
+        return g.as_json(:include => { :question_set => { :include => :questions} })
+      end
     end
 
     def errors(i)
