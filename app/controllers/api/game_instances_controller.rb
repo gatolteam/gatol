@@ -82,12 +82,25 @@ class Api::GameInstancesController < ApplicationController
     q = params[:lastQuestion]
     game_instance = GameInstance.find_by_id(params[:id])
     if !game_instance.nil? && game_instance.student_id == user.id
-      if game_instance.update(newScore, q) 
+      begin 
+        if game_instance.update(newScore, q) 
+          render json: {
+          }, status: 200
+        end
+      rescue ArgumentError => e
         render json: {
-        }, status: 200
-      else
+          errors: ['update could not be completed', e.message]
+        }, status: 400
+
+      rescue ActiveRecord::RecordInvalid => e
         render json: {
-          errors: ['update could not be completed']
+          errors: ['update could not be completed', 
+                  'invalid record', 
+                    e.message]
+        }, status: 400
+      rescue StandardError => e
+        render json: {
+          errors: ['update could not be completed', e.message]
         }, status: 500
       end
     elsif game_instance.nil?

@@ -70,7 +70,17 @@ class GameInstance < ActiveRecord::Base
 	end
 
 	def self.getAllGameSummaries(tid)
-		GameInstance.joins(:game).select(:id, :score, :student_id, 'games.id as game_id').where(active: false, games: { trainer_id: tid }).group('games.id', :student_id).order(:student_id, :score).limit(5)
+		tgames = Game.where(trainer_id: tid)
+		s = {}
+		for g in tgames
+			s[g.id] = GameInstance.getTop(g.id, 5)	
+		end
+
+
+
+		#GameInstance.joins(:game).select(:id, :score, :student_id, 'games.id as game_id').where(active: false, games: { trainer_id: tid }).group('games.id', :student_id).order(:student_id, :score).limit(5)
+		#GameInstance.joins()
+
 		#games = GameInstance.select(:game_id).where(trainer_id: tid).group()
 	end
 
