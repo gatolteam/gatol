@@ -31,7 +31,7 @@ class Api::GamesController < ApplicationController
       if user.is_trainer?
         if game.trainer_id == user.id
           render json: {
-            game: game
+            game: games_with_qs(game)
           }, status: 200
         else
           render json: {
@@ -46,7 +46,7 @@ class Api::GamesController < ApplicationController
           }, status: 401
         else
           render json: {
-              game: enrolled
+              game: games_with_qs(enrolled)
             }, status: 200
         end
       end
@@ -124,6 +124,10 @@ class Api::GamesController < ApplicationController
       else
         return GameEnrollment.joins(:game).select('games.id as id, games.name as name, games.description as description, games.game_template_id as template_id').where(student_email: user.email, game_id: gid).first
       end
+    end
+
+    def games_with_qs(g)
+      return g.as_json(:include => { :question_set => { :include => :questions} })
     end
 
     def errors(i)

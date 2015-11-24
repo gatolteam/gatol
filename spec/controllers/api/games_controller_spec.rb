@@ -51,6 +51,7 @@ RSpec.describe Api::GamesController, type: :controller do
 	 			get :show, id: a.id
 	 			result = JSON.parse(response.body)
 	 			resultGame = result["game"]
+	 			#puts resultGame
 	 			expect(resultGame).to be_instance_of(Hash)
  				expect(resultGame).not_to be_instance_of(Array)
  				checkTrainerGame(resultGame, a)
