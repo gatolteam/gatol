@@ -49,11 +49,11 @@ class GameInstance < ActiveRecord::Base
 
 	#Gets (score, date) tuples for a certain game and orders by student_id
 	#If a student is specified, only scores for that student are returned
-	def self.getAllScoresForGame(gid, sid=nil)
+	def self.getAllScoresForGame(gid, student_email=nil)
 		if sid.nil?
 			GameInstance.where(game_id: gid, active: false).order(student_id: :asc, score: :desc)
 		else
-			GameInstance.where(student_id: sid, game_id: gid, active: false).order(score: :desc)
+			GameInstance.where(student_email: student_email, game_id: gid, active: false).order(updated_at: :desc)
 		end
 	end
 
