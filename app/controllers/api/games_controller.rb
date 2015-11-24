@@ -46,7 +46,7 @@ class Api::GamesController < ApplicationController
           }, status: 401
         else
           render json: {
-              game: games_with_qs(enrolled)
+              game: games_with_qs(game)
             }, status: 200
         end
       end
