@@ -13,7 +13,7 @@ templates = [
 gto = []
 
 templates.each do |i|
-	gto << GameTemplate.create(i)
+	gto << GameTemplate.find_or_create_by(i)
 end
 
 
@@ -22,6 +22,7 @@ end
 students = [
 	{ username: 'fredman', email: 'fred@man.com', password: '1234hello', password_confirmation: '1234hello'}, 
 	{ username: 'sally', email: 'sally@joe.com', password: '1234hello', password_confirmation: '1234hello'}, 
+	{ username: 'mo', email: 'mo@joe.com', password: '1234hello', password_confirmation: '1234hello'}
 ]
 
 so = []
@@ -29,7 +30,8 @@ students.each do |i|
 	#s = Student.new(i)
 	#s.skip_confirmation!
 	#s.save!
-	so << Student.create!(i)
+	s = Student.find_by(username: i[:username], email: i[:email]) || Student.create!(i)
+	so << s
 end
 
 
@@ -45,7 +47,8 @@ trainers.each do |i|
 	#t = Trainer.new(i)
 	#t.skip_confirmation!
 	#t.save!
-	to << Trainer.create!(i)
+	t = Trainer.find_by(username: i[:username], email: i[:email])|| Trainer.create!(i)
+	to << t
 end
 
 # QUESTION SET
@@ -61,6 +64,63 @@ games = [
 
 go = []
 games.each do |i|
-	go << Game.create(i)
+	go << Game.find_or_create_by(i)
 end
 
+# GAME ENROLLMENT
+# Game 0 assigned to Students 0, 1, 2
+# Game 1 assigned to Students 0, 2
+enroll = [
+	{ game_id: go[0].id, trainer_id: go[0].trainer_id, student_email: so[0].email, registered: true },
+	{ game_id: go[0].id, trainer_id: go[0].trainer_id, student_email: so[1].email, registered: true },
+	{ game_id: go[0].id, trainer_id: go[0].trainer_id, student_email: so[2].email, registered: true },
+	{ game_id: go[1].id, trainer_id: go[1].trainer_id, student_email: so[0].email, registered: true },
+	{ game_id: go[1].id, trainer_id: go[1].trainer_id, student_email: so[2].email, registered: true }
+]
+geo = []
+enroll.each do |i|
+	geo << GameEnrollment.find_or_create_by(i)
+end
+
+
+
+# GAME INSTANCES
+
+instances = [
+
+	# GAME 0 DATA
+	# STUDENT 0
+	{ game_id: go[0].id, student_id: so[0].id, score: 50, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[0].id, score: 40, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[0].id, score: 30, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[0].id, score: 20, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[0].id, score: 15, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[0].id, score: 10, lastQuestion: 1, active: true },
+
+	# STUDENT 1
+	{ game_id: go[0].id, student_id: so[1].id, score: 90, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[1].id, score: 45, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[1].id, score: 25, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[1].id, score: 2, lastQuestion: 0, active: true },
+
+	# STUDENT 2
+	{ game_id: go[0].id, student_id: so[2].id, score: 80, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[2].id, score: 65, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[2].id, score: 35, lastQuestion: 2, active: false },
+	{ game_id: go[0].id, student_id: so[2].id, score: 13, lastQuestion: 1, active: true },
+
+
+	# GAME 1 DATA
+	# STUDENT 0
+	{ game_id: go[1].id, student_id: so[0].id, score: 20, lastQuestion: 2, active: false },
+	{ game_id: go[1].id, student_id: so[0].id, score: 5, lastQuestion: 1, active: true },
+
+	# STUDENT 1
+	{ game_id: go[1].id, student_id: so[2].id, score: 15, lastQuestion: 2, active: false },
+	{ game_id: go[1].id, student_id: so[2].id, score: 7, lastQuestion: 0, active: true }
+]
+
+io = []
+instances.each do |i|
+	io << GameInstance.find_or_create_by(i)
+end
