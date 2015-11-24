@@ -129,8 +129,8 @@ end
 		@sids = []
 		@sids << FactoryGirl.create(:student)
 		@sids << FactoryGirl.create(:student)
-		a = createInstances(2, 4, @sids, @g[0].id)
-		a = createInstances(2, 4, @sids, @g[1].id)
+		createInstancesNonrandom(2, 4, @sids, @g[0].id)
+		createInstancesNonrandom(2, 4, @sids, @g[1].id)
   	end
 
 	it "gets all summaries for trainer's games" do
@@ -141,7 +141,16 @@ end
 	end
 
 	it "gets all summaries for player" do
-		result = GameInstance.getPlayerSummaries
+		result = GameInstance.getPlayerSummaries(@g[0].id)
+		expect(result.length).to eq(2)
+		expect(result[0][:avg_score]).to eq(3)
+		expect(result[0][:highest_score]).to eq(4)
+		expect(result[0][:student_id]).to eq(@sids[0].id)
+
+		expect(result[1][:avg_score]).to eq(2)
+		expect(result[1][:highest_score]).to eq(3)
+		expect(result[1][:student_id]).to eq(@sids[1].id)
+
 	end
   end
 
@@ -172,6 +181,25 @@ def createInstances(bad, total, sids, gid)
 	return a
 end
 
+def createInstancesNonrandom(bad, total, sids, gid)
+	a = []
+	for i in 1..bad
+		sidx = i % sids.length
+		x = FactoryGirl.create(:game_instance_inactive, score: i, student_id: sids[sidx].id, game_id: gid)
+		a << x
+	end
+
+	# the latter part of the array
+	for i in bad+1..total
+		sidx = i % sids.length
+		x =  FactoryGirl.create(:game_instance_inactive, score: i, student_id: sids[sidx].id, game_id: gid)
+		#puts x.student_id
+		#puts x.score
+		a << x
+	end
+	return a
+end
+
 def checkTopInstances(actual, expected, num)
 	total = expected.length-1
 	for i in 0..num-1
@@ -182,6 +210,13 @@ def checkTopInstances(actual, expected, num)
 
 end
 
+
+def checkGameSummaries()
+	expect
+end
+
+def checkPlayerSummaries()
+end
 
 
 end

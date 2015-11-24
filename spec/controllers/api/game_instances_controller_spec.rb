@@ -89,7 +89,7 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 			get :get_leaderboard, game_id: game
 
 			result = JSON.parse(response.body)
-			resultRank = JSON.parse(result["ranking"])
+			resultRank = result["ranking"]
 			
 			expect(response.status).to eq(200)
 			
