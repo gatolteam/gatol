@@ -119,7 +119,7 @@ end
 	end
   end
 
-  describe "get*Summaries" do
+  describe "getPlayerSummaries" do
   	before(:each) do
   		@t = FactoryGirl.create(:trainer, id: 5)
   		@g = []
@@ -133,16 +133,6 @@ end
 		createInstancesNonrandom(2, 4, @sids, @g[1].id)
   	end
 
-	it "gets all summaries for trainer's games" do
-		result = GameInstance.getAllGameSummaries(@t.id)
-
-		puts result
-		expect(result.length).to eq(2)
-		expect(result[@g[0].id].length).to eq(5)
-		expect(result[@g[1].id]).length).to eq(5)
-
-	end
-
 	it "gets all summaries for player" do
 		result = GameInstance.getPlayerSummaries(@g[0].id)
 		expect(result.length).to eq(2)
@@ -153,6 +143,30 @@ end
 		expect(result[1][:avg_score]).to eq(2)
 		expect(result[1][:highest_score]).to eq(3)
 		expect(result[1][:student_id]).to eq(@sids[1].id)
+
+	end
+  end
+
+  describe "getAllGameSummaries" do
+  	before(:each) do
+  		@t = FactoryGirl.create(:trainer, id: 5)
+  		@g = []
+		@g << FactoryGirl.create(:game, trainer_id: @t.id)
+		@g << FactoryGirl.create(:game, trainer_id: @t.id)
+
+		@sids = []
+		@sids << FactoryGirl.create(:student)
+		@sids << FactoryGirl.create(:student)
+		@inst = []
+		@inst << createInstancesNonrandom(2, 4, @sids, @g[0].id)
+		@inst << createInstancesNonrandom(2, 5, @sids, @g[1].id)
+  	end
+
+	it "gets all summaries for trainer's games" do
+		result = GameInstance.getAllGameSummaries(@t.id)
+
+		expect(result.length).to eq(2)
+		checkGameSummaries(result)
 
 	end
   end
@@ -196,8 +210,6 @@ def createInstancesNonrandom(bad, total, sids, gid)
 	for i in bad+1..total
 		sidx = i % sids.length
 		x =  FactoryGirl.create(:game_instance_inactive, score: i, student_id: sids[sidx].id, game_id: gid)
-		#puts x.student_id
-		#puts x.score
 		a << x
 	end
 	return a
@@ -214,12 +226,18 @@ def checkTopInstances(actual, expected, num)
 end
 
 
-def checkGameSummaries()
-	expect
+def checkGameSummaries(result)
+	k = @g.length - 1
+	for i in 0..k
+		game = @g[i]
+		top = result[game.id]
+		actual = @inst[i].length
+		expect(top.length).to eq(actual)
+		for j in 0..top.length-1
+			expect(top[j].id).to eq(@inst[i][actual-1-j].id)
+			expect(top[j].score).to eq(@inst[i][actual-1-j].score)
+		end
+	end
 end
-
-def checkPlayerSummaries()
-end
-
 
 end
