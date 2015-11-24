@@ -76,7 +76,7 @@ class GameInstance < ActiveRecord::Base
 			s[g.id] = GameInstance.getTop(g.id, 5)	
 		end
 
-
+		return s
 
 		#GameInstance.joins(:game).select(:id, :score, :student_id, 'games.id as game_id').where(active: false, games: { trainer_id: tid }).group('games.id', :student_id).order(:student_id, :score).limit(5)
 		#GameInstance.joins()

@@ -135,8 +135,11 @@ end
 
 	it "gets all summaries for trainer's games" do
 		result = GameInstance.getAllGameSummaries(@t.id)
+
 		puts result
-		#expect().to eq()
+		expect(result.length).to eq(2)
+		expect(result[@g[0].id].length).to eq(5)
+		expect(result[@g[1].id]).length).to eq(5)
 
 	end
 

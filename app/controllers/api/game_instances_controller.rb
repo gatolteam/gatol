@@ -87,11 +87,6 @@ class Api::GameInstancesController < ApplicationController
           render json: {
           }, status: 200
         end
-      rescue ArgumentError => e
-        render json: {
-          errors: ['update could not be completed', e.message]
-        }, status: 400
-
       rescue ActiveRecord::RecordInvalid => e
         render json: {
           errors: ['update could not be completed', 
@@ -101,7 +96,7 @@ class Api::GameInstancesController < ApplicationController
       rescue StandardError => e
         render json: {
           errors: ['update could not be completed', e.message]
-        }, status: 500
+        }, status: 400
       end
     elsif game_instance.nil?
       render json: {
