@@ -26,10 +26,10 @@ class GameInstance < ActiveRecord::Base
     			self.score = score
     			self.lastQuestion = lastQuestion
     			checkGameOngoing
-    			self.save!
+    			return self.save!
     		end
     	end
-    	self.active
+    	return self.active
     end
 
     def checkGameOngoing
