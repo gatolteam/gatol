@@ -11,7 +11,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 	 			FactoryGirl.create(:question_set_repeat, trainer_id: 555)
 	 			get :index
 	 			result = JSON.parse(response.body)
-	 			expect(result["question_sets"]).to eq("[]")
+	 			expect(result["question_sets"]).to eq([])
  			end
  		end
 
@@ -27,7 +27,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
  				FactoryGirl.create(:question_set_repeat, trainer_id: 6291)
  				get :index
  				@result = JSON.parse(response.body)
- 				@resultSet = JSON.parse(@result["question_sets"])
+ 				@resultSet = @result["question_sets"]
 			end
 
 	 			it "only gets QuestionSets belonging to specified User" do
@@ -83,7 +83,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
  				s0 = FactoryGirl.create(:question_set_repeat, trainer_id: 1234, setname: "lame-o")
  				get :show, id: s1.id
  				result = JSON.parse(response.body)
- 				resultSet = JSON.parse(result["question_set"])
+ 				resultSet = result["question_set"]
 
  				expect(resultSet).to be_instance_of(Hash)
  				expect(resultSet).not_to be_instance_of(Array)
@@ -146,7 +146,7 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			end
 
 			it "saves new set" do
-				resultSet = JSON.parse(@result["question_set"])
+				resultSet = @result["question_set"]
 				set = QuestionSet.find(resultSet["id"])
 				expect(resultSet["trainer_id"]).to eq(@user.id)
 				expect(resultSet["setname"]).to eq(set.setname)

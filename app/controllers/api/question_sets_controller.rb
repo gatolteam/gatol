@@ -104,7 +104,7 @@ class Api::QuestionSetsController < ApplicationController
 
 
   def qs_json(qs)
-    return qs.to_json(:include => :questions) 
+    return qs.as_json(:include => :questions) 
   end
 
 end
