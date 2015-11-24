@@ -152,7 +152,7 @@ class Api::GameInstancesController < ApplicationController
   def get_stats_game
     user = current_user
     gid = params[:game_id]
-    stats = GameInstance.getAllScoresForGame(gid, user.email)
+    stats = GameInstance.getAllScoresForGame(gid, user.id)
     render json: {
       history: stats
     }
@@ -179,7 +179,7 @@ class Api::GameInstancesController < ApplicationController
         }, status: 404
       #elsif student is enrolled in this game
       else
-        stats = GameInstance.getAllScoresForGame(gid, pemail)
+        stats = GameInstance.getAllScoresForGame(gid, pid)
         render json: {
           history: stats
         }, status: 200
