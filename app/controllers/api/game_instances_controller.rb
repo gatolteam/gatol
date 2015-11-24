@@ -152,7 +152,7 @@ class Api::GameInstancesController < ApplicationController
   def get_stats_game
     user = current_user
     gid = params[:game_id]
-    stats = GameInstance.getAllScoresForGame(gid, user.id)
+    stats = GameInstance.getAllScoresForGame(gid, user.email)
     render json: {
       history: stats
     }
