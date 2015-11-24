@@ -53,7 +53,7 @@ class GameInstance < ActiveRecord::Base
 		if sid.nil?
 			GameInstance.where(game_id: gid, active: false).order(student_id: :asc, score: :desc)
 		else
-			GameInstance.where(student_id: student_email, game_id: gid, active: false).order(score: :desc)
+			GameInstance.where(student_id: sid, game_id: gid, active: false).order(score: :desc)
 		end
 	end
 

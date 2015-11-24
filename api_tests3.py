@@ -413,7 +413,7 @@ class GatolTest:
                              + 'student_email=' + payload['student_email']
                              + '&game_id=' + str(payload['game_id']), headers = headers)
             if r.status_code > 299:
-                raise ValueError("failed to get student stats")
+                raise ValueError("failed to get student stats(trainer) "  + str(r.status_code))
             print(r.json())
             print(r.json()[u'history'])
             print(type(r.json()[u'history']))
@@ -425,7 +425,7 @@ class GatolTest:
             r = requests.get(SERVER + '/api/game_instances/stats?'
                              + '&game_id=' + str(payload['game_id']), headers = headers)
             if r.status_code > 299:
-                raise ValueError("failed to get student stats")
+                raise ValueError("failed to get student stats(student) " + str(r.status_code))
             print(r.json())
             print(r.json()[u'history'])
             print(type(r.json()[u'history']))
