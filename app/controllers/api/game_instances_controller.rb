@@ -57,6 +57,8 @@ class Api::GameInstancesController < ApplicationController
     game_instance.score = 0
     game_instance.lastQuestion = 0
 
+    game = Game.find_by_id(params[:game_id])
+
     if game_instance.save
       render json: {
           game_instance_id: game_instance.id,
