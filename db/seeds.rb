@@ -6,8 +6,8 @@
 # GAME TEMPLATES
 templates = [
 	{ name: 'Blobber', description: 'The bubble game that pops your brain out.'},
-	{ name: 'Run!', description: 'Run from the dogs and collect homework on the way to school!'},
-	{ name: 'Tong', description: 'Like pong but with food.'}
+	{ name: 'Basket', description: 'Catch the balls corresponding to the correct answer!'}
+	#{ name: 'Tong', description: 'Like pong but with food.'}
 ]
 
 gto = []
