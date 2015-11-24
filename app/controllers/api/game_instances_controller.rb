@@ -219,7 +219,7 @@ class Api::GameInstancesController < ApplicationController
   private
 
     def student_friendly_json(i)
-      return i.to_json(only: [:score, :email])
+      return i.as_json(only: [:score, :email])
     end
 
     # Use callbacks to share common setup or constraints between actions.
