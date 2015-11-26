@@ -81,8 +81,13 @@ class Api::QuestionSetsController < ApplicationController
     if user.is_trainer?
       question_set = QuestionSet.find_by_id(params[:id])
       if !question_set.nil? && question_set.trainer_id == user.id
-        question_set.destroy
-        render json: {}, status: 200
+        games = Game.where(question_set_id: question_set.id)
+        if games.nil?
+          question_set.destroy
+          render json: {}, status: 200
+        else
+          render json: games, status: 400
+        end
       elsif question_set.nil?
         render json: {
           errors: ['question set does not exist']
