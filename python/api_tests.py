@@ -11,7 +11,7 @@ import random
 # SERVER = 'http://localhost:3000'
 # SERVER = 'https://calm-garden-9078.herokuapp.com'
 SERVER = 'https://gatol.herokuapp.com'
-TEST = ""
+TEST = "test001"
 FILEPATH = 'Book1.csv'
 TIMEOUT = 200
 PASS = 'samplePass'
