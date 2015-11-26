@@ -2,19 +2,56 @@
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+
+      div.gatol {
+        font-weight: bold;
+        color: #FFFFFF;
+        letter-spacing: -1pt;
+        word-spacing: 2pt;
+        font-size: 30px;
+        text-align: center;
+        height: 50px;
+        line-height: 50px;
+        font-family: CarterOne, PatuaOne;
+        background-color: #448ed3;
+      }
+
+      div.head {
+        margin-bottom: 10px;
+      }
+
+      div.tail {
+        margin-top: 10px;
+      }
+
+      div.text-field {
+        margin: 20px;
+      }
+
+    </style>
   </head>
   <body>
-    <h1>Hi customer,</h1>
-    <p>
-      <%= @user.username %> has invited you to game <%= @game.name %>
-    </p>
 
-    <p>
-      <%= @game.description %>
-    </p>
+    <div class='gatol head'>
+      Game-a-thon of Learning
+    </div>
 
-    <p>
-      Please login or sign up with this email account to access the game.
-    </p>
+    <div class='text-field'>
+      <h1>Hi customer,</h1>
+      <p>
+        <%= @user.username %> has invited you to game <%= @game.name %>
+      </p>
+
+      <p>
+        <%= @game.description %>
+      </p>
+
+      <p>
+        Please login or sign up with this email account to access the game.
+      </p>
+    </div>
+
+    <div class='gatol tail'/>
   </body>
 </html>
