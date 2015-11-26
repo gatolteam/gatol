@@ -40,7 +40,7 @@ RSpec.describe Api::StudentsController, type: :controller do
 
 		    it "renders error message" do
 		        user_response = JSON.parse(response.body, symbolize_names: true)
-		        expect(user_response[:errors][:email]).to include "can't be blank"
+		        expect(user_response).to have_key(:errors)
 		    end
 
 		    it "status = 422" do

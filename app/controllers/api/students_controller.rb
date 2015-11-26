@@ -20,10 +20,16 @@ class Api::StudentsController < ApplicationController
         end
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
-        render json: { errors: user.errors }, status: 422
+        err = []
+        user.errors.each do |key, arr|
+          arr.each do |m|
+            err << key + " " + m
+          end
+        end
+        render json: { errors: err }, status: 422
       end
     else
-      render json: { 'email' => ['has already been taken'] }, status: 422
+      render json: { errors: ['Email has already been taken'] }, status: 422
     end
   end
 
@@ -36,11 +42,17 @@ class Api::StudentsController < ApplicationController
       if user.save
         render json: { email: user[:email] }, status: 200, location: [:api, user]
       else
-        render json: { errors: user.errors }, status: 422
+        err = []
+        user.errors.each do |key, arr|
+          arr.each do |m|
+            err << key + " " + m
+          end
+        end
+        render json: { errors: err }, status: 422
       end
 
     else
-      render json: { errors: {'password' => ['Invalid password']}}, status: 422
+      render json: { errors: ['Invalid password'] }, status: 422
     end
   end
 

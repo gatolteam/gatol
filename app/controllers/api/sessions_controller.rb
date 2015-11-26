@@ -12,7 +12,7 @@ class Api::SessionsController < ApplicationController
 			render json: { errors: ["Invalid email"] }, status: 422
 
 		elsif !user.confirmed
-			render json: { errors: "Emails needs to be verified" }, status: 422
+			render json: { errors: ["Emails needs to be verified"] }, status: 422
 
 		elsif user.valid_password? user_password
 			sign_in user, store: false
