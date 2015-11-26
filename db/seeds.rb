@@ -32,6 +32,8 @@ students.each do |i|
 	#s.skip_confirmation!
 	#s.save!
 	s = Student.find_by(username: i[:username], email: i[:email]) || Student.create!(i)
+	s.confirmed = true
+	s.save!
 	so << s
 end
 
@@ -49,6 +51,8 @@ trainers.each do |i|
 	#t.skip_confirmation!
 	#t.save!
 	t = Trainer.find_by(username: i[:username], email: i[:email])|| Trainer.create!(i)
+	t.confirmed = true
+	t.save!
 	to << t
 end
 
