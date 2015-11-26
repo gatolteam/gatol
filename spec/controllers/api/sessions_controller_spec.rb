@@ -5,6 +5,7 @@ RSpec.describe Api::SessionsController, type: :controller do
 	describe "POST#create" do
 		before(:each) do
 			@user = FactoryGirl.create :student
+			@user.confirmed = true
 		end
 
 		context "correct email and password" do
@@ -16,7 +17,7 @@ RSpec.describe Api::SessionsController, type: :controller do
 			it "returns auth_token" do
 				@user.reload
 				user_response = JSON.parse(response.body, symbolize_names: true)
-				expect(response.status).to eq(200)
+				expect(user_response[:auth_token]).to eql @user.auth_token
 			end
 
 
