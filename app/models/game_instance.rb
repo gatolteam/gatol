@@ -14,17 +14,27 @@ class GameInstance < ActiveRecord::Base
     #Returns true if update succeeds and false if not
     #Will raise ArgumentError if lastQuestion is invalid
     def update(score, lastQuestion)
+    	s = score
+    	q = lastQuestion
+    	if score.is_a? String 
+    		s = score.to_i
+    	end
+
+    	if lastQuestion.is_a? String
+    		q = lastQuestion.to_i
+    	end
+
     	if self.active
     		if @qcount.nil?
 				@qcount = self.game.question_set.getNumberQuestions
 			end
-    		if lastQuestion > @qcount
+    		if q > @qcount
     			raise ArgumentError, 'invalid lastQuestion: exceeds number of questions'
-    		elsif lastQuestion < self.lastQuestion
+    		elsif q < self.lastQuestion
     			raise ArgumentError, 'invalid lastQuestion: smaller than last stored question number'
     		else
-    			self.score = score
-    			self.lastQuestion = lastQuestion
+    			self.score = s
+    			self.lastQuestion = q
     			checkGameOngoing
     			return self.save!
     		end

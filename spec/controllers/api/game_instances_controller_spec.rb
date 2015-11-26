@@ -190,14 +190,67 @@ RSpec.describe Api::GameInstancesController, type: :controller do
  				expect(result["errors"][0]).to eq(msg)
 			end
 
-
 		end
 	end
 
 	describe "PUT #update" do
-		it "only allows score updates for student owner of game" do
-			
+		it "returns empty success response for trainer" do
+			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		put :update, id: 0
+
+	 		expect(JSON.parse(response.body)).to be_empty
+			expect(response.status).to eq(200)
+		end
+
+		it "updates score for student owner of game" do
+			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		inst = FactoryGirl.create(:game_instance, student_id: user.id)
+
+	 		put :update, id: inst.id, score: 100, lastQuestion: 1
+
+	 		expect(JSON.parse(response.body)).to be_empty
+			expect(response.status).to eq(200)
   		end
+
+  		it "handles update errors" do
+			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		inst = FactoryGirl.create(:game_instance, lastQuestion: 2, student_id: user.id)
+
+	 		put :update, id: inst.id, score: 100, lastQuestion: 1
+
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('update could not be completed')
+  		end
+
+  		it "cannot update due to 'not exist' error" do
+  			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		put :update, id: 3, score: 100, lastQuestion: 1
+
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('game instance does not exist')
+  		end
+
+  		it "cannot update due to 'no access' error" do
+  			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		inst = FactoryGirl.create(:game_instance, lastQuestion: 2, student_id: user.id+1)
+
+	 		put :update, id: inst.id, score: 100, lastQuestion: 1
+
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(401)
+			expect(result["errors"][0]).to eq('user does not have access to this game instance')
+  		end
+
+
 	end
 
 	describe "GET #get_active" do
