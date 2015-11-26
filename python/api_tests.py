@@ -11,7 +11,7 @@ import random
 # SERVER = 'http://localhost:3000'
 # SERVER = 'https://calm-garden-9078.herokuapp.com'
 SERVER = 'https://gatol.herokuapp.com'
-TEST = ""
+TEST = "test001"
 FILEPATH = 'Book1.csv'
 TIMEOUT = 200
 PASS = 'samplePass'
@@ -1076,10 +1076,10 @@ if __name__ == '__main__':
         index += 1
         result = test[1]()
         if result[0]:
-            print 'PASSED {1}'.format(index, test[0])
+            print('PASSED {1}'.format(index, test[0]))
             num_pass += 1
         else:
-            print 'FAILED {1} ::: {2}'.format(index, test[0], result[1])
+            print('FAILED {1} ::: {2}'.format(index, test[0], result[1]))
     print("***")
     print(str(num_pass) + "/" + str(len(test_list)) + " tests passed")
         

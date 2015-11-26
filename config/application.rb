@@ -21,6 +21,7 @@ module Gatol
     # config.i18n.default_locale = :de
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
+    config.exceptions_app = self.routes
 
     config.generators do |g|
       g.test_framework :rspec, fixture: true
