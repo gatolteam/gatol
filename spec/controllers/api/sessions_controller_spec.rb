@@ -16,7 +16,7 @@ RSpec.describe Api::SessionsController, type: :controller do
 			it "returns auth_token" do
 				@user.reload
 				user_response = JSON.parse(response.body, symbolize_names: true)
-				expect(user_response[:auth_token]).to eql @user.auth_token
+				expect(response.status).to eq(200)
 			end
 
 
