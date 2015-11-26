@@ -51,10 +51,10 @@ class Api::TrainersController < ApplicationController
 
 
   def verify
-    user = Trainer.find_by(auth_token: params['auth_token'])
-    if user.nil?
+    @user = Trainer.find_by(auth_token: params['auth_token'])
+    if @user.nil?
       render status: 404
-    elsif user.update_attribute(:confirmed, true)
+    elsif @user.update_attribute(:confirmed, true)
       render "api/trainers/verify.html.erb"
     else
       render status: 500
