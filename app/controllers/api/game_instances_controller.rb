@@ -160,10 +160,16 @@ class Api::GameInstancesController < ApplicationController
   # View Games (Student): views all games that student is playing
   def get_active
     user = current_user
-    active = GameInstance.where(student_id: user.id, active: true)
-    render json: {
-      games: active
-    }, status: 200
+    if user.is_trainer?
+      render json: {
+        errors: ['trainers do not own game instances']
+      }, status: 401
+    else
+      active = GameInstance.getActiveGames(user.id)
+      render json: {
+        game_instances: active
+      }, status: 200
+    end
   end
 
   # View Player Statistics for all games (Student)
@@ -178,11 +184,23 @@ class Api::GameInstancesController < ApplicationController
   # View Player Statistics for specific game (Student)
   def get_stats_game
     user = current_user
-    gid = params[:game_id]
-    stats = GameInstance.getAllScoresForGame(gid, user.id)
-    render json: {
-      history: stats
-    }, status: 200
+    if user.is_trainer?
+      render json: {
+        errors: ['trainers do not own game instances']
+      }, status: 401
+    else
+      gid = params[:game_id]
+      if gid.nil?
+        render json: {
+          errors: ['missing game_id parameter']
+        }, status: 400
+      else
+        stats = GameInstance.getAllScoresForGame(gid, user.id)
+        render json: {
+          history: stats
+        }, status: 200
+      end
+    end
   end
 
   # View Game Statistics for specific player on specific game (Trainer)

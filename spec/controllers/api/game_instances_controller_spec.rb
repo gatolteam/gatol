@@ -238,6 +238,28 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 			expect(result["errors"][0]).to eq('game instance does not exist')
   		end
 
+  		it "cannot update due to 'missing score param' error" do
+  			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		put :update, id: 3, lastQuestion: 1
+
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('missing new score parameter')
+  		end
+
+  		it "cannot update due to 'missing question param' error" do
+  			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		put :update, id: 3, score: 100
+
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('missing lastQuestion parameter')
+  		end
+
   		it "cannot update due to 'no access' error" do
   			user = FactoryGirl.create(:student)
 	 		request.headers['Authorization'] =  user.auth_token
@@ -254,11 +276,66 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 	end
 
 	describe "GET #get_active" do
-		pending
+		it "gets active games for student" do
+			user = FactoryGirl.create(:student)
+ 			request.headers['Authorization'] =  user.auth_token
+ 			e = FactoryGirl.create(:game_instance, game_id: 55, student_id: user.id)
+ 			f = FactoryGirl.create(:game_instance, game_id: 52, student_id: user.id)
+ 			g = FactoryGirl.create(:game_instance_inactive, game_id: 52, student_id: user.id)
+
+ 			get :get_active
+ 			result = JSON.parse(response.body)
+ 			expect(response.status).to eq(200)
+ 			expect(result["game_instances"].length).to eq(2)
+ 			checkGameInstance(result["game_instances"][0], e)
+ 			checkGameInstance(result["game_instances"][1], f)
+		end
+		it "does not get for trainers" do
+			user = FactoryGirl.create(:trainer)
+ 			request.headers['Authorization'] =  user.auth_token
+ 			get :get_active
+ 			result = JSON.parse(response.body)
+			expect(response.status).to eq(401)
+			expect(result["errors"][0]).to eq('trainers do not own game instances')
+		end
 	end
 
 	describe "GET #get_stats_game" do
-		pending
+		it "gets stats on specific game for student" do
+			user = FactoryGirl.create(:student)
+ 			request.headers['Authorization'] =  user.auth_token
+ 			game = FactoryGirl.create(:game)
+ 			e = FactoryGirl.create(:game_instance, game_id: 55, student_id: user.id)
+ 			f = FactoryGirl.create(:game_instance_inactive, game_id: game.id, student_id: user.id)
+ 			g = FactoryGirl.create(:game_instance_inactive, game_id: game.id, student_id: user.id)
+
+ 			get :get_stats_game, game_id: game.id
+ 			result = JSON.parse(response.body)
+ 			expect(response.status).to eq(200)
+ 			expect(result["history"].length).to eq(2)
+ 			checkGameInstance(result["history"][0], f)
+ 			checkGameInstance(result["history"][1], g)
+		end
+
+		it "cannot update due to 'missing gameid param' error" do
+  			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		get :get_stats_game
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('missing game_id parameter')
+  		end
+
+		it "does not get for trainers" do
+			user = FactoryGirl.create(:trainer)
+ 			request.headers['Authorization'] =  user.auth_token
+
+ 			get :get_stats_game
+ 			result = JSON.parse(response.body)
+			expect(response.status).to eq(401)
+			expect(result["errors"][0]).to eq('trainers do not own game instances')
+		end
 	end
 
 	describe "GET #get_stats_player" do
