@@ -10,6 +10,8 @@ class QuestionSet < ActiveRecord::Base
         @qs = []
         @qcount = 0
     end
+
+    @headers = [ 'Question','Correct Answer','Wrong Answer 1','Wrong Answer 2','Wrong Answer 3','Wrong Answer 4','Wrong Answer 5','Wrong Answer 6','Wrong Answer 7']
     
     #sets up new QuestionSet
     def createSet(file, params={})
@@ -61,7 +63,8 @@ class QuestionSet < ActiveRecord::Base
         if file.is_a?(ActionDispatch::Http::UploadedFile)
             csvFile = file.tempfile
         end
-        arr = CSV.read(csvFile, headers: true)
+
+        arr = self.checkCSV(csvFile)
     end
     
     def getQuestionByIndex(i)
@@ -83,5 +86,21 @@ class QuestionSet < ActiveRecord::Base
         else
             return @qcount
         end
+    end
+
+    def self.checkCSV(file)
+        arr = CSV.read(file, headers: true)
+        headers = arr.headers()
+        if (headers.length != @headers.length)
+            raise "Invalid CSV: bad header length #{headers.length}, CSV must have exactly 9 columns"
+        end
+        (0..8).each do |i|
+            if headers[i].nil?
+                raise "Invalid CSV: missing header column '#{@headers[i]}'"
+            elsif (headers[i].strip() != @headers[i])
+                raise "Invalid CSV: bad CSV column '#{headers[i]}' should be '#{@headers[i]}'"
+            end
+        end
+        return arr
     end
 end

@@ -13,6 +13,7 @@ RSpec.describe QuestionSet do
 
 	  it "initializes question array" do
 	  	expect(@qs.qs).to eq([])
+	  	expect(@qs.getQuestions).to eq([])
 	  end
 	end
 
@@ -137,4 +138,30 @@ RSpec.describe QuestionSet do
   	end
 
   end
+
+  context "bad CSV" do
+  	it "handles bad header (columns missing in header but not in rows)" do
+  		expect { QuestionSet.parseCSV("#{Rails.root}/spec/fixtures/files/bad_header_short.csv") }.to raise_error("Invalid CSV: missing header column 'Wrong Answer 3'")
+  	end
+
+  	it "handles bad file (columns missing)" do
+  		expect { QuestionSet.parseCSV("#{Rails.root}/spec/fixtures/files/bad_file_short.csv") }.to raise_error("Invalid CSV: bad header length 4, CSV must have exactly 9 columns")
+  	end
+
+
+  	it "handles bad header (columns excess)" do
+  		expect { QuestionSet.parseCSV("#{Rails.root}/spec/fixtures/files/bad_header_long.csv") }.to raise_error("Invalid CSV: bad header length 10, CSV must have exactly 9 columns")
+  	end
+
+  	it "handles bad header (columns misspelled)" do
+  		expect { QuestionSet.parseCSV("#{Rails.root}/spec/fixtures/files/bad_header.csv") }.to raise_error("Invalid CSV: bad CSV column 'Wrong Answer 2' should be 'Wrong Answer 4'")
+  	end
+  	
+
+  	it "allows trailing white space in column names" do
+  		expect { QuestionSet.parseCSV("#{Rails.root}/spec/fixtures/files/spacey_header.csv") }.to_not raise_error
+  	end
+
+  end
+
 end

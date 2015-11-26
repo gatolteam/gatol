@@ -156,7 +156,25 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 		end
 
 		context "unsuccessful" do
-			pending
+			it "cannot import due to 'not trainer' error" do
+				@user = FactoryGirl.create(:student, id: 333)
+	 			request.headers['Authorization'] =  @user.auth_token
+
+	 			delete :import, file: fixture_file_upload('files/demo1.csv', 'text/csv')
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(401)
+	 			expect(result["errors"][0]).to eq('the user is not a trainer')
+			end
+
+			it "does not create Question Sets for bad CSV" do
+				@user = FactoryGirl.create(:trainer, id: 333)
+	 			request.headers['Authorization'] =  @user.auth_token
+
+	 			delete :import, file: fixture_file_upload('files/bad_header_long.csv', 'text/csv')
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(400)
+	 			expect(result["errors"][0]).to eq('Invalid CSV: bad header length 10, CSV must have exactly 9 columns')
+			end
 		end
 
 

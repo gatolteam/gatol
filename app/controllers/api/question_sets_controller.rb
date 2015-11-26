@@ -50,15 +50,21 @@ class Api::QuestionSetsController < ApplicationController
     if user.is_trainer?
       f = params[:file]
       q = QuestionSet.new(trainer_id: user.id)
-      q.createSet(f)
-      if (q.saveSet)
+      begin 
+        q.createSet(f)
+        if (q.saveSet)
+          render json: {
+            question_set: qs_json(q)
+          }, status: 200
+        else
+          render json: {
+            errors: ['question set could not be saved']
+          }, status: 400
+        end
+      rescue => error
         render json: {
-          question_set: qs_json(q)
-        }, status: 200
-      else
-        render json: {
-          errors: ['question set could not be saved']
-        }, status: 400
+            errors: [error.message]
+          }, status: 400
       end
     else
       render json: {
