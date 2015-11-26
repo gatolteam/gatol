@@ -19,29 +19,34 @@ class Api::GameInstancesController < ApplicationController
   def show
     user = current_user
     game_instance = GameInstance.find_by_id(params[:id])
-    if !game_instance.nil? && game_instance.student_id == user.id
+    if game_instance.nil?
       render json: {
-        status: 200,
-        game_instance: game_instance
-      }
-    elsif game_instance.nil?
-      render json: {
-        status: 400,
         errors: ['game instance does not exist']
-      }  
+      }, status: 400
+    elsif (user.is_trainer? && user.id == Game.find_by_id(game_instance.game_id).trainer_id) || (game_instance.student_id == user.id)
+      render json: {
+        game_instance: game_instance
+      }, status: 200
     else
       render json: {
-        status: 401,
         errors: ['user does not have access to this game instance']
-      }
+      }, status: 401
     end
   end
 
   # POST /game_instances
   def create
     user = current_user
+
+    game = Game.find_by_id(params[:game_id])
+    if game.nil?
+      render json: {
+        errors: ['game does not exist for this game_id, cannot create instance']
+      }, status: 400
+    return 
+    end
+
     if user.is_trainer?
-      game = Game.find_by_id(params[:game_id])
       render json: {
         game_instance_id: 0,
         game_description: game.description,
@@ -57,17 +62,23 @@ class Api::GameInstancesController < ApplicationController
     game_instance.score = 0
     game_instance.lastQuestion = 0
 
-    game = Game.find_by_id(params[:game_id])
-
-    if game_instance.save
+    begin 
+      if game_instance.save!
+        render json: {
+            game_instance_id: game_instance.id,
+            game_description: game.description,
+            question_set_id: game.question_set_id,
+            template_id: game.game_template_id
+          }, status: 200
+      else
+        render json: {
+          errors: ['game instance could not be created']
+        }, status: 400
+      end
+    rescue => error
       render json: {
-          game_instance_id: game_instance.id,
-          game_description: game.description,
-          question_set_id: game.question_set_id,
-          template_id: game.game_template_id
-        }, status: 200
-    else
-      render json: {}, status: 401
+          errors: [ error.message ]
+        }, status: 400
     end
   end
 
@@ -185,7 +196,6 @@ class Api::GameInstancesController < ApplicationController
         render json: {
           errors: ['no student found for given email']
         }, status: 404
-      #elsif student is enrolled in this game
       else
         stats = GameInstance.getAllScoresForGame(gid, pid)
         render json: {

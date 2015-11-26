@@ -65,13 +65,133 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 	end
 
 	describe "GET #show" do
-		context "successul by trainer" do
-			pending
+		context "successul by student" do
+			it "gets the specific game instance" do
+				user = FactoryGirl.create(:student, id:12)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			e = FactoryGirl.create(:game_instance_inactive, game_id: 55, score: 20, student_id: user.id)
+				
+				get :show, id: e.id
+				result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	 			checkGameInstance(result["game_instance"], e)
+			end
+		end
+
+		context "unsuccessful by student" do
+			it "cannot get due to 'no access' error" do
+				user = FactoryGirl.create(:student, id:12)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			e = FactoryGirl.create(:game_instance_inactive, game_id: 55, score: 20, student_id: 13)
+				
+				get :show, id: e.id
+				result = JSON.parse(response.body)
+	 			expect(response.status).to eq(401)
+	 			expect(result["errors"][0]).to eq('user does not have access to this game instance')
+			end
+
+			it "cannot get due to 'not exist' error" do
+				user = FactoryGirl.create(:student, id:12)
+	 			request.headers['Authorization'] =  user.auth_token
+				
+				get :show, id: 4
+				result = JSON.parse(response.body)
+	 			expect(response.status).to eq(400)
+	 			expect(result["errors"][0]).to eq('game instance does not exist')
+			end
+		end
+
+		context "successful by trainer" do
+			it "gets game instance if trainer is owner of its game" do
+				user = FactoryGirl.create(:trainer)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			game = FactoryGirl.create(:game, trainer_id: user.id)
+	 			e = FactoryGirl.create(:game_instance_inactive, game_id: game.id, score: 20, student_id: 1)
+				
+				get :show, id: e.id
+				result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	 			checkGameInstance(result["game_instance"], e)
+	 		end
+		end
+
+		context "unsuccessful by trainer" do
+			it "cannot get due to 'no access' error" do
+				user = FactoryGirl.create(:trainer)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			game = FactoryGirl.create(:game, trainer_id: user.id+1)
+	 			e = FactoryGirl.create(:game_instance_inactive, game_id: game.id, score: 20, student_id: 1)
+				
+				get :show, id: e.id
+				result = JSON.parse(response.body)
+	 			expect(response.status).to eq(401)
+	 			expect(result["errors"][0]).to eq('user does not have access to this game instance')
+			end
 		end
 	end
 
 	describe "POST #create" do
-		pending
+		it "cannot get due to 'not exist' error" do
+			user = FactoryGirl.create(:student)
+ 			request.headers['Authorization'] =  user.auth_token
+				
+			post :create, game_id: 100
+			result = JSON.parse(response.body)
+ 			expect(response.status).to eq(400)
+ 			expect(result["errors"][0]).to eq('game does not exist for this game_id, cannot create instance')
+		end
+
+		context "trainer" do
+			it "gets game information" do
+				user = FactoryGirl.create(:trainer)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			game = FactoryGirl.create(:game, trainer_id: user.id)
+
+	 			post :create, game_id: game.id
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	 			expect(result["game_instance_id"]).to eq(0)
+	 			expect(result["game_description"]).to eq(game.description)
+	 			expect(result["question_set_id"]).to eq(game.question_set_id)
+	 			expect(result["template_id"]).to eq(game.game_template_id)
+			end
+		end
+
+		context "student" do
+			before(:each) do
+				user = FactoryGirl.create(:student)
+ 				request.headers['Authorization'] =  user.auth_token
+ 				@game = FactoryGirl.create(:game)
+			end
+			it "creates new game instance" do
+				post :create, game_id: @game.id
+				result = JSON.parse(response.body)
+	 			expect(result["game_description"]).to eq(@game.description)
+	 			expect(result["question_set_id"]).to eq(@game.question_set_id)
+	 			expect(result["template_id"]).to eq(@game.game_template_id)
+			end
+
+			it "handles save error" do
+				expect_any_instance_of(GameInstance).to receive(:save!).and_return(false)
+				
+				post :create, game_id: @game.id
+				result = JSON.parse(response.body)
+				expect(response.status).to eq(400)
+ 				expect(result["errors"][0]).to eq('game instance could not be created')
+			end
+
+			it "handles other error" do
+				msg = "oops"
+				expect_any_instance_of(GameInstance).to receive(:save!).and_raise(msg)
+
+				post :create, game_id: @game.id
+				result = JSON.parse(response.body)
+				expect(response.status).to eq(400)
+ 				expect(result["errors"][0]).to eq(msg)
+			end
+
+
+		end
 	end
 
 	describe "PUT #update" do
