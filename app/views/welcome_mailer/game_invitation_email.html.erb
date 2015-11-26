@@ -2,56 +2,38 @@
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-    <style>
-
-      div.gatol {
-        font-weight: bold;
-        color: #FFFFFF;
-        letter-spacing: -1pt;
-        word-spacing: 2pt;
-        font-size: 30px;
-        text-align: center;
-        height: 50px;
-        line-height: 50px;
-        font-family: CarterOne, PatuaOne;
-        background-color: #448ed3;
-      }
-
-      div.head {
-        margin-bottom: 10px;
-      }
-
-      div.tail {
-        margin-top: 10px;
-      }
-
-      div.text-field {
-        margin: 20px;
-      }
-
-    </style>
   </head>
   <body>
+    <table style="width:100%">
+      <tr>
+        <td style="background-color: #448ed3; height: 50px; text-align: center;">
+          <span style="font-family: 'PatuaOne', 'sans serif'; font-size: 30pt; color: #ffffff;">Game-a-thon of Learning</span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div style="margin: 20px 20px 20px 20px;">
+            <h1>Game Invitation</h1>
+            <p>
+              <%= @user.username %> has invited you to game <%= @game.name %>.
+            </p>
+            <p>
+              Game description:
+            </p>
+            <p>
+              <%= @game.description %>
+            </p>
+            <p>
+              Please login or sign up with this email account to access the game.
+            </p>
+          </div>
 
-    <div class='gatol head'>
-      Game-a-thon of Learning
-    </div>
+        </td>
+      </tr>
+      <tr>
+        <td style="background-color: #448ed3; height: 50px"></td>
+      </tr>
+    </table>
 
-    <div class='text-field'>
-      <h1>Hi customer,</h1>
-      <p>
-        <%= @user.username %> has invited you to game <%= @game.name %>
-      </p>
-
-      <p>
-        <%= @game.description %>
-      </p>
-
-      <p>
-        Please login or sign up with this email account to access the game.
-      </p>
-    </div>
-
-    <div class='gatol tail'/>
   </body>
 </html>

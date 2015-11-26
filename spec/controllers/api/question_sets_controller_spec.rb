@@ -218,6 +218,17 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 			end
 		end
 		context "unsuccessful" do
+			it "cannot delete due to games that uses it" do
+				user = FactoryGirl.create(:trainer, id: 0020)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			f = FactoryGirl.create(:question_set_repeat, trainer_id: 0020)
+	 			g = FactoryGirl.create(:game_a, trainer_id: user.id, question_set_id: f.id)
+
+	 			delete :destroy, id: f.id
+
+	 			expect(response.status).to eq(400)
+			end
+
 			it "cannot delete due to 'no access' error" do
 				@user = FactoryGirl.create(:trainer, id: 0020)
 	 			request.headers['Authorization'] =  @user.auth_token
