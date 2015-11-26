@@ -210,6 +210,7 @@ class Api::GameInstancesController < ApplicationController
   def get_stats_summary
     user = current_user
     gid = params[:game_id]
+    
     render json: {
       ranking: GameInstance.getTop(gid, 15),
       player_summaries: GameInstance.getPlayerSummaries(gid)

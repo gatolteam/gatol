@@ -7,7 +7,8 @@
 templates = [
 	{ name: 'Blobber', description: 'The bubble game that pops your brain out.'},
 	{ name: 'Basket', description: 'Catch the balls corresponding to the correct answer!'},
-	{ name: 'Shooter', description: 'Shoot away all the wrong answers!'}
+	{ name: 'Shooter', description: 'Shoot away all the wrong answers!'},
+	{ name: 'Bouncer', description: 'Bounce the correct answer into the right hole.'}
 ]
 
 gto = []
