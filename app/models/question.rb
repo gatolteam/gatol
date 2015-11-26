@@ -15,6 +15,34 @@ class Question < ActiveRecord::Base
         too_short: "must have at least %{count} characters",
         too_long: "must have at most %{count} characters"
     }
+    validates :answerWrong1, length: { 
+        maximum: 256,
+        too_long: "must have at most %{count} characters"
+    }
+    validates :answerWrong2, length: { 
+        maximum: 256,
+        too_long: "must have at most %{count} characters"
+    }
+    validates :answerWrong3, length: { 
+        maximum: 256,
+        too_long: "must have at most %{count} characters"
+    }
+    validates :answerWrong4, length: { 
+        maximum: 256,
+        too_long: "must have at most %{count} characters"
+    }
+    validates :answerWrong5, length: { 
+        maximum: 256,
+        too_long: "must have at most %{count} characters"
+    }
+    validates :answerWrong6, length: { 
+        maximum: 256,
+        too_long: "must have at most %{count} characters"
+    }
+    validates :answerWrong7, length: { 
+        maximum: 256,
+        too_long: "must have at most %{count} characters"
+    }
     validates_presence_of :question_set
 
     def buildQuestion(params)

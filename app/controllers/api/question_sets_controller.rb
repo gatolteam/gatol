@@ -63,7 +63,7 @@ class Api::QuestionSetsController < ApplicationController
         end
       rescue => error
         render json: {
-            errors: [error.message]
+            errors: [ error.message ]
           }, status: 400
       end
     else

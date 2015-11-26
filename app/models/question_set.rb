@@ -49,7 +49,7 @@ class QuestionSet < ActiveRecord::Base
         @qs.each do |q|
             all = all && q.save!
         end
-        all && self.save
+        all && self.save!
     end
 
     # parses CSV

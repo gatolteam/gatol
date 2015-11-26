@@ -175,6 +175,27 @@ RSpec.describe Api::QuestionSetsController, type: :controller do
 	 			expect(response.status).to eq(400)
 	 			expect(result["errors"][0]).to eq('Invalid CSV: bad header length 10, CSV must have exactly 9 columns')
 			end
+
+			it "handles 'cannot save' error" do
+				expect_any_instance_of(QuestionSet).to receive(:saveSet).and_return(false)
+				@user = FactoryGirl.create(:trainer, id: 333)
+	 			request.headers['Authorization'] =  @user.auth_token
+
+	 			delete :import, file: fixture_file_upload('files/demo1.csv', 'text/csv')
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(400)
+	 			expect(result["errors"][0]).to eq('question set could not be saved')
+			end
+
+			it "handles validation errors" do
+				@user = FactoryGirl.create(:trainer, id: 333)
+	 			request.headers['Authorization'] =  @user.auth_token
+
+	 			delete :import, file: fixture_file_upload('files/bad_question.csv', 'text/csv')
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(400)
+	 			expect(result["errors"][0]).to eq('Validation failed: Answerwrong7 must have at most 256 characters')
+			end
 		end
 
 
