@@ -193,6 +193,40 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 		end
 	end
 
+	describe "DELETE#destroy" do
+		it "deletes instance" do
+			user = FactoryGirl.create(:student)
+			request.headers['Authorization'] =  user.auth_token
+ 			e = FactoryGirl.create(:game_instance_inactive, game_id: 55, score: 20, student_id: user.id)
+				
+			delete :destroy, id: e.id
+ 			expect(response.status).to eq(200)
+		end
+
+		it "cannot delete due to 'no access'" do
+			user = FactoryGirl.create(:student)
+ 			request.headers['Authorization'] =  user.auth_token
+ 			e = FactoryGirl.create(:game_instance_inactive, game_id: 55, score: 20, student_id: user.id+1)
+
+ 			delete :destroy, id: e.id
+			result = JSON.parse(response.body)
+ 			expect(response.status).to eq(401)
+ 			expect(result["errors"][0]).to eq('user does not have access to this game instance')
+		end
+
+		it "cannot delete due to 'not exist'" do
+			user = FactoryGirl.create(:student)
+			request.headers['Authorization'] =  user.auth_token
+ 			e = FactoryGirl.create(:game_instance_inactive, game_id: 55, score: 20, student_id: user.id)
+				
+			delete :destroy, id: 2
+			result = JSON.parse(response.body)
+ 			expect(response.status).to eq(400)
+ 			expect(result["errors"][0]).to eq('game instance does not exist')
+
+		end
+	end
+
 	describe "PUT #update" do
 		it "returns empty success response for trainer" do
 			user = FactoryGirl.create(:trainer)

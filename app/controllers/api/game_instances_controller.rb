@@ -141,7 +141,7 @@ class Api::GameInstancesController < ApplicationController
       }, status: 400
     else
       render json: {
-        errors: ['student does not have access to this game instance']
+        errors: ['user does not have access to this game instance']
       }, status: 401
     end
   end
