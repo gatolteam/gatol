@@ -2,19 +2,31 @@ require 'rails_helper'
 
 RSpec.describe Api::GameInstancesController, type: :controller do
 
-	#View Game Summary
 	describe "GET #index" do
+		#get_stats_all_trainer
 		context "successful by trainer" do
-			pending
-		end
-		context "successful by student" do
-			pending
+			it "" do
+			end
 		end
 		context "unsuccessful by trainer" do
 			pending
 		end
-		context "unsuccessful by student" do
-			pending
+
+		#get_stats_all_student
+		context "successful by student" do
+			it "gets all scores of all games" do
+				user = FactoryGirl.create(:student, id:12)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			e = FactoryGirl.create(:game_instance_inactive, game_id: 55, score: 20, student_id: user.id)
+				f = FactoryGirl.create(:game_instance_inactive, game_id: 56, score: 30, student_id: user.id)
+
+	 			get :index
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	 			expect(result["history"].length).to eq(2)
+	 			checkGameInstance(result["history"][0], f)
+	 			checkGameInstance(result["history"][1], e)
+			end
 		end
 	end
 
@@ -30,7 +42,7 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 
 	describe "PUT #update" do
 		it "only allows score updates for student owner of game" do
-			pending
+			
   		end
 	end
 
@@ -48,7 +60,7 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 
 	describe "GET #get_leaderboard" do
 		before(:each) do
-			@t = FactoryGirl.create(:trainer, id: 5)
+			@t = FactoryGirl.create(:trainer)
   			@g = []
 			@g << FactoryGirl.create(:game, trainer_id: @t.id)
 			@g << FactoryGirl.create(:game, trainer_id: @t.id)
@@ -109,6 +121,14 @@ def createInstances(bad, total, sids, gid)
 		a << x
 	end
 	return a
+end
+
+
+def checkGameInstance(act, exp)
+	expect(act["id"]).to eq(exp.id)
+	expect(act["game_id"]).to eq(exp.game_id)
+	expect(act["score"]).to eq(exp.score)
+	expect(act["lastQuestion"]).to eq(exp.lastQuestion)
 end
 
 end

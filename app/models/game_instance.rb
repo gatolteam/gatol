@@ -77,22 +77,9 @@ class GameInstance < ActiveRecord::Base
 		end
 
 		return s
-
-		#GameInstance.joins(:game).select(:id, :score, :student_id, 'games.id as game_id').where(active: false, games: { trainer_id: tid }).group('games.id', :student_id).order(:student_id, :score).limit(5)
-		#GameInstance.joins()
-
-		#games = GameInstance.select(:game_id).where(trainer_id: tid).group()
 	end
 
 	def self.getPlayerSummaries(gid)
-		#GameInstance.where(game_id: gid, active: false).group(:student_id).maximum(:score)
 		GameInstance.select("max(score) as highest_score", "avg(score) as avg_score", :student_id).where(game_id: gid, active: false).group(:student_id).order(student_id: :asc)
 	end
-
-	def self.getRates(tid)
-		#GameInstance.select("completion_rate","win_rate").where(trainer_id: tid).group(:game_id)
-	end
-
-
-
 end

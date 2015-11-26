@@ -153,7 +153,7 @@ class Api::GameInstancesController < ApplicationController
     all = GameInstance.getAllScoresForStudent(user.id)
     render json: {
       history: all
-    }
+    }, status: 200
   end
 
   # View Player Statistics for specific game (Student)
@@ -163,7 +163,7 @@ class Api::GameInstancesController < ApplicationController
     stats = GameInstance.getAllScoresForGame(gid, user.id)
     render json: {
       history: stats
-    }
+    }, status: 200
   end
 
   # View Game Statistics for specific player on specific game (Trainer)
@@ -210,20 +210,24 @@ class Api::GameInstancesController < ApplicationController
   def get_stats_summary
     user = current_user
     gid = params[:game_id]
-    
-    render json: {
-      ranking: GameInstance.getTop(gid, 15),
-      player_summaries: GameInstance.getPlayerSummaries(gid)
-    }
+    if user.is_trainer?
+      render json: {
+        ranking: GameInstance.getTop(gid, 15),
+        player_summaries: GameInstance.getPlayerSummaries(gid)
+      }, status: 200
+    else
+      render json: {
+        errors:['student does not have access to player data']
+      }, status: 401
+    end
+
   end
 
   def get_stats_all_trainer
     user = current_user
     gid = params[:game_id]
-    #ranking = GameInstance.
     render json: {
       ranking: GameInstance.getAllGameSummaries(user.id)
-      #player_summaries: GameInstance.getPlayerSummaries(gid)
     }
   end
 
