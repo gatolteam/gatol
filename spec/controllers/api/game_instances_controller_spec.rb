@@ -339,7 +339,153 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 	end
 
 	describe "GET #get_stats_player" do
-		pending
+		it "gets statistics for player on trainer's game" do
+			user = FactoryGirl.create(:trainer)
+			s = FactoryGirl.create(:student)
+ 			request.headers['Authorization'] =  user.auth_token
+ 			game = FactoryGirl.create(:game, trainer_id: user.id)
+ 			f1 = FactoryGirl.create(:game_instance_inactive, game_id: game.id, student_id: s.id)
+ 			f2 = FactoryGirl.create(:game_instance_inactive, game_id: game.id, student_id: s.id)
+ 			g = FactoryGirl.create(:game_instance_inactive, game_id: game.id, student_id: s.id+1)
+
+ 			get :get_stats_player, game_id: game.id, student_email: s.email
+ 			result = JSON.parse(response.body)
+ 			expect(response.status).to eq(200)
+ 			expect(result["history"].length).to eq(2)
+ 			checkGameInstance(result["history"][0], f1)
+ 			checkGameInstance(result["history"][1], f2)
+		end
+
+		it "cannot get due to 'missing gameid param' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		get :get_stats_player, student_email: 'hi'
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('missing game_id parameter')
+  		end
+
+  		it "cannot get due to 'missing email param' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		get :get_stats_player, game_id: 2
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('missing student email parameter')
+  		end
+
+  		it "cannot get due to 'game not exist' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		get :get_stats_player, game_id: 2, student_email: 'hi'
+	 		result = JSON.parse(response.body)
+ 			expect(response.status).to eq(404)
+ 			expect(result["errors"][0]).to eq('no game exists for this game id')
+  		end
+  		it "cannot get due to 'student not exist' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		game = FactoryGirl.create(:game, trainer_id: user.id)
+
+	 		get :get_stats_player, game_id: game.id, student_email: 'hi'
+	 		result = JSON.parse(response.body)
+ 			expect(response.status).to eq(404)
+ 			expect(result["errors"][0]).to eq('no student found for given email')
+  		end
+
+  		it "cannot get due to 'no access' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		game = FactoryGirl.create(:game, trainer_id: user.id+1)
+
+	 		get :get_stats_player, game_id: game.id, student_email: 'hi'
+	 		result = JSON.parse(response.body)
+ 			expect(response.status).to eq(401)
+ 			expect(result["errors"][0]).to eq('trainer does not have access to this game data')
+  		end
+
+
+  		context "student" do
+  			before(:each) do
+  				@user = FactoryGirl.create(:student)
+		 		request.headers['Authorization'] =  @user.auth_token
+		 		@g = FactoryGirl.create(:game_instance, student_id: @user.id)
+  			end
+	  		it "gets own stats for this game" do
+		 		get :get_stats_player, game_id: @g.game_id, student_email: @user.email
+		 		result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	  		end
+
+	  		it "cannot get due to 'student no access' error" do
+		 		get :get_stats_player, game_id: @g.game_id, student_email: 'hi'
+		 		result = JSON.parse(response.body)
+	 			expect(response.status).to eq(401)
+	 			expect(result["errors"][0]).to eq('student does not have access to player data')
+	  		end
+	  	end
+	end
+
+	describe "GET #get_stats_summary" do
+		it "gets ranking and player summaries and ranking" do
+			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		game = FactoryGirl.create(:game, trainer_id: user.id)
+	 		FactoryGirl.create(:game_instance_inactive, game_id: game.id, student_id: 1)
+	 		FactoryGirl.create(:game_instance_inactive, game_id: game.id, student_id: 2)
+
+	 		get :get_stats_summary, game_id: game.id
+	 		result = JSON.parse(response.body)
+ 			expect(response.status).to eq(200)
+ 			expect(result["ranking"].length).to eq(2)
+ 			expect(result["player_summaries"].length).to eq(2)
+		end
+
+		it "does not get for students" do
+			user = FactoryGirl.create(:student)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		game = FactoryGirl.create(:game, trainer_id: user.id+1)
+
+	 		get :get_stats_summary, game_id: 5
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(401)
+			expect(result["errors"][0]).to eq('student does not have access to player data')
+		end
+
+		it "cannot get due to 'missing gameid param' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		get :get_stats_summary
+	 		result = JSON.parse(response.body)
+			expect(response.status).to eq(400)
+			expect(result["errors"][0]).to eq('missing game_id parameter')
+  		end
+
+  		it "cannot get due to 'game not exist' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+
+	 		get :get_stats_summary, game_id: 5
+	 		result = JSON.parse(response.body)
+ 			expect(response.status).to eq(404)
+ 			expect(result["errors"][0]).to eq('no game exists for this game id')
+  		end
+
+  		it "cannot get due to 'no access' error" do
+  			user = FactoryGirl.create(:trainer)
+	 		request.headers['Authorization'] =  user.auth_token
+	 		game = FactoryGirl.create(:game, trainer_id: user.id+1)
+
+	 		get :get_stats_summary, game_id: game.id
+	 		result = JSON.parse(response.body)
+ 			expect(response.status).to eq(401)
+ 			expect(result["errors"][0]).to eq('trainer does not have access to this game data')
+  		end
+
 	end
 
 	describe "GET #get_leaderboard" do

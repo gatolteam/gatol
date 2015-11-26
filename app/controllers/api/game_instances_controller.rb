@@ -208,6 +208,19 @@ class Api::GameInstancesController < ApplicationController
     user = current_user
     pemail = params[:student_email]
     gid = params[:game_id]
+
+    if pemail.nil? 
+      render json: {
+        errors: ['missing student email parameter']
+      }, status: 400
+      return
+    elsif gid.nil?
+      render json: {
+        errors: ['missing game_id parameter']
+      }, status: 400
+      return
+    end
+
     g = Game.find_by_id(gid)
     if g.nil?
       render json: {
@@ -232,7 +245,7 @@ class Api::GameInstancesController < ApplicationController
         render json: {
           errors: ['trainer does not have access to this game data']
         }, status: 401
-    elsif email == user.email
+    elsif pemail == user.email
       get_stats_game
     else
       render json: {
@@ -247,10 +260,27 @@ class Api::GameInstancesController < ApplicationController
     user = current_user
     gid = params[:game_id]
     if user.is_trainer?
-      render json: {
-        ranking: GameInstance.getTop(gid, 15),
-        player_summaries: GameInstance.getPlayerSummaries(gid)
-      }, status: 200
+      if gid.nil?
+        render json: {
+          errors: ['missing game_id parameter']
+        }, status: 400
+        return
+      end
+      g = Game.find_by_id(gid)
+      if g.nil?
+        render json: {
+          errors: ['no game exists for this game id']
+        }, status: 404
+      elsif g.trainer_id != user.id
+          render json: {
+            errors: ['trainer does not have access to this game data']
+          }, status: 401
+       else
+        render json: {
+          ranking: GameInstance.getTop(gid, 15),
+          player_summaries: GameInstance.getPlayerSummaries(gid)
+        }, status: 200
+      end
     else
       render json: {
         errors:['student does not have access to player data']
