@@ -22,9 +22,7 @@ class Api::StudentsController < ApplicationController
       else
         err = []
         user.errors.each do |key, arr|
-          arr.each do |m|
-            err << key + " " + m
-          end
+          err << key + " " + arr.to_s
         end
         render json: { errors: err }, status: 422
       end
@@ -44,9 +42,7 @@ class Api::StudentsController < ApplicationController
       else
         err = []
         user.errors.each do |key, arr|
-          arr.each do |m|
-            err << key + " " + m
-          end
+          err << key + " " + arr.to_s
         end
         render json: { errors: err }, status: 422
       end
