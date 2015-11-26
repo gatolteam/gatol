@@ -82,7 +82,7 @@ class Api::QuestionSetsController < ApplicationController
       question_set = QuestionSet.find_by_id(params[:id])
       if !question_set.nil? && question_set.trainer_id == user.id
         games = Game.where(question_set_id: question_set.id)
-        if games.nil?
+        if games.nil? || games.empty?
           question_set.destroy
           render json: {}, status: 200
         else
