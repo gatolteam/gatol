@@ -56,11 +56,11 @@ class Api::StudentsController < ApplicationController
   def verify
     user = Student.find_by(auth_token: params['auth_token'])
     if user.nil?
-      render (:status => 404)
+      render status: 404
     elsif user.update_attribute(:confirmed, true)
-      render "api/students/verify.html.erb"
+      render "verify"
     else
-      render (:status => 500)
+      render status: 500
     end
   end
 
