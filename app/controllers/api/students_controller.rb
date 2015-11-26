@@ -55,10 +55,12 @@ class Api::StudentsController < ApplicationController
 
   def verify
     user = Student.find_by(auth_token: params['auth_token'])
-    if user.update_attribute(:confirmed, true)
-      render json: { email: user[:email] }, status: 200, location: [:api, user]
+    if user.nil?
+      render status: 404
+    elsif user.update_attribute(:confirmed, true)
+      render "api/trainers/verify.html.erb"
     else
-      render json: { errors: user.errors }, status: 422
+      render status: 500
     end
   end
 
@@ -81,36 +83,6 @@ class Api::StudentsController < ApplicationController
       end
     end
   end
-
-
-
-  private
-    def send_confirm_email(user)
-
-      message = <<MESSAGE_END
-From: Private Person <ecipsflow@gmail.com>
-To: A Test User <jlee257@berkeley.com>
-MIME-Version: 1.0
-Content-type: text/html
-Subject: SMTP e-mail test
-
-This is an e-mail message to be sent in HTML format
-
-<b>This is HTML message.</b>
-<h1>This is headline.</h1>
-MESSAGE_END
-
-    smtp = Net::SMTP.new 'smtp.gmail.com', 587
-    smtp.enable_starttls
-    smtp.start('gmail.com', 'ecipsflow@gmail.com', 'H*3o`itle01', :login) do
-      smtp.send_message(message, 'ecipsflow@gmail.com', 'jlee257@berkeley.edu')
-    end
-      puts 'sent email'
-    end
-
-    def send_reset_email(user)
-
-    end
 
 
 end

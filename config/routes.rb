@@ -1,8 +1,14 @@
 Rails.application.routes.draw do
+
   root 'welcome#index'
 
   devise_for :students
   devise_for :trainers
+
+  get "/404" => "errors#not_found"
+  get "/500" => "errors#internal_server_error"
+
+
   ### API definition
   namespace :api, defaults: { format: :json } do
 
