@@ -11,7 +11,7 @@ class Api::SessionsController < ApplicationController
 		if user.nil?
 			render json: { errors: ["Invalid email"] }, status: 422
 
-		elsif ((user_email.end_with? "gmail.com") || (user_email.end_with? "berkeley.edu")) && !user.confirmed
+		elsif !user.confirmed
 			render json: { errors: "Emails needs to be verified" }, status: 422
 
 		elsif user.valid_password? user_password

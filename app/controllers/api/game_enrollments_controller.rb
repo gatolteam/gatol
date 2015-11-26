@@ -66,9 +66,7 @@ class Api::GameEnrollmentsController < ApplicationController
   	end
 
   	if newEnrollment.save
-      if (game_enrollment_params[:student_email].end_with? "gmail.com") || (game_enrollment_params[:student_email].end_with? "berkeley.edu")
-        WelcomeMailer.game_invitation_email(game_enrollment_params[:student_email], user, game).deliver_now
-      end
+      WelcomeMailer.game_invitation_email(game_enrollment_params[:student_email], user, game).deliver_now
   	  render json: newEnrollment, status: 200
   	else
   	  render json: { errors: ['Unprocessible entity'] }, status: 422

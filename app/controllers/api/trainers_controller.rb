@@ -14,9 +14,7 @@ class Api::TrainersController < ApplicationController
     if Student.find_by(email: params[:email]).nil?
       user = Trainer.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation], :username => params[:username])
       if user.save
-        if (params[:email].end_with? "gmail.com") || (params[:email].end_with? "berkeley.edu")
-          WelcomeMailer.verification_email(user).deliver_now
-        end
+        WelcomeMailer.verification_email(user).deliver_now
         render json: { email: user[:email], id: user[:id] }, status: 201, location: [:api, user]
       else
         render json: { errors: user.errors }, status: 422
@@ -71,9 +69,7 @@ class Api::TrainersController < ApplicationController
       user.password = random_string
       user.password_confirmation = random_string
       if user.save
-        if (params[:email].end_with? "gmail.com") || (params[:email].end_with? "berkeley.edu")
-          WelcomeMailer.reset_password_email(user, random_string).deliver_now
-        end
+        WelcomeMailer.reset_password_email(user, random_string).deliver_now
         render json: { email: user[:email] }, status: 200, location: [:api, user]
       else
         render json: { errors: user.errors }, status: 422
