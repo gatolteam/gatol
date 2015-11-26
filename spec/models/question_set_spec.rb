@@ -75,11 +75,12 @@ RSpec.describe QuestionSet do
 
   context "create QuestionSet from array" do
   	before(:context) do
+  		t = FactoryGirl.create(:trainer)
   		@arr = [ ['1+1?','2','1','3','4','5','6','7','8'],
 				['Can pigs fly?','No','Of course!','Meep','','','','',''],
 				['T/F: Banana is a fruit','T','F','','','','','','']  ]
 
-		@set = QuestionSet.new(setname: '3set')
+		@set = QuestionSet.new(setname: '3set', trainer_id: t.id)
 		@set.createQuestions(@arr)
 		@sarr = @set.qs
 
