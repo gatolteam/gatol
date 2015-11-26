@@ -11,7 +11,7 @@ import random
 # SERVER = 'http://localhost:3000'
 # SERVER = 'https://calm-garden-9078.herokuapp.com'
 SERVER = 'https://gatol.herokuapp.com'
-TEST = "test024"
+TEST = ""
 FILEPATH = 'Book1.csv'
 TIMEOUT = 200
 PASS = 'samplePass'
@@ -243,7 +243,7 @@ class GatolTest:
     @classmethod
     def test006_loginerror_if_unverified(self):
         try:
-            email = random_email
+            email = random_email()
             
             # create new account
             r = create_account(email, 'test', PASS, PASS)
@@ -727,13 +727,13 @@ class GatolTest:
             # upload csv
             upload_csv(token)
 
+
             # get question Set id
             headers = {'Authorization':token}
             r = requests.get(SERVER + '/api/question_sets', headers=headers)
             if r.status_code > 299:
                 raise ValueError("failed to get set id " + str(r.status_code))
 
-            print(r.json())
             questionSets = r.json()[u'question_sets']
             setID = questionSets[0]['id']
 
