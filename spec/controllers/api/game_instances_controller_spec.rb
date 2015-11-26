@@ -5,11 +5,33 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 	describe "GET #index" do
 		#get_stats_all_trainer
 		context "successful by trainer" do
-			it "" do
+			it "gets summaries of all games" do
+				user = FactoryGirl.create(:trainer)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			g1 = FactoryGirl.create(:game, trainer_id: user.id)
+	 			g2 = FactoryGirl.create(:game, trainer_id: user.id)
+	 			d = FactoryGirl.create(:game_instance_inactive, game_id: g1.id, score: 20, student_id: 1)
+				e = FactoryGirl.create(:game_instance_inactive, game_id: g2.id, score: 30, student_id: 1)
+				f = FactoryGirl.create(:game_instance_inactive, game_id: g2.id, score: 40, student_id: 2)
+
+	 			get :index
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	 			expect(result["ranking"].length).to eq(2)
+	 			expect(result["ranking"]["#{g1.id}"].length).to eq(1)
+	 			expect(result["ranking"]["#{g2.id}"].length).to eq(2)
 			end
-		end
-		context "unsuccessful by trainer" do
-			pending
+
+			it "only gets summaries of games belonging to trainer" do
+				user = FactoryGirl.create(:trainer)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			g2 = FactoryGirl.create(:game, trainer_id: user.id+1)
+
+	 			get :index
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	 			expect(result["ranking"].length).to eq(0)
+			end
 		end
 
 		#get_stats_all_student
@@ -27,6 +49,18 @@ RSpec.describe Api::GameInstancesController, type: :controller do
 	 			checkGameInstance(result["history"][0], f)
 	 			checkGameInstance(result["history"][1], e)
 			end
+
+			it "only gets all scores of student" do
+				user = FactoryGirl.create(:student, id:12)
+	 			request.headers['Authorization'] =  user.auth_token
+	 			f = FactoryGirl.create(:game_instance_inactive, game_id: 56, score: 30, student_id: 13)
+
+	 			get :index
+	 			result = JSON.parse(response.body)
+	 			expect(response.status).to eq(200)
+	 			expect(result["history"].length).to eq(0)
+			end
+
 		end
 	end
 
