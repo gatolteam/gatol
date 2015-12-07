@@ -19,29 +19,34 @@ class Api::GameInstancesController < ApplicationController
   def show
     user = current_user
     game_instance = GameInstance.find_by_id(params[:id])
-    if !game_instance.nil? && game_instance.student_id == user.id
+    if game_instance.nil?
       render json: {
-        status: 200,
-        game_instance: game_instance
-      }
-    elsif game_instance.nil?
-      render json: {
-        status: 400,
         errors: ['game instance does not exist']
-      }  
+      }, status: 400
+    elsif (user.is_trainer? && user.id == Game.find_by_id(game_instance.game_id).trainer_id) || (game_instance.student_id == user.id)
+      render json: {
+        game_instance: game_instance
+      }, status: 200
     else
       render json: {
-        status: 401,
         errors: ['user does not have access to this game instance']
-      }
+      }, status: 401
     end
   end
 
   # POST /game_instances
   def create
     user = current_user
+
+    game = Game.find_by_id(params[:game_id])
+    if game.nil?
+      render json: {
+        errors: ['game does not exist for this game_id, cannot create instance']
+      }, status: 400
+    return 
+    end
+
     if user.is_trainer?
-      game = Game.find_by_id(params[:game_id])
       render json: {
         game_instance_id: 0,
         game_description: game.description,
@@ -57,17 +62,23 @@ class Api::GameInstancesController < ApplicationController
     game_instance.score = 0
     game_instance.lastQuestion = 0
 
-    game = Game.find_by_id(params[:game_id])
-
-    if game_instance.save
+    begin 
+      if game_instance.save!
+        render json: {
+            game_instance_id: game_instance.id,
+            game_description: game.description,
+            question_set_id: game.question_set_id,
+            template_id: game.game_template_id
+          }, status: 200
+      else
+        render json: {
+          errors: ['game instance could not be created']
+        }, status: 400
+      end
+    rescue => error
       render json: {
-          game_instance_id: game_instance.id,
-          game_description: game.description,
-          question_set_id: game.question_set_id,
-          template_id: game.game_template_id
-        }, status: 200
-    else
-      render json: {}, status: 401
+          errors: [ error.message ]
+        }, status: 400
     end
   end
 
@@ -80,6 +91,20 @@ class Api::GameInstancesController < ApplicationController
     end
     newScore = params[:score]
     q = params[:lastQuestion]
+
+    if newScore.nil? 
+      render json: {
+        errors: ['missing new score parameter']
+      }, status: 400
+      return
+    elsif q.nil?
+      render json: {
+        errors: ['missing lastQuestion parameter']
+      }, status: 400
+      return
+    end
+
+
     game_instance = GameInstance.find_by_id(params[:id])
     if !game_instance.nil? && game_instance.student_id == user.id
       begin 
@@ -87,13 +112,7 @@ class Api::GameInstancesController < ApplicationController
           render json: {
           }, status: 200
         end
-      rescue ActiveRecord::RecordInvalid => e
-        render json: {
-          errors: ['update could not be completed', 
-                  'invalid record', 
-                    e.message]
-        }, status: 400
-      rescue StandardError => e
+      rescue => e
         render json: {
           errors: ['update could not be completed', e.message]
         }, status: 400
@@ -122,7 +141,7 @@ class Api::GameInstancesController < ApplicationController
       }, status: 400
     else
       render json: {
-        errors: ['student does not have access to this game instance']
+        errors: ['user does not have access to this game instance']
       }, status: 401
     end
   end
@@ -141,10 +160,16 @@ class Api::GameInstancesController < ApplicationController
   # View Games (Student): views all games that student is playing
   def get_active
     user = current_user
-    active = GameInstance.where(student_id: user.id, active: true)
-    render json: {
-      games: active
-    }, status: 200
+    if user.is_trainer?
+      render json: {
+        errors: ['trainers do not own game instances']
+      }, status: 401
+    else
+      active = GameInstance.getActiveGames(user.id)
+      render json: {
+        game_instances: active
+      }, status: 200
+    end
   end
 
   # View Player Statistics for all games (Student)
@@ -159,11 +184,23 @@ class Api::GameInstancesController < ApplicationController
   # View Player Statistics for specific game (Student)
   def get_stats_game
     user = current_user
-    gid = params[:game_id]
-    stats = GameInstance.getAllScoresForGame(gid, user.id)
-    render json: {
-      history: stats
-    }, status: 200
+    if user.is_trainer?
+      render json: {
+        errors: ['trainers do not own game instances']
+      }, status: 401
+    else
+      gid = params[:game_id]
+      if gid.nil?
+        render json: {
+          errors: ['missing game_id parameter']
+        }, status: 400
+      else
+        stats = GameInstance.getAllScoresForGame(gid, user.id)
+        render json: {
+          history: stats
+        }, status: 200
+      end
+    end
   end
 
   # View Game Statistics for specific player on specific game (Trainer)
@@ -171,6 +208,19 @@ class Api::GameInstancesController < ApplicationController
     user = current_user
     pemail = params[:student_email]
     gid = params[:game_id]
+
+    if pemail.nil? 
+      render json: {
+        errors: ['missing student email parameter']
+      }, status: 400
+      return
+    elsif gid.nil?
+      render json: {
+        errors: ['missing game_id parameter']
+      }, status: 400
+      return
+    end
+
     g = Game.find_by_id(gid)
     if g.nil?
       render json: {
@@ -185,7 +235,6 @@ class Api::GameInstancesController < ApplicationController
         render json: {
           errors: ['no student found for given email']
         }, status: 404
-      #elsif student is enrolled in this game
       else
         stats = GameInstance.getAllScoresForGame(gid, pid)
         render json: {
@@ -196,7 +245,7 @@ class Api::GameInstancesController < ApplicationController
         render json: {
           errors: ['trainer does not have access to this game data']
         }, status: 401
-    elsif email == user.email
+    elsif pemail == user.email
       get_stats_game
     else
       render json: {
@@ -211,10 +260,27 @@ class Api::GameInstancesController < ApplicationController
     user = current_user
     gid = params[:game_id]
     if user.is_trainer?
-      render json: {
-        ranking: GameInstance.getTop(gid, 15),
-        player_summaries: GameInstance.getPlayerSummaries(gid)
-      }, status: 200
+      if gid.nil?
+        render json: {
+          errors: ['missing game_id parameter']
+        }, status: 400
+        return
+      end
+      g = Game.find_by_id(gid)
+      if g.nil?
+        render json: {
+          errors: ['no game exists for this game id']
+        }, status: 404
+      elsif g.trainer_id != user.id
+          render json: {
+            errors: ['trainer does not have access to this game data']
+          }, status: 401
+       else
+        render json: {
+          ranking: GameInstance.getTop(gid, 15),
+          player_summaries: GameInstance.getPlayerSummaries(gid)
+        }, status: 200
+      end
     else
       render json: {
         errors:['student does not have access to player data']

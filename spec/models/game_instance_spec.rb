@@ -149,7 +149,7 @@ end
 
   describe "getAllGameSummaries" do
   	before(:each) do
-  		@t = FactoryGirl.create(:trainer, id: 5)
+  		@t = FactoryGirl.create(:trainer)
   		@g = []
 		@g << FactoryGirl.create(:game, trainer_id: @t.id)
 		@g << FactoryGirl.create(:game, trainer_id: @t.id)
