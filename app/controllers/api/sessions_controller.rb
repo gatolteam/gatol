@@ -3,10 +3,18 @@ class Api::SessionsController < ApplicationController
 	def create
 		user_password = params[:session][:password]
 		user_email = params[:session][:email]
-		user = user_email.present? && Trainer.find_by(email: user_email)
-		if user.nil?
+		user_is_trainer = params[:session][:is_trainer]
+
+		user = nil
+		if user_is_trainer == '1'
+			user = user_email.present? && Trainer.find_by(email: user_email)
+		elsif user_is_trainer == '0'
 			user = user_email.present? && Student.find_by(email: user_email)
+		else
+			render json: { errors: ["invalid is_trainer value"]}, status 422
+			return
 		end
+
 		
 		if user.nil?
 			render json: { errors: ["Invalid email"] }, status: 422
