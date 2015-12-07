@@ -11,7 +11,7 @@ class Api::SessionsController < ApplicationController
 		elsif user_is_trainer == '0'
 			user = user_email.present? && Student.find_by(email: user_email)
 		else
-			render json: { errors: ["invalid is_trainer value"]}, status 422
+			render json: { errors: ["invalid is_trainer value"] }, status: 422
 			return
 		end
 

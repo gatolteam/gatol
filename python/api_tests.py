@@ -40,9 +40,16 @@ def verify_account(token, is_trainer=True):
     else:
         return requests.get(SERVER + '/api/students/' + token + '/confirm', timeout=TIMEOUT)
 
-def login(email, password):
-    payload = {'email':email,
-               'password':password}
+def login(email, password, is_trainer=True):
+    if is_trainer:
+        payload = {'email':email,
+                   'password':password,
+                   'is_trainer':'1'}
+        return requests.post(SERVER + '/api/sessions', json=payload, timeout=TIMEOUT)
+    else:
+        ayload = {'email':email,
+                  'password':password,
+                  'is_trainer':'0'}
     return requests.post(SERVER + '/api/sessions', json=payload, timeout=TIMEOUT)
 
 def logout(token):
@@ -92,7 +99,7 @@ def create_and_login(email, password, is_trainer=True):
     if r.status_code != 200:
         raise ValueError("verification failed " + str(r.status_code))
     #login
-    r = login(email, password)
+    r = login(email, password, is_trainer)
     if r.status_code != 200:
         raise ValueError("failed to login " + str(r.json()['errors']) + str(r.status_code))
     token = r.json()['auth_token']
